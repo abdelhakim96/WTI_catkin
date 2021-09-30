@@ -28,7 +28,6 @@ set(${PROJECT_NAME}_CATKIN_DEPS
     roslib
     std_msgs
     gazebo_msgs
-    tf
 )
 
 # find other catkin packages
@@ -36,29 +35,29 @@ find_package(catkin REQUIRED COMPONENTS
     ${${PROJECT_NAME}_CATKIN_DEPS}
 )
 
-set(PROJECT_LIBS
-    ${catkin_LIBRARIES}
-    Eigen3::Eigen
+## Catkin specific configuration ##
+catkin_package(
+    INCLUDE_DIRS include
+    LIBRARIES ${PROJECT_NAME}
+    CATKIN_DEPENDS ${${PROJECT_NAME}_CATKIN_DEPS} # message_runtime
 )
 
-###########
-## Build ##
-###########
+#############
+# LIBRARIES #
+#############
 
-add_definitions(${EIGEN_DEFINITIONS})
-include_directories(include)
-include_directories(
-    ${catkin_INCLUDE_DIRS}
-    ${EIGEN_INCLUDE_DIRS}
+include_directories(${PROJECT_NAME}_LIBRARY PRIVATE
+  ${catkin_INCLUDE_DIRS}
+
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/include
+
 )
 
 ############
 # BINARIES #
 ############
 
-# Node executables
 add_executable(mocap_bridge_gazebo src/mocap_bridge_gazebo.cpp)
-
-# Node linking
-target_link_libraries(mocap_bridge_gazebo ${PROJECT_LIBS})
+target_link_libraries(mocap_bridge_gazebo ${catkin_LIBRARIES})
 
