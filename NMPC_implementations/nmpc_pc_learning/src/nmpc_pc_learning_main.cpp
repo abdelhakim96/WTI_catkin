@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 
     state_sub = nh.subscribe<mavros_msgs::State>("mavros/state", 1, state_cb);
 
-    ref_trajectory_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/pose", 1, ref_trajectory_cb);
+    ref_trajectory_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_trajectory_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
     ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_trajectory/yaw", 1, ref_yaw_cb);
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);

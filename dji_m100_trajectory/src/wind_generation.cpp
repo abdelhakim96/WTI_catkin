@@ -16,6 +16,7 @@
 #include <random>
 #include <dynamic_reconfigure/server.h>
 #include <dji_m100_trajectory/set_wind_generationConfig.h>
+#include "geometry_msgs/Twist.h"
 
 using namespace std;
 using namespace Eigen;
@@ -25,6 +26,9 @@ bool wind_start, noise_on;
 Vector3d wind_component;
 int wind_type, noise_type;
 double max_wind_force, mean_wind_force, wind_time_period, noise_stddev, noise_time_period;
+float ws_x;
+float ws_y;
+geometry_msgs::Twist wind_speed;
 
 void dynamicReconfigureCallback(dji_m100_trajectory::set_wind_generationConfig &config, uint32_t level)
 {
@@ -43,6 +47,14 @@ std_msgs::Bool trajectory_start_flag;
 void trajectory_start_cb(const std_msgs::Bool::ConstPtr& msg)
 {
     trajectory_start_flag = *msg;
+}
+
+
+void windmodel_cb(const geometry_msgs::Twist::ConstPtr& vel)
+{
+    wind_speed = *vel;
+    ws_x=wind_speed.linear.x;
+    ws_y=wind_speed.linear.y;
 }
 
 geometry_msgs::Vector3 prepare_wind_msg(Eigen::Vector3d& wind)
@@ -69,7 +81,8 @@ int main(int argc, char **argv)
     nh.param("trajectory_on_sub_topic", trajectory_on_sub_topic, std::string("/trajectory_on"));
     nh.param("wind_pub_topic", wind_pub_topic, std::string("/wind_3d"));
 
-    ros::Subscriber trajectory_start_sub = nh.subscribe<std_msgs::Bool>(trajectory_on_sub_topic, 1, trajectory_start_cb);
+    ros::Subscriber trajectory_start_sub = nh.subscribe<std_msgs::Bool>(trajectory_on_sub_topic, 1,  trajectory_start_cb);
+    ros::Subscriber windmodel_sub = nh.subscribe<geometry_msgs::Twist>("/new_vel", 1, windmodel_cb);
     ros::Publisher wind_pub = nh.advertise<geometry_msgs::Vector3>(wind_pub_topic, 1, true);
 
     ros::Rate rate(1/sampleTime);
@@ -81,7 +94,7 @@ int main(int argc, char **argv)
     int print_flag_traj_start = 1, print_flag_wind_start = 1,
         print_flag_const = 1, print_flag_sinus = 1, print_flag_sinus_comb1 = 1,
         print_flag_sinus_comb2 = 1, print_flag_sinus_comb3 = 1,
-        print_flag_Gauss_noise = 1, print_flag_sine_noise = 1, print_flag_comb_noise = 1;
+        print_flag_Gauss_noise = 1, print_flag_sine_noise = 1, print_flag_comb_noise = 1 , print_flag_windfarm=1;
 
     std::default_random_engine rand_seed;
     rand_seed.seed(std::time(0));
@@ -178,7 +191,7 @@ int main(int argc, char **argv)
                                   std::pow(sin((2*M_PI/wind_time_period)*t_loop), 2) +
                                   sin((2*M_PI/wind_time_period)*t_loop));
                 break;
-
+            //hakim edit
             case 4: // Sinusoidal combination wind force type 3
                 if (print_flag_sinus_comb3 == 1)
                 {
@@ -192,14 +205,19 @@ int main(int argc, char **argv)
                     print_flag_sinus = 1;
                     print_flag_sinus_comb1 = 1;
                     print_flag_sinus_comb2 = 1;
-                    print_flag_sinus_comb3 = 0;
+                    print_flag_sinus_comb3 = 1;
+                    print_flag_windfarm = 0;
                 }
-                wind_magnitude = wind_component.array()*mean_wind_force +
+                /*wind_magnitude = wind_component.array()*mean_wind_force +
                                  wind_component.array()*max_wind_force*
                                  (0.5*std::pow(sin((4*M_PI/wind_time_period)*t_loop), 4) +
                                   std::pow(cos((M_PI/wind_time_period)*t_loop), 3) +
                                   std::pow(sin((2*M_PI/wind_time_period)*t_loop), 2) +
                                   sin((2*M_PI/wind_time_period)*t_loop));
+                                  */
+                
+                //wind_magnitude=wind_component.array(1)*ws_x;
+                wind_magnitude={ws_x, ws_y, 0};
                 break;
 
             default:
