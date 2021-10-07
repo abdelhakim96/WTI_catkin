@@ -192,7 +192,7 @@ int main(int argc, char **argv)
                                   sin((2*M_PI/wind_time_period)*t_loop));
                 break;
             //hakim edit
-            case 4: // Sinusoidal combination wind force type 3
+            case 4: // Wind Farm 
                 if (print_flag_sinus_comb3 == 1)
                 {
                     t_last = ros::Time::now().toSec();

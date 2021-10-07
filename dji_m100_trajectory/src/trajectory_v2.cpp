@@ -51,7 +51,7 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config &co
 
 // Callback function
 std::vector<double> current_pos, current_att(3, 0.0);
-
+geometry_msgs::PoseStamped  desired_pos;
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
     current_pos = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
     // TO BE: try to get the Euler angles in one line of code!
@@ -60,6 +60,17 @@ void pos_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
     current_att_mat.setRotation(current_att_quat);
     current_att_mat.getRPY(current_att[0], current_att[1], current_att[2]);
 }
+
+
+void GP_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
+    desired_pos = *msg;
+    
+}
+
+
+
+
+
 
 void Llidar_read_cb(const sensor_msgs::Range::ConstPtr &msg) {
     if (!std::isnan(msg->range) ||
@@ -172,6 +183,7 @@ int main(int argc, char **argv) {
     Llidar_read_sub = nh.subscribe<sensor_msgs::Range>(Llidar_topic, 1, Llidar_read_cb);
     Clidar_read_sub = nh.subscribe<sensor_msgs::Range>(Clidar_topic, 1, Clidar_read_cb);
     Rlidar_read_sub = nh.subscribe<sensor_msgs::Range>(Rlidar_topic, 1, Rlidar_read_cb);
+    ros::Subscriber GP_WP_sub = nh.subscribe<geometry_msgs::PoseStamped>("/WP_GP", 1, GP_cb);
     if (use_sonar)
         sonar_read_sub = nh.subscribe<sensor_msgs::Range>(sonar_topic, 1, sonar_read_cb);
 
@@ -495,6 +507,9 @@ int main(int argc, char **argv) {
                               del_z * (sin(rotvel * (traj_time - pos_pub_delay * sampleTime))) * const_z;
             }
 
+
+
+
             if (traj_type == 3) // circle
             {
                 if (print_flag_circle == 1) {
@@ -755,6 +770,8 @@ int main(int argc, char **argv) {
                     y_B_sp_end = R_BI[1][0] * x_sp_end + R_BI[1][1] * y_sp_end;
 
 
+
+
 //                    if (std::abs(x_sp_start - x_sp_end) <= 0.001)
 //                        wall_direc = 1;
 //                    else if (std::abs(y_sp_start - y_sp_end) <= 0.001)
@@ -903,6 +920,26 @@ int main(int argc, char **argv) {
                 y_delay = y;
                 z_delay = z;
             }
+
+            //add G.P trajectory hakims part
+            if (traj_type == 7) 
+            {       if (print_flag_GP == 1) {
+                    ROS_INFO("--------Global Planner selected!--------");
+                    print_flag_hover_origin = 1;
+                    print_flag_hover = 1;
+                    print_flag_hover_lidar = 1;
+                    print_flag_circle = 1;
+                    print_flag_fig8 = 1;
+                    print_flag_square = 1;
+                    print_flag_setpoint = 1;
+                    print_flag_GP = 0;
+            }
+            x=desired_pos.pose.position.x;
+            y=desired_pos.pose.position.y;
+            z=desired_pos.pose.position.z;
+            }
+
+
             ref_yaw_msg.data = compute_ref_yaw();
             setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
 
@@ -987,6 +1024,7 @@ int main(int argc, char **argv) {
             print_flag_fig8 = 1;
             print_flag_square = 1;
             print_flag_setpoint = 1;
+            print_flag_GP =1;
         }
 
         if (land_flag) {

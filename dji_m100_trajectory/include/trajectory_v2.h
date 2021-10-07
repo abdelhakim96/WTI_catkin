@@ -79,7 +79,7 @@ bool traj_started_flag = 0, climbed_flag = 0, landed_flag = 0, lidar_started_fla
 int print_flag_traj_on = 0, print_flag_hover_origin = 1, print_flag_hover = 1, print_flag_hover_lidar = 1,
 print_flag_circle = 1, print_flag_fig8 = 1, print_flag_square = 1, print_flag_setpoint = 1,  print_flag_changez = 1;
 int print_flag_climb = 0, print_flag_land = 0;
-
+int print_flag_GP=1;
 bool print_Llidar_nan_flag = 0, print_Clidar_nan_flag = 0, print_Rlidar_nan_flag = 0, print_sonar_nan_flag = 0, print_ALLlidar_nan_flag = 0; 
 
 double compute_ref_yaw();

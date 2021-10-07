@@ -24,8 +24,8 @@ import random
 # Twist data structure is used to represent velocity components
 from geometry_msgs.msg import Twist
 
-x_d = 10.0
-y_d = 10.0
+x_d = 0.0
+y_d = 0.0
 z_d = 0
 yaw_d = 0
 wd=0
@@ -44,17 +44,12 @@ class RndVelocityGen():
 
         rospy.init_node('random_velocity')
         self.vel_pub = rospy.Publisher('/new_vel', Twist, queue_size=1)
-
+        rospy.Subscriber("/mavros/mocap/pose", Odometry, pose_cb)
         self.vel = Twist()
 
     def generate_rnd_values(self):
         rate = rospy.Rate(20)
-
-       
         while not rospy.is_shutdown():
-         
-            
-            
             sites = {"IEA37": IEA37Site(n_wt=16),
             "Hornsrev1": Hornsrev1Site(),
             "ParqueFicticio": ParqueFicticioSite()}
@@ -67,22 +62,11 @@ class RndVelocityGen():
                               ws=4, # defaults to 3,4,..,25
                               wd=90, # defaults to 0,1,...,360
                               ) for name, site in sites.items()}
-# positive x-vel move the robot forward, negative backward
             V = float(localWinds['ParqueFicticio'].WS)
             Vd= float(localWinds['ParqueFicticio'].WD)
             T=float(localWinds['ParqueFicticio'].TI)
             t_rx = (random.randint(-1,1))
             t_ry= (random.randint(-1,1))
-
-            """
-            s = sites["ParqueFicticio"]
-            x = np.linspace(262878,264778,300)
-            y = np.linspace(6504714,6506614,300)
-            X,Y = np.meshgrid(x,y)
-            lw = s.local_wind(X.flatten(),Y.flatten(),30, ws=[10],wd=[0])
-            Z = lw.WS_ilk.reshape(X.shape)
-            print(Z)
-            """
 
             Vx=V*np.cos(Vd*3.142/180.0)
             Vy=V*np.sin(Vd*3.142/180.0)
