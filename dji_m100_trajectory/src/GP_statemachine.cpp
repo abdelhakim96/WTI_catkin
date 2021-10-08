@@ -291,7 +291,8 @@ int main(int argc, char** argv)
     double wp_x, wp_y,wp_z,y1,y2,y3;
 	double p_x,p_y,p_z;
     //std::vector<int> myVector = {1, 2, 3, 4, 5, 6};
-    std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/Path.txt");
+    //std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/Path.txt");
+	std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
 
     while (inputFile >> wp_x >> wp_y >> wp_z >> y1 >> y2 >> y3)
     {
@@ -357,7 +358,7 @@ int main(int argc, char** argv)
 	pointList.push_back(pointm);
 	}
 
-	ros::Rate rate(10.0);
+	ros::Rate rate(1.0);
 	int counter = 1;
     
 	ros::Time last_request = ros::Time::now();
