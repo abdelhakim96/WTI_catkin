@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include <ros/spinner.h>
+#include "std_msgs/Float64.h"
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -42,6 +43,7 @@ ros::Publisher mesh_pos_pub;
 ros::Publisher vel_pub;
 ros::Subscriber currentPos;
 ros::Subscriber state_sub;
+ros::Subscriber dronevelocity_sub;
 ros::ServiceClient set_mode_client;
 ros::ServiceClient takeoff_client;
 ros::ServiceClient command_client;
@@ -62,8 +64,7 @@ geometry_msgs::TwistStamped move;
 
 
 
-
-
+double v_d;
 
 float current_heading_g;
 float local_offset_g;
@@ -122,7 +123,9 @@ void pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
 
 
-
+void drone_v_cb(const std_msgs::Float64::ConstPtr& msg){
+  v_d=msg->data;
+}
 
 
 
@@ -178,7 +181,7 @@ void set_heading(float x, float y,float px,float py)
 void set_destination(float x, float y, float z, float psi)
 {
 
-	//ROS_INFO("Destination set to x: %f y: %f z: %f origin frame", x, y, z);
+	ROS_INFO("Destination set to x: %f y: %f z: %f origin frame", x, y, z);
 
 	waypoint_g.pose.position.x = x;
 	waypoint_g.pose.position.y = y;
@@ -239,7 +242,6 @@ int check_waypoint_reached(float pos_tolerance=1, float heading_tolerance=1)
 
 
 
-
 int init_publisher_subscriber(ros::NodeHandle controlnode)
 {
 	std::string ros_namespace;
@@ -254,14 +256,11 @@ int init_publisher_subscriber(ros::NodeHandle controlnode)
 	local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/WP_GP").c_str(), 10);  //change to hummingbird topic
 	//mesh_pos_pub = controlnode.advertise<geometry_msgs::PointStamped>((ros_namespace + "/point_d_GP").c_str(), 10);  //change to point desired topic
 	currentPos = controlnode.subscribe<geometry_msgs::PoseStamped>((ros_namespace + "/mavros/mocap/pose").c_str(), 10, pose_cb); //point.x
-	
+	dronevelocity_sub = controlnode.subscribe<std_msgs::Float64>((ros_namespace + "/drone_vel").c_str(), 10, drone_v_cb); 
 	
 	
 	return 0;
 }
-
-
-
 
 
 int main(int argc, char** argv)
@@ -358,55 +357,55 @@ int main(int argc, char** argv)
 	pointList.push_back(pointm);
 	}
 
-	ros::Rate rate(1.0);
+	ros::Rate rate(10.0);
 	int counter = 1;
     
 	ros::Time last_request = ros::Time::now();
 
 	float tx=-8.0;
 	float ty=0.0;
-    set_destination(waypointList[counter].x,waypointList[counter].y,waypointList[counter].z, waypointList[counter].psi);
+    //set_destination(waypointList[counter].x,waypointList[counter].y,waypointList[counter].z, waypointList[counter].psi);
 	//set_heading( current_pose_g.pose.pose.position.x, current_pose_g.pose.pose.position.y, pointList[counter].x, pointList[counter].y);
     //set_point(pointList[counter].x,pointList[counter].y,pointList[counter].z);
 	//set_heading( current_pose_g.pose.pose.position.x, current_pose_g.pose.pose.position.y, tx, ty);
     //set_point(tx,ty,current_pose_g.pose.pose.position.z);
-
+    
 	while(ros::ok())
 	{   
 	    ros::spinOnce();
 		rate.sleep();
-        set_destination(waypointList[2*counter].x,waypointList[2*counter].y,waypointList[2*counter].z, waypointList[2*counter].psi);
+        //set_destination(waypointList[2*counter].x,waypointList[2*counter].y,waypointList[2*counter].z, waypointList[2*counter].psi);
 	    //ROS_INFO("current x %f", current_pose_g.pose.pose.position.x);
         //set_heading( current_pose_g.pose.position.x,current_pose_g.pose.position.y, tx, ty);
         //set_point(pointList[counter].x,pointList[counter].y,current_pose_g.pose.pose.position.z);
-		if(check_waypoint_reached(1,1) == 1)
-        //if(1 == 1)
-		{   
+				
+		//if(check_waypoint_reached(1,1) == 1)
 
+		//{   
+			int n=v_d*counter*10;
+            if(counter == 1 && check_waypoint_reached(0.1,1) != 1) {
+               set_destination(waypointList[1].x,waypointList[1].y,waypointList[1].z, waypointList[1].psi);
+			   ROS_INFO("first point");
+			}
+			else{
 	         //ROS_INFO("reached w.p");
 			if (counter < waypointList.size())
 			{   
-				
-				set_destination(waypointList[2*counter+1].x,waypointList[2*counter+1].y,waypointList[2*counter+1].z, waypointList[2*counter+1].psi);
-				//set_heading( current_pose_g.pose.position.x,current_pose_g.pose.position.y, tx, ty);
+				set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
 				//set_point(pointList[counter].x,pointList[counter].y,pointList[counter].z);
-
 				//set_point(pointList[counter].x,pointList[counter].y,current_pose_g.pose.pose.position.z);
-
-
-
-
-
-
-				//set_heading(waypointList[counter].psi);
-				counter++;
-
-				ROS_INFO("y: %f py: %f dp: %f",waypointList[2*counter+1].y*10, pointList[counter].y*10,waypointList[2*counter+1].y*10-pointList[counter].y*10);
-				
+			if (counter != waypointList.size()){
+              counter++;
+			}	
 			}
-             
-        
-	    }
+	
+			}
+        //ROS_INFO("x %f", waypointList[counter-1].x);
+		//ROS_INFO("y %f", waypointList[counter-1].y);
+		//ROS_INFO("z %f", waypointList[counter-1].z);     
+        ROS_INFO("Drone velocity %f", v_d);
+		ROS_INFO("counter %d", n);
+	   // }
 		/*
 		ROS_INFO("current x %f", current_pose_g.pose.pose.position.x);
 		ROS_INFO("current y %f", current_pose_g.pose.pose.position.y);

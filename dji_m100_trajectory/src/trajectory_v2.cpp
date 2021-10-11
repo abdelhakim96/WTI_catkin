@@ -27,6 +27,7 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config &co
     pos_pub_delay = config.pos_pub_delay;
     max_z = config.max_z;
     x_hover = config.x_hover;
+    v_d=config.v_d;
     y_hover = config.y_hover;
     z_hover = config.z_hover;
     yaw_hover = config.yaw_hover;
@@ -176,7 +177,9 @@ int main(int argc, char **argv) {
     setpoint_pos_pub = nh.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 1);
     traj_on_pub = nh.advertise<std_msgs::Bool>("trajectory_on", 1);
     reg_on_pub = nh.advertise<std_msgs::Bool>("regression_on", 1);
+    
     ros::Publisher lidar_read_filtered_pub = nh.advertise<std_msgs::Float64>("range_filter", 1);
+    ros::Publisher drone_velocity_pub = nh.advertise<std_msgs::Float64>("drone_vel", 1);
 
     // Subscriber
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>(mocap_topic, 1, pos_cb);
@@ -1133,6 +1136,9 @@ int main(int argc, char **argv) {
 
         // TO BE: removed!
 //        lidar_read_filtered_pub.publish(Clidar_read_filtered_msg);
+        std_msgs::Float64 v_d_m; 
+        v_d_m.data=v_d;
+        drone_velocity_pub.publish(v_d_m);
         if (!pub_setpoint_pos) {
             reftrajectory_msg.x = x;
             reftrajectory_msg.y = y;

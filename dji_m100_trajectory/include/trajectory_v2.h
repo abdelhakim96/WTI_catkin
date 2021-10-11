@@ -64,6 +64,7 @@ bool use_sonar;
 double Llidar_read_data, Clidar_read_data, Rlidar_read_data, sonar_read_data, ref_yaw_adaptive = 0.0;
 std::vector<double> Llidar_read_data_unfiltered(LIDAR_FILTER_WINDOW, 0.0), Clidar_read_data_unfiltered(LIDAR_FILTER_WINDOW+2, 0.0), Rlidar_read_data_unfiltered(LIDAR_FILTER_WINDOW, 0.0), sonar_read_data_unfiltered(SONAR_FILTER_WINDOW, 0.0);
 
+double v_d;
 double x,y,z;
 double x_B,y_B;
 double x_last = 0, y_last = 0, z_last = 0;

@@ -16,7 +16,7 @@
 	<param name="sonar_topic" type="string" value="/teraranger_duo/ultrasound" /> -->
 	<!--param name="Clidar_topic" type="string" value="/teraranger_duo/infrared" /-->
 
-    <node name="GP_statemachine" pkg="dji_m100_trajectory" type="GP_statemachine"/>
+    
     <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />
 
 

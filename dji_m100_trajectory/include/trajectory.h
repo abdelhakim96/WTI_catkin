@@ -41,6 +41,8 @@ int pos_pub_delay, traj_type, wall_direc, num_turns, sp_z_counter, const_z;
 bool traj_start, max_z_start, lidar_start, climb_flag, land_flag, change_z, pub_setpoint_pos, use_current_pos;
 bool sp_z_counter_switch, sp_left_corner_reached_flag, sp_right_corner_reached_flag;
 
+
+
 geometry_msgs::PoseStamped pos_ref_start_msg;
 geometry_msgs::Vector3 reftrajectory_msg, reftrajectory_delay_msg, reftrajectory_vel_msg;
 std_msgs::Float64 ref_yaw;
@@ -58,7 +60,7 @@ double u,v,w;
 bool x_delay_started = false, y_delay_started = false, z_delay_started = false;
 double x_delay_start,y_delay_start,z_delay_start;
 double x_delay,y_delay,z_delay;
-
+double v_d;
 double t, t_last, traj_time, t_last_eachRun, traj_time_eachRun, traj_time_z, t_last_z;
 bool traj_started_flag = 0, climbed_flag = 0, landed_flag = 0, lidar_started_flag = 0;
 int print_flag_traj_start = 0, print_flag_hover_origin = 1, print_flag_hover = 1, print_flag_hover_lidar = 1,

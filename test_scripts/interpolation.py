@@ -48,7 +48,7 @@ data = data.transpose()
 tck, u= interpolate.splprep(data, k=5)
 #here we generate the new interpolated dataset, 
 #increase the resolution by increasing the spacing, 500 in this example
-new = interpolate.splev(np.linspace(0,1,1000), tck, der=0)
+new = interpolate.splev(np.linspace(0,1,100000), tck, der=0)
 
 numpy_array = np. array(new)
 transpose = numpy_array.T
