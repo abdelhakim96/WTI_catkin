@@ -67,6 +67,14 @@ add_executable(wind_generation src/wind_generation.cpp)
 target_link_libraries(wind_generation ${catkin_LIBRARIES})
 add_dependencies(wind_generation ${PROJECT_NAME}_gencfg)
 
+add_executable(GP_statemachine src/GP_statemachine.cpp)
+target_link_libraries(GP_statemachine ${catkin_LIBRARIES})
+add_dependencies(GP_statemachine ${PROJECT_NAME}_gencfg)
+
+
+
+
+
 add_executable(recdata src/recdata.cpp)
 target_link_libraries(recdata ${catkin_LIBRARIES})
 add_dependencies(recdata ${PROJECT_NAME}_gencfg)
