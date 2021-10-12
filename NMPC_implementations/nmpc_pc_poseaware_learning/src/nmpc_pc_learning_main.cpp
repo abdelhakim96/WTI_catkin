@@ -37,6 +37,13 @@ void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
                        msg->pose.orientation.x, msg->pose.orientation.y,
                        msg->pose.orientation.z, msg->pose.orientation.w};
 }
+
+void point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    point = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
+}
+
+
 void vel_cb(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
     current_vel_rate = {msg->twist.linear.x, msg->twist.linear.y, msg->twist.linear.z,
@@ -175,6 +182,8 @@ int main(int argc, char **argv)
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);
     //    vel_sub = private_nh.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity", 1, vel_cb);
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/" + mocap_topic_part + "/pose", 1, pos_cb);
+
+    point_sub = nh.subscribe<geometry_msgs::PoseStamped>("point_to_view", 1, point_cb);
 //    vel_sub = nh.subscribe<geometry_msgs::TwistStamped>("mavros/" + mocap_topic_part + "/velocity", 1, vel_cb);
     vel_sub = nh.subscribe<geometry_msgs::TwistStamped>("mavros/" + mocap_topic_part + "/velocity_body", 1, vel_cb);
     dist_Fx_predInit_sub = nh.subscribe<std_msgs::Bool>(dist_Fx_predInit_topic, 1, dist_Fx_predInit_cb);

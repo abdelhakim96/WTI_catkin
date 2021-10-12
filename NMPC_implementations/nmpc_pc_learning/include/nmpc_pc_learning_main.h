@@ -59,6 +59,7 @@ double t, t_cc_loop;
 
 std::vector<double> pos_ref;
 std::vector<double> current_pos_att;
+std::vector<double> point;
 std::vector<double> current_vel_rate;
 std::vector<double> current_states;
 
