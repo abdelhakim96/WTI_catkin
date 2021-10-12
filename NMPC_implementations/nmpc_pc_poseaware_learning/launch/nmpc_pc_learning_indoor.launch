@@ -1,5 +1,5 @@
 <launch>
-    <node name="nmpc_pc_learning" pkg="nmpc_pc_learning" type="nmpc_pc_learning" output="screen" />
+    <node name="nmpc_pc_poseaware_learning" pkg="nmpc_pc_poseaware_learning" type="nmpc_pc_poseaware_learning" output="screen" />
 
     <param name="verbose" type="bool" value="true" /> <!-- Parameter to display NMPC messages.-->
     <param name="yaw_control" type="bool" value="true" /> <!-- Parameter to let NMPC control yaw angle.-->
@@ -13,15 +13,7 @@
     <param name="dist_Fy_data_topic" type="string" value="gp_disturb_reg/mu/y" /> <!-- Parameter to specify the topic name for dist_Fy_data. -->
     <param name="dist_Fz_data_topic" type="string" value="gp_disturb_reg/mu/z" /> <!-- Parameter to specify the topic name for dist_Fz_data. -->
 
+    <include file="$(find nmpc_pc_poseaware_learning)/launch/airframes/matrice_100_gazebo.xml" />
 
-
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/quad_F330.xml" /> -->
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/quad_diatone.xml" /> -->
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/quad_martianVI.xml" /> -->
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/matrice_100.xml" /> -->
-    <include file="$(find nmpc_pc_learning)/launch/airframes/matrice_100_gazebo.xml" />
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/tricopter_talon.xml" /> -->
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/tricopter_white.xml" /> -->
-    <!-- <include file="$(find nmpc_pc_learning)/launch/airframes/tricopter_microscale.xml" /> -->
 
 </launch>

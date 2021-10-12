@@ -14,87 +14,98 @@ extern NMPCvariables nmpcVariables;
 
 struct nmpc_struct_
 {
-	bool verbose;
-	bool yaw_control;
-	double min_Fz_scale;
-	double max_Fz_scale;
-	double W_Wn_factor;
+    bool verbose;
+    bool yaw_control;
+    double min_Fz_scale;
+    double max_Fz_scale;
+    double W_Wn_factor;
 
-	Eigen::VectorXd U_ref;
-	Eigen::VectorXd W;	
+    Eigen::VectorXd U_ref;
+    Eigen::VectorXd W;
 };
+
+struct online_data_struct_
+{
+    std::vector<double> distFx;
+    std::vector<double> distFy;
+    std::vector<double> distFz;
+};
+
 class NMPC_PC
 {
-	private:
-//		double m;
-//		double g;
-		
-		bool is_control_init;
+private:
+    //		double m;
+    //		double g;
 
-		nmpc_struct_ nmpc_inp_struct_0, nmpc_inp_struct;
-		Eigen::VectorXd WN;
+    bool is_control_init;
 
-	public:	
-		int acado_feedbackStep_fb;
+    nmpc_struct_ nmpc_inp_struct_0, nmpc_inp_struct;
+    Eigen::VectorXd WN;
 
-		struct acado_struct
-		{
-			boost::function<int(void)> initializeSolver;
-			boost::function<int(void)> preparationStep;
-			boost::function<int(void)> feedbackStep;
-			boost::function<real_t(void)> getKKT;
-			boost::function<real_t(void)> getObjective;
-			boost::function<void(void)> printDifferentialVariables;
-			boost::function<void(void)> printControlVariables;
+public:
+    int acado_feedbackStep_fb;
 
-			int acado_N;
-			int acado_NX;
-			int acado_NY;
-			int acado_NYN;
-			int acado_NU;
-			int acado_NOD;
+    struct acado_struct
+    {
+        boost::function<int(void)> initializeSolver;
+        boost::function<int(void)> preparationStep;
+        boost::function<int(void)> feedbackStep;
+        boost::function<real_t(void)> getKKT;
+        boost::function<real_t(void)> getObjective;
+        boost::function<void(void)> printDifferentialVariables;
+        boost::function<void(void)> printControlVariables;
 
-			real_t * x0;
-			real_t * u;
-			real_t * x;
-			real_t * od;
-			real_t * y;
-			real_t * yN;
-			real_t * W;
-			real_t * WN;
-		} nmpc_struct;
+        int acado_N;
+        int acado_NX;
+        int acado_NY;
+        int acado_NYN;
+        int acado_NU;
+        int acado_NOD;
 
-		struct command_struct
-		{
-			double roll_ang;
-			double pitch_ang;
-			double yaw_ang;
-			double Fz;
-			double Fz_scaled;	// between 0 and 1
-			double exe_time;
-			double kkt_tol;
-			double obj_val;
+        real_t* x0;
+        real_t* u;
+        real_t* x;
+        real_t* od;
+        real_t* y;
+        real_t* yN;
+        real_t* W;
+        real_t* WN;
+    } nmpc_struct;
 
-		} nmpc_cmd_struct;
+    struct command_struct
+    {
+        std::vector<double> control_attitude_vec;
+        std::vector<double> control_thrust_vec;
+        double exe_time;
+        double kkt_tol;
+        double obj_val;
 
-		NMPC_PC(struct nmpc_struct_ &_nmpc_inp_struct);
-		~NMPC_PC();
+    } nmpc_cmd_struct;
 
-		bool return_control_init_value();
+    NMPC_PC(struct nmpc_struct_& _nmpc_inp_struct);
+    ~NMPC_PC();
 
-		void nmpc_init(std::vector<double> posref, struct acado_struct &acadostruct);
-		
-		void nmpc_core(struct nmpc_struct_ &_nmpc_inp_struct, struct acado_struct &acadostruct, struct command_struct &commandstruct, Eigen::Vector3d &reftrajectory, Eigen::Vector3d &refvelocity, std::vector<double> &distFx, std::vector<double> &distFy, std::vector<double> &distFz, std::vector<double> &currentposatt, std::vector<double> &currentvelrate);
+    bool return_control_init_value();
 
-		void publish_rpyFz(struct command_struct &commandstruct);
+    void nmpc_init(std::vector<double> posref, struct acado_struct& acadostruct);
 
-	protected:
+    void nmpc_core(struct nmpc_struct_& _nmpc_inp_struct,
+                   struct acado_struct& acadostruct,
+                   struct command_struct& commandstruct,
+                   std::vector<double>& reftrajectory,
+                   struct online_data_struct_& online_data,
+                   std::vector<double>& statesmeas);
 
-		void set_measurements(struct acado_struct &acadostruct, std::vector<double> &distFx, std::vector<double> &distFy, std::vector<double> &distFz, std::vector<double> &currentposatt, std::vector<double> &currentvelrate);
+    void publish_rpyFz(struct command_struct& commandstruct);
 
-		void set_reftrajectory(struct acado_struct &acadostruct, Eigen::Vector3d &reftrajectory, Eigen::Vector3d &refvelocity);
+protected:
+    void set_measurements(struct acado_struct& acadostruct,
+                          struct online_data_struct_& online_data,
+                          std::vector<double>& statesmeas);
 
-		void nan_check_for_dist_estimates(std::vector<double> &distFx, std::vector<double> &distFy, std::vector<double> &distFz);
+    void set_reftrajectory(struct acado_struct& acadostruct, std::vector<double>& reftrajectory);
+
+    void nan_check_for_dist_estimates(struct online_data_struct_& online_data);
 };
 
 #endif

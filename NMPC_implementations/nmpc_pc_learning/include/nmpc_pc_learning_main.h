@@ -17,7 +17,7 @@
 // Subscribers
 ros::Subscriber state_sub;
 
-ros::Subscriber ref_trajectory_sub;
+ros::Subscriber ref_position_sub;
 ros::Subscriber ref_velocity_sub;
 ros::Subscriber ref_yaw_sub;
 ros::Subscriber pos_sub;
@@ -39,8 +39,10 @@ ros::Publisher nmpc_cmd_kkt_pub;
 ros::Publisher nmpc_cmd_obj_pub;
 
 nmpc_struct_ nmpc_struct;
+online_data_struct_ online_data;
 
-std::string mocap_topic_part, dist_Fx_predInit_topic, dist_Fy_predInit_topic, dist_Fz_predInit_topic, dist_Fx_data_topic, dist_Fy_data_topic, dist_Fz_data_topic;
+std::string mocap_topic_part, dist_Fx_predInit_topic, dist_Fy_predInit_topic, dist_Fz_predInit_topic,
+    dist_Fx_data_topic, dist_Fy_data_topic, dist_Fz_data_topic;
 bool online_ref_yaw;
 bool control_stop;
 bool use_dist_estimates;
@@ -49,12 +51,12 @@ double m_in, g_in;
 Eigen::VectorXd Uref_in(NMPC_NU);
 Eigen::VectorXd W_in(NMPC_NY);
 
-int print_flag_offboard = 1, print_flag_arm = 1, 
-print_flag_altctl = 1, print_flag_traj_finished = 0;
+int print_flag_offboard = 1, print_flag_arm = 1, print_flag_altctl = 1, print_flag_traj_finished = 0;
 
-Eigen::Vector3d ref_trajectory, ref_velocity;
+Eigen::Vector3d ref_position, ref_velocity;
 double ref_yaw_rad;
 int ref_traj_type;
+std::vector<double> ref_trajectory;
 double t, t_cc_loop;
 
 std::vector<double> pos_ref;
@@ -65,11 +67,10 @@ std::vector<double> current_states;
 
 struct _dist_struct
 {
-	bool predInit;
-	int print_predInit = 1;
-	std::vector<double> data;
-	std::vector<double> data_zeros;
+    bool predInit;
+    int print_predInit = 1;
+    std::vector<double> data;
+    std::vector<double> data_zeros;
 } dist_Fx, dist_Fy, dist_Fz;
 
 #endif
-
