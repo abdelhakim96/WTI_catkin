@@ -28,7 +28,7 @@ ros::Subscriber dist_Fz_predInit_sub;
 ros::Subscriber dist_Fx_data_sub;
 ros::Subscriber dist_Fy_data_sub;
 ros::Subscriber dist_Fz_data_sub;
-
+ros::Subscriber point_sub;
 // Publishers
 ros::Publisher att_throttle_pub;
 ros::Publisher attitude_pub;
@@ -61,7 +61,7 @@ std::vector<double> pos_ref;
 std::vector<double> current_pos_att;
 std::vector<double> current_vel_rate;
 std::vector<double> current_states;
-
+std::vector<double> point;
 struct _dist_struct
 {
 	bool predInit;
