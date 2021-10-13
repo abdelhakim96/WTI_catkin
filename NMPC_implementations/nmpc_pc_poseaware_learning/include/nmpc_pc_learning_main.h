@@ -61,11 +61,14 @@ std::vector<double> ref_trajectory;
 std::vector<double> ref_point;
 double t, t_cc_loop;
 
+tf::Quaternion current_att_quat;
+tf::Matrix3x3 current_att_mat;
 std::vector<double> pos_ref;
 std::vector<double> current_pos_att;
 std::vector<double> point;
 std::vector<double> current_vel_rate;
 std::vector<double> current_states;
+double current_s;
 
 struct _dist_struct
 {

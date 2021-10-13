@@ -19,7 +19,7 @@ int main()
     DifferentialState u;  // the translation velocity along X_B
     DifferentialState v;  // the translation velocity along Y_B
     DifferentialState w;  // the translation velocity along Z_B
-    DifferentialState s;
+    DifferentialState s;  // relative distance to the inspection point
 
     OnlineData Fx_dist;  // the external disturbance force along X_B
     OnlineData Fy_dist;  // the external disturbance force along Y_B
@@ -29,9 +29,9 @@ int main()
     OnlineData q_rate;   // the pitch rate
     OnlineData r_rate;   // the yaw rate
 
-    OnlineData px;  // the roll rate
-    OnlineData py;  // the pitch rate
-    OnlineData pz;  // the yaw rate
+    OnlineData px;  // x-position of the inspection point
+    OnlineData py;  // y-position of the inspection point
+    OnlineData pz;  // z-position of the inspection point
 
     Control phi;    // the roll angle
     Control theta;  // the pitch angle
@@ -70,9 +70,7 @@ int main()
     f << dot(w) == q_rate * u - p_rate * v - g * cos(phi) * cos(theta) + (1 / m) * (Fz) + Fz_dist;
     //    f << dot(w) == q_rate*u - p_rate*v - g*cos(phi)*cos(theta) + (1/m)*(Fz);
 
-    f << dot(s) ==
-        (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
-                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
+    //    f << dot(s) ==;
 
     // Reference functions and weighting matrices:
     Function h, hN;

@@ -37,13 +37,13 @@ void ref_point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 }
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-    current_pos_att = {msg->pose.position.x,
-                       msg->pose.position.y,
-                       msg->pose.position.z,
-                       msg->pose.orientation.x,
-                       msg->pose.orientation.y,
-                       msg->pose.orientation.z,
-                       msg->pose.orientation.w};
+    double roll = 0, pitch = 0, yaw = 0;
+    current_att_quat = {
+        msg->pose.orientation.x, msg->pose.orientation.y, msg->pose.orientation.z, msg->pose.orientation.w};
+    current_att_mat.setRotation(current_att_quat);
+    current_att_mat.getRPY(roll, pitch, yaw);
+
+    current_pos_att = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z, roll, pitch, yaw};
 }
 void vel_cb(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
@@ -252,7 +252,7 @@ int main(int argc, char** argv)
     NMPC_PC* nmpc_pc = new NMPC_PC(nmpc_struct);
     ros::Rate rate(1 / sampleTime);
 
-    current_pos_att.resize(7);
+    current_pos_att.resize(6);
     current_vel_rate.resize(6);
     dist_Fx.data.resize(NMPC_N + 1);
     dist_Fy.data.resize(NMPC_N + 1);
@@ -325,13 +325,26 @@ int main(int argc, char** argv)
                 std::cout << "loop time for outer NMPC: " << t_cc_loop << " (sec)"
                           << "\n";
 
-            // Setting up state-feedback [x,y,z,u,v,w,p,q,r]
+            double n1, n2, n3, norm_n;
+            n1 = ref_point[0] - current_pos_att[0];
+            n2 = ref_point[1] - current_pos_att[1];
+            n3 = ref_point[2] - current_pos_att[2];
+            norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
+            current_s =
+                (1 / norm_n) * (cos(current_pos_att[5]) * cos(current_pos_att[4]) -
+                                sin(current_pos_att[3]) * sin(current_pos_att[5]) * sin(current_pos_att[4]) * n1 -
+                                cos(current_pos_att[4]) * sin(current_pos_att[5]) +
+                                cos(current_pos_att[5]) * sin(current_pos_att[3]) * sin(current_pos_att[4]) * n2 -
+                                cos(current_pos_att[3]) * sin(current_pos_att[4]) * n3);
+
+            // Setting up state-feedback [x,y,z,u,v,w,s,p,q,r]
             current_states = {current_pos_att.at(0),
                               current_pos_att.at(1),
                               current_pos_att.at(2),
                               current_vel_rate.at(0),
                               current_vel_rate.at(1),
                               current_vel_rate.at(2),
+                              current_s,
                               current_vel_rate.at(3),
                               current_vel_rate.at(4),
                               current_vel_rate.at(5)};
