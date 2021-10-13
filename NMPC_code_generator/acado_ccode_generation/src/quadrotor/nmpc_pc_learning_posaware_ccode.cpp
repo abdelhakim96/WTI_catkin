@@ -49,9 +49,8 @@ int main()
     IntermediateState n2 = (py - y);
     IntermediateState n3 = (pz - z);
     IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
-    //    IntermediateState s =
-    //        (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
-    //                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
+    //IntermediateState s
+    //s =        (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +  cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
 
     // Model equations:
     DifferentialEquation f;
@@ -69,16 +68,26 @@ int main()
     f << dot(v) == p_rate * w - r_rate * u - g * sin(phi) * cos(theta) + Fy_dist;
     f << dot(w) == q_rate * u - p_rate * v - g * cos(phi) * cos(theta) + (1 / m) * (Fz) + Fz_dist;
     //    f << dot(w) == q_rate*u - p_rate*v - g*cos(phi)*cos(theta) + (1/m)*(Fz);
+   
+   // f << dot(s) ==
+     //   (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
+       //                 cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
 
-    //    f << dot(s) ==;
+    f << dot(s) == (1 / norm_n)*((p_rate)* ( sin(phi) * sin(theta) * n3 + cos(phi) *cos(psi)* sin(theta)*n2
+                        - cos(phi)* sin(psi)* sin(theta)*n1) 
+                             - r_rate*((cos(theta) *sin(psi) + cos(psi)*sin(theta)) *n1
+                                     - (cos(psi) *cos(theta) - sin(phi) *sin(psi) * sin(theta))*n2)
+                                             -q_rate*((cos(psi) * sin(theta) + cos(theta) *sin(phi) *sin(psi))*n1
+                                                      + (sin(psi) * sin(theta) - cos(psi) *cos(theta) * sin(phi))*n2
+                                                                      + cos(phi) * cos(theta) * n2));                    
 
     // Reference functions and weighting matrices:
     Function h, hN;
     h << x << y << z << u << v << w << s << phi << theta << psi << Fz;
-    hN << x << y << z << u << v << w << s;
+    hN << x << y << z << u << v << w ;
     //    h << x << y << z << u << v << w << phi << theta << psi<< Fz << Fx_dist << Fy_dist << Fz_dist;
     //    hN << x << y << z << u << v << w << Fx_dist << Fy_dist << Fz_dist;
-
+    
     BMatrix W = eye<bool>(h.getDim());
     BMatrix WN = eye<bool>(hN.getDim());
 
