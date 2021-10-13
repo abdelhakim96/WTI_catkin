@@ -42,7 +42,6 @@ extern "C"
 #define NMPC_QPDUNES  3
 /** HPMPC QP solver indicator. */
 #define NMPC_HPMPC    4
-#define NMPC_GENERIC    5
 
 /** Indicator for determining the QP solver used by the ACADO solver code. */
 #define NMPC_QP_SOLVER NMPC_QPOASES
@@ -65,8 +64,6 @@ extern "C"
 #define NMPC_N 30
 /** Number of online data values. */
 #define NMPC_NOD 6
-/** Number of path constraints. */
-#define NMPC_NPAC 0
 /** Number of control variables. */
 #define NMPC_NU 4
 /** Number of differential variables. */
@@ -76,7 +73,7 @@ extern "C"
 /** Number of differential derivative variables. */
 #define NMPC_NXD 0
 /** Number of references/measurements per node on the first N nodes. */
-#define NMPC_NY 10
+#define NMPC_NY 11
 /** Number of references/measurements on the last (N + 1)st node. */
 #define NMPC_NYN 6
 /** Total number of QP optimization variables. */
@@ -122,11 +119,11 @@ real_t u[ 120 ];
  */
 real_t od[ 186 ];
 
-/** Column vector of size: 300
+/** Column vector of size: 330
  * 
- *  Matrix containing 30 reference/measurement vectors of size 10 for first 30 nodes.
+ *  Matrix containing 30 reference/measurement vectors of size 11 for first 30 nodes.
  */
-real_t y[ 300 ];
+real_t y[ 330 ];
 
 /** Column vector of size: 6
  * 
@@ -134,8 +131,8 @@ real_t y[ 300 ];
  */
 real_t yN[ 6 ];
 
-/** Matrix of size: 10 x 10 (row major format) */
-real_t W[ 100 ];
+/** Matrix of size: 11 x 11 (row major format) */
+real_t W[ 121 ];
 
 /** Matrix of size: 6 x 6 (row major format) */
 real_t WN[ 36 ];
@@ -174,8 +171,8 @@ real_t state[ 76 ];
 /** Column vector of size: 180 */
 real_t d[ 180 ];
 
-/** Column vector of size: 300 */
-real_t Dy[ 300 ];
+/** Column vector of size: 330 */
+real_t Dy[ 330 ];
 
 /** Column vector of size: 6 */
 real_t DyN[ 6 ];
@@ -186,23 +183,29 @@ real_t evGx[ 1080 ];
 /** Matrix of size: 180 x 4 (row major format) */
 real_t evGu[ 720 ];
 
+/** Column vector of size: 49 */
+real_t objAuxVar[ 49 ];
+
 /** Row vector of size: 16 */
 real_t objValueIn[ 16 ];
 
-/** Row vector of size: 10 */
-real_t objValueOut[ 10 ];
+/** Row vector of size: 121 */
+real_t objValueOut[ 121 ];
 
 /** Matrix of size: 180 x 6 (row major format) */
 real_t Q1[ 1080 ];
 
-/** Matrix of size: 180 x 10 (row major format) */
-real_t Q2[ 1800 ];
+/** Matrix of size: 180 x 11 (row major format) */
+real_t Q2[ 1980 ];
 
 /** Matrix of size: 120 x 4 (row major format) */
 real_t R1[ 480 ];
 
-/** Matrix of size: 120 x 10 (row major format) */
-real_t R2[ 1200 ];
+/** Matrix of size: 120 x 11 (row major format) */
+real_t R2[ 1320 ];
+
+/** Matrix of size: 180 x 4 (row major format) */
+real_t S1[ 720 ];
 
 /** Matrix of size: 6 x 6 (row major format) */
 real_t QN1[ 36 ];
