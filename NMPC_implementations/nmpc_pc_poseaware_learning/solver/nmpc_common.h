@@ -63,11 +63,11 @@ extern "C"
 /** Number of control/estimation intervals. */
 #define NMPC_N 30
 /** Number of online data values. */
-#define NMPC_NOD 6
+#define NMPC_NOD 9
 /** Number of control variables. */
 #define NMPC_NU 4
 /** Number of differential variables. */
-#define NMPC_NX 6
+#define NMPC_NX 7
 /** Number of algebraic variables. */
 #define NMPC_NXA 0
 /** Number of differential derivative variables. */
@@ -75,9 +75,9 @@ extern "C"
 /** Number of references/measurements per node on the first N nodes. */
 #define NMPC_NY 11
 /** Number of references/measurements on the last (N + 1)st node. */
-#define NMPC_NYN 6
+#define NMPC_NYN 7
 /** Total number of QP optimization variables. */
-#define NMPC_QP_NV 126
+#define NMPC_QP_NV 127
 /** Number of integration steps per shooting interval. */
 #define NMPC_RK_NIS 1
 /** Number of Runge-Kutta stages per integration step. */
@@ -101,11 +101,11 @@ extern "C"
 typedef struct NMPCvariables_
 {
 int dummy;
-/** Matrix of size: 31 x 6 (row major format)
+/** Matrix of size: 31 x 7 (row major format)
  * 
  *  Matrix containing 31 differential variable vectors.
  */
-real_t x[ 186 ];
+real_t x[ 217 ];
 
 /** Matrix of size: 30 x 4 (row major format)
  * 
@@ -113,11 +113,11 @@ real_t x[ 186 ];
  */
 real_t u[ 120 ];
 
-/** Matrix of size: 31 x 6 (row major format)
+/** Matrix of size: 31 x 9 (row major format)
  * 
  *  Matrix containing 31 online data vectors.
  */
-real_t od[ 186 ];
+real_t od[ 279 ];
 
 /** Column vector of size: 330
  * 
@@ -125,23 +125,23 @@ real_t od[ 186 ];
  */
 real_t y[ 330 ];
 
-/** Column vector of size: 6
+/** Column vector of size: 7
  * 
  *  Reference/measurement vector for the 31. node.
  */
-real_t yN[ 6 ];
+real_t yN[ 7 ];
 
 /** Matrix of size: 11 x 11 (row major format) */
 real_t W[ 121 ];
 
-/** Matrix of size: 6 x 6 (row major format) */
-real_t WN[ 36 ];
+/** Matrix of size: 7 x 7 (row major format) */
+real_t WN[ 49 ];
 
-/** Column vector of size: 6
+/** Column vector of size: 7
  * 
  *  Current state feedback vector.
  */
-real_t x0[ 6 ];
+real_t x0[ 7 ];
 
 
 } NMPCvariables;
@@ -154,49 +154,46 @@ real_t x0[ 6 ];
  */
 typedef struct NMPCworkspace_
 {
-/** Column vector of size: 68 */
-real_t rhs_aux[ 68 ];
+/** Column vector of size: 144 */
+real_t rhs_aux[ 144 ];
 
 real_t rk_ttt;
 
-/** Row vector of size: 76 */
-real_t rk_xxx[ 76 ];
+/** Row vector of size: 97 */
+real_t rk_xxx[ 97 ];
 
-/** Matrix of size: 4 x 66 (row major format) */
-real_t rk_kkk[ 264 ];
+/** Matrix of size: 4 x 84 (row major format) */
+real_t rk_kkk[ 336 ];
 
-/** Row vector of size: 76 */
-real_t state[ 76 ];
+/** Row vector of size: 97 */
+real_t state[ 97 ];
 
-/** Column vector of size: 180 */
-real_t d[ 180 ];
+/** Column vector of size: 210 */
+real_t d[ 210 ];
 
 /** Column vector of size: 330 */
 real_t Dy[ 330 ];
 
-/** Column vector of size: 6 */
-real_t DyN[ 6 ];
+/** Column vector of size: 7 */
+real_t DyN[ 7 ];
 
-/** Matrix of size: 180 x 6 (row major format) */
-real_t evGx[ 1080 ];
+/** Matrix of size: 210 x 7 (row major format) */
+real_t evGx[ 1470 ];
 
-/** Matrix of size: 180 x 4 (row major format) */
-real_t evGu[ 720 ];
+/** Matrix of size: 210 x 4 (row major format) */
+real_t evGu[ 840 ];
 
-/** Column vector of size: 49 */
-real_t objAuxVar[ 49 ];
+/** Row vector of size: 20 */
+real_t objValueIn[ 20 ];
 
-/** Row vector of size: 16 */
-real_t objValueIn[ 16 ];
+/** Row vector of size: 11 */
+real_t objValueOut[ 11 ];
 
-/** Row vector of size: 121 */
-real_t objValueOut[ 121 ];
+/** Matrix of size: 210 x 7 (row major format) */
+real_t Q1[ 1470 ];
 
-/** Matrix of size: 180 x 6 (row major format) */
-real_t Q1[ 1080 ];
-
-/** Matrix of size: 180 x 11 (row major format) */
-real_t Q2[ 1980 ];
+/** Matrix of size: 210 x 11 (row major format) */
+real_t Q2[ 2310 ];
 
 /** Matrix of size: 120 x 4 (row major format) */
 real_t R1[ 480 ];
@@ -204,56 +201,53 @@ real_t R1[ 480 ];
 /** Matrix of size: 120 x 11 (row major format) */
 real_t R2[ 1320 ];
 
-/** Matrix of size: 180 x 4 (row major format) */
-real_t S1[ 720 ];
+/** Matrix of size: 7 x 7 (row major format) */
+real_t QN1[ 49 ];
 
-/** Matrix of size: 6 x 6 (row major format) */
-real_t QN1[ 36 ];
+/** Matrix of size: 7 x 7 (row major format) */
+real_t QN2[ 49 ];
 
-/** Matrix of size: 6 x 6 (row major format) */
-real_t QN2[ 36 ];
+/** Column vector of size: 7 */
+real_t Dx0[ 7 ];
 
-/** Column vector of size: 6 */
-real_t Dx0[ 6 ];
+/** Matrix of size: 7 x 7 (row major format) */
+real_t T[ 49 ];
 
-/** Matrix of size: 6 x 6 (row major format) */
-real_t T[ 36 ];
+/** Matrix of size: 3255 x 4 (row major format) */
+real_t E[ 13020 ];
 
-/** Matrix of size: 2790 x 4 (row major format) */
-real_t E[ 11160 ];
+/** Matrix of size: 3255 x 4 (row major format) */
+real_t QE[ 13020 ];
 
-/** Matrix of size: 2790 x 4 (row major format) */
-real_t QE[ 11160 ];
+/** Matrix of size: 210 x 7 (row major format) */
+real_t QGx[ 1470 ];
 
-/** Matrix of size: 180 x 6 (row major format) */
-real_t QGx[ 1080 ];
+/** Column vector of size: 210 */
+real_t Qd[ 210 ];
 
-/** Column vector of size: 180 */
-real_t Qd[ 180 ];
+/** Column vector of size: 217 */
+real_t QDy[ 217 ];
 
-/** Column vector of size: 186 */
-real_t QDy[ 186 ];
+/** Matrix of size: 120 x 7 (row major format) */
+real_t H10[ 840 ];
 
-/** Matrix of size: 120 x 6 (row major format) */
-real_t H10[ 720 ];
+/** Matrix of size: 127 x 127 (row major format) */
+real_t H[ 16129 ];
 
-/** Matrix of size: 126 x 126 (row major format) */
-real_t H[ 15876 ];
+/** Column vector of size: 127 */
+real_t g[ 127 ];
 
-/** Column vector of size: 126 */
-real_t g[ 126 ];
+/** Column vector of size: 127 */
+real_t lb[ 127 ];
 
-/** Column vector of size: 126 */
-real_t lb[ 126 ];
+/** Column vector of size: 127 */
+real_t ub[ 127 ];
 
-/** Column vector of size: 126 */
-real_t ub[ 126 ];
+/** Column vector of size: 127 */
+real_t x[ 127 ];
 
-/** Column vector of size: 126 */
-real_t x[ 126 ];
-
-/** Column vector of size: 126 */
-real_t y[ 126 ];
+/** Column vector of size: 127 */
+real_t y[ 127 ];
 
 
 } NMPCworkspace;
