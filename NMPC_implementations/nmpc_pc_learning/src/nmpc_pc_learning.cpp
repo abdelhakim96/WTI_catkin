@@ -247,13 +247,14 @@ void NMPC_PC::set_measurements(struct acado_struct& acadostruct,
     }
     for (int i = 0; i < acadostruct.acado_N + 1; ++i)
     {
-        acadostruct.od[(i * acadostruct.acado_NOD)] = online_data.distFx[i];
-        acadostruct.od[(i * acadostruct.acado_NOD) + 1] = online_data.distFy[i];
-        acadostruct.od[(i * acadostruct.acado_NOD) + 2] = online_data.distFz[i];
-        for (int idx = 3; idx < acadostruct.acado_NOD; idx++)
+        int ref_idx = 0;
+        for (int idx = 0; idx < 3; idx++)
         {
-            acadostruct.od[(i * acadostruct.acado_NOD) + idx] = statesmeas.at(acadostruct.acado_NX + idx);
+            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = statesmeas.at(acadostruct.acado_NX + idx);
         }
+        acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFx[i];
+        acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFy[i];
+        acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFz[i];
     }
 
     // Recompute U_ref based on new disturbance estimates

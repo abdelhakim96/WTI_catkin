@@ -20,13 +20,13 @@ int main()
     DifferentialState v;  // the translation velocity along Y_B
     DifferentialState w;  // the translation velocity along Z_B
 
+    OnlineData p_rate;   // the roll rate
+    OnlineData q_rate;   // the pitch rate
+    OnlineData r_rate;   // the yaw rate
     OnlineData Fx_dist;  // the external disturbance force along X_B
     OnlineData Fy_dist;  // the external disturbance force along Y_B
     OnlineData Fz_dist;  // the external disturbance force along Z_B
                          //    OnlineData m;                       // the mass of the UAV
-    OnlineData p_rate;   // the roll rate
-    OnlineData q_rate;   // the pitch rate
-    OnlineData r_rate;   // the yaw rate
 
     Control phi;    // the roll angle
     Control theta;  // the pitch angle

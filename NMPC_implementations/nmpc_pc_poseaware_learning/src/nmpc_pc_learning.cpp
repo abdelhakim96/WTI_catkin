@@ -248,20 +248,16 @@ void NMPC_PC::set_measurements(struct acado_struct& acadostruct,
     for (int i = 0; i < acadostruct.acado_N + 1; ++i)
     {
         int ref_idx = 0;
+        for (int idx = 0; idx < 3; idx++)
+        {
+            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = statesmeas.at(acadostruct.acado_NX + idx);
+        }
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFx[i];
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFy[i];
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFz[i];
-        while (ref_idx < acadostruct.acado_NOD)
+        for (int idx = 0; idx < 3; idx++)
         {
-            if (ref_idx < acadostruct.acado_NOD - 3)
-            {
-                acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx] = statesmeas.at(acadostruct.acado_NX + ref_idx);
-            }
-            else
-            {
-                acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx] = online_data.ref_point[ref_idx - 6];
-            }
-            ref_idx++;
+            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_point.at(idx);
         }
     }
 

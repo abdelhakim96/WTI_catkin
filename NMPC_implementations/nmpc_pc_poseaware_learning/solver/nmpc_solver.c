@@ -181,6 +181,7 @@ out[2] = xd[2];
 out[3] = xd[3];
 out[4] = xd[4];
 out[5] = xd[5];
+out[6] = xd[6];
 }
 
 void nmpc_setObjQ1Q2( real_t* const tmpObjS, real_t* const tmpQ1, real_t* const tmpQ2 )
@@ -415,74 +416,68 @@ tmpQN2[32] = +tmpObjSEndTerm[32];
 tmpQN2[33] = +tmpObjSEndTerm[33];
 tmpQN2[34] = +tmpObjSEndTerm[34];
 tmpQN2[35] = +tmpObjSEndTerm[35];
-tmpQN2[36] = 0.0;
-;
-tmpQN2[37] = 0.0;
-;
-tmpQN2[38] = 0.0;
-;
-tmpQN2[39] = 0.0;
-;
-tmpQN2[40] = 0.0;
-;
-tmpQN2[41] = 0.0;
-;
+tmpQN2[36] = +tmpObjSEndTerm[36];
+tmpQN2[37] = +tmpObjSEndTerm[37];
+tmpQN2[38] = +tmpObjSEndTerm[38];
+tmpQN2[39] = +tmpObjSEndTerm[39];
+tmpQN2[40] = +tmpObjSEndTerm[40];
+tmpQN2[41] = +tmpObjSEndTerm[41];
+tmpQN2[42] = +tmpObjSEndTerm[42];
+tmpQN2[43] = +tmpObjSEndTerm[43];
+tmpQN2[44] = +tmpObjSEndTerm[44];
+tmpQN2[45] = +tmpObjSEndTerm[45];
+tmpQN2[46] = +tmpObjSEndTerm[46];
+tmpQN2[47] = +tmpObjSEndTerm[47];
+tmpQN2[48] = +tmpObjSEndTerm[48];
 tmpQN1[0] = + tmpQN2[0];
 tmpQN1[1] = + tmpQN2[1];
 tmpQN1[2] = + tmpQN2[2];
 tmpQN1[3] = + tmpQN2[3];
 tmpQN1[4] = + tmpQN2[4];
 tmpQN1[5] = + tmpQN2[5];
-tmpQN1[6] = 0.0;
-;
-tmpQN1[7] = + tmpQN2[6];
-tmpQN1[8] = + tmpQN2[7];
-tmpQN1[9] = + tmpQN2[8];
-tmpQN1[10] = + tmpQN2[9];
-tmpQN1[11] = + tmpQN2[10];
-tmpQN1[12] = + tmpQN2[11];
-tmpQN1[13] = 0.0;
-;
-tmpQN1[14] = + tmpQN2[12];
-tmpQN1[15] = + tmpQN2[13];
-tmpQN1[16] = + tmpQN2[14];
-tmpQN1[17] = + tmpQN2[15];
-tmpQN1[18] = + tmpQN2[16];
-tmpQN1[19] = + tmpQN2[17];
-tmpQN1[20] = 0.0;
-;
-tmpQN1[21] = + tmpQN2[18];
-tmpQN1[22] = + tmpQN2[19];
-tmpQN1[23] = + tmpQN2[20];
-tmpQN1[24] = + tmpQN2[21];
-tmpQN1[25] = + tmpQN2[22];
-tmpQN1[26] = + tmpQN2[23];
-tmpQN1[27] = 0.0;
-;
-tmpQN1[28] = + tmpQN2[24];
-tmpQN1[29] = + tmpQN2[25];
-tmpQN1[30] = + tmpQN2[26];
-tmpQN1[31] = + tmpQN2[27];
-tmpQN1[32] = + tmpQN2[28];
-tmpQN1[33] = + tmpQN2[29];
-tmpQN1[34] = 0.0;
-;
-tmpQN1[35] = + tmpQN2[30];
-tmpQN1[36] = + tmpQN2[31];
-tmpQN1[37] = + tmpQN2[32];
-tmpQN1[38] = + tmpQN2[33];
-tmpQN1[39] = + tmpQN2[34];
-tmpQN1[40] = + tmpQN2[35];
-tmpQN1[41] = 0.0;
-;
-tmpQN1[42] = + tmpQN2[36];
-tmpQN1[43] = + tmpQN2[37];
-tmpQN1[44] = + tmpQN2[38];
-tmpQN1[45] = + tmpQN2[39];
-tmpQN1[46] = + tmpQN2[40];
-tmpQN1[47] = + tmpQN2[41];
-tmpQN1[48] = 0.0;
-;
+tmpQN1[6] = + tmpQN2[6];
+tmpQN1[7] = + tmpQN2[7];
+tmpQN1[8] = + tmpQN2[8];
+tmpQN1[9] = + tmpQN2[9];
+tmpQN1[10] = + tmpQN2[10];
+tmpQN1[11] = + tmpQN2[11];
+tmpQN1[12] = + tmpQN2[12];
+tmpQN1[13] = + tmpQN2[13];
+tmpQN1[14] = + tmpQN2[14];
+tmpQN1[15] = + tmpQN2[15];
+tmpQN1[16] = + tmpQN2[16];
+tmpQN1[17] = + tmpQN2[17];
+tmpQN1[18] = + tmpQN2[18];
+tmpQN1[19] = + tmpQN2[19];
+tmpQN1[20] = + tmpQN2[20];
+tmpQN1[21] = + tmpQN2[21];
+tmpQN1[22] = + tmpQN2[22];
+tmpQN1[23] = + tmpQN2[23];
+tmpQN1[24] = + tmpQN2[24];
+tmpQN1[25] = + tmpQN2[25];
+tmpQN1[26] = + tmpQN2[26];
+tmpQN1[27] = + tmpQN2[27];
+tmpQN1[28] = + tmpQN2[28];
+tmpQN1[29] = + tmpQN2[29];
+tmpQN1[30] = + tmpQN2[30];
+tmpQN1[31] = + tmpQN2[31];
+tmpQN1[32] = + tmpQN2[32];
+tmpQN1[33] = + tmpQN2[33];
+tmpQN1[34] = + tmpQN2[34];
+tmpQN1[35] = + tmpQN2[35];
+tmpQN1[36] = + tmpQN2[36];
+tmpQN1[37] = + tmpQN2[37];
+tmpQN1[38] = + tmpQN2[38];
+tmpQN1[39] = + tmpQN2[39];
+tmpQN1[40] = + tmpQN2[40];
+tmpQN1[41] = + tmpQN2[41];
+tmpQN1[42] = + tmpQN2[42];
+tmpQN1[43] = + tmpQN2[43];
+tmpQN1[44] = + tmpQN2[44];
+tmpQN1[45] = + tmpQN2[45];
+tmpQN1[46] = + tmpQN2[46];
+tmpQN1[47] = + tmpQN2[47];
+tmpQN1[48] = + tmpQN2[48];
 }
 
 void nmpc_evaluateObjective(  )
@@ -553,6 +548,7 @@ nmpcWorkspace.DyN[2] = nmpcWorkspace.objValueOut[2];
 nmpcWorkspace.DyN[3] = nmpcWorkspace.objValueOut[3];
 nmpcWorkspace.DyN[4] = nmpcWorkspace.objValueOut[4];
 nmpcWorkspace.DyN[5] = nmpcWorkspace.objValueOut[5];
+nmpcWorkspace.DyN[6] = nmpcWorkspace.objValueOut[6];
 
 nmpc_setObjQN1QN2( nmpcVariables.WN, nmpcWorkspace.QN1, nmpcWorkspace.QN2 );
 
@@ -1535,6 +1531,7 @@ nmpcWorkspace.DyN[2] -= nmpcVariables.yN[2];
 nmpcWorkspace.DyN[3] -= nmpcVariables.yN[3];
 nmpcWorkspace.DyN[4] -= nmpcVariables.yN[4];
 nmpcWorkspace.DyN[5] -= nmpcVariables.yN[5];
+nmpcWorkspace.DyN[6] -= nmpcVariables.yN[6];
 
 nmpc_multRDy( nmpcWorkspace.R2, nmpcWorkspace.Dy, &(nmpcWorkspace.g[ 7 ]) );
 nmpc_multRDy( &(nmpcWorkspace.R2[ 44 ]), &(nmpcWorkspace.Dy[ 11 ]), &(nmpcWorkspace.g[ 11 ]) );
@@ -1598,13 +1595,13 @@ nmpc_multQDy( &(nmpcWorkspace.Q2[ 2079 ]), &(nmpcWorkspace.Dy[ 297 ]), &(nmpcWor
 nmpc_multQDy( &(nmpcWorkspace.Q2[ 2156 ]), &(nmpcWorkspace.Dy[ 308 ]), &(nmpcWorkspace.QDy[ 196 ]) );
 nmpc_multQDy( &(nmpcWorkspace.Q2[ 2233 ]), &(nmpcWorkspace.Dy[ 319 ]), &(nmpcWorkspace.QDy[ 203 ]) );
 
-nmpcWorkspace.QDy[210] = + nmpcWorkspace.QN2[0]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[1]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[2]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[3]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[4]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[5]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[211] = + nmpcWorkspace.QN2[6]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[7]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[8]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[9]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[10]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[11]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[212] = + nmpcWorkspace.QN2[12]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[13]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[14]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[15]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[16]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[17]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[213] = + nmpcWorkspace.QN2[18]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[19]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[20]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[21]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[22]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[23]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[214] = + nmpcWorkspace.QN2[24]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[25]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[26]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[27]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[28]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[29]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[215] = + nmpcWorkspace.QN2[30]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[31]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[32]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[33]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[34]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[35]*nmpcWorkspace.DyN[5];
-nmpcWorkspace.QDy[216] = + nmpcWorkspace.QN2[36]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[37]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[38]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[39]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[40]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[41]*nmpcWorkspace.DyN[5];
+nmpcWorkspace.QDy[210] = + nmpcWorkspace.QN2[0]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[1]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[2]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[3]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[4]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[5]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[6]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[211] = + nmpcWorkspace.QN2[7]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[8]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[9]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[10]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[11]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[12]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[13]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[212] = + nmpcWorkspace.QN2[14]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[15]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[16]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[17]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[18]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[19]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[20]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[213] = + nmpcWorkspace.QN2[21]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[22]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[23]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[24]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[25]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[26]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[27]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[214] = + nmpcWorkspace.QN2[28]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[29]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[30]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[31]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[32]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[33]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[34]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[215] = + nmpcWorkspace.QN2[35]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[36]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[37]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[38]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[39]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[40]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[41]*nmpcWorkspace.DyN[6];
+nmpcWorkspace.QDy[216] = + nmpcWorkspace.QN2[42]*nmpcWorkspace.DyN[0] + nmpcWorkspace.QN2[43]*nmpcWorkspace.DyN[1] + nmpcWorkspace.QN2[44]*nmpcWorkspace.DyN[2] + nmpcWorkspace.QN2[45]*nmpcWorkspace.DyN[3] + nmpcWorkspace.QN2[46]*nmpcWorkspace.DyN[4] + nmpcWorkspace.QN2[47]*nmpcWorkspace.DyN[5] + nmpcWorkspace.QN2[48]*nmpcWorkspace.DyN[6];
 
 for (lRun2 = 0; lRun2 < 210; ++lRun2)
 nmpcWorkspace.QDy[lRun2 + 7] += nmpcWorkspace.Qd[lRun2];
@@ -2189,8 +2186,8 @@ int lRun1;
 /** Row vector of size: 11 */
 real_t tmpDy[ 11 ];
 
-/** Row vector of size: 6 */
-real_t tmpDyN[ 6 ];
+/** Row vector of size: 7 */
+real_t tmpDyN[ 7 ];
 
 for (lRun1 = 0; lRun1 < 30; ++lRun1)
 {
@@ -2251,6 +2248,7 @@ nmpcWorkspace.DyN[2] = nmpcWorkspace.objValueOut[2] - nmpcVariables.yN[2];
 nmpcWorkspace.DyN[3] = nmpcWorkspace.objValueOut[3] - nmpcVariables.yN[3];
 nmpcWorkspace.DyN[4] = nmpcWorkspace.objValueOut[4] - nmpcVariables.yN[4];
 nmpcWorkspace.DyN[5] = nmpcWorkspace.objValueOut[5] - nmpcVariables.yN[5];
+nmpcWorkspace.DyN[6] = nmpcWorkspace.objValueOut[6] - nmpcVariables.yN[6];
 objVal = 0.0000000000000000e+00;
 for (lRun1 = 0; lRun1 < 30; ++lRun1)
 {
@@ -2269,12 +2267,13 @@ objVal += + nmpcWorkspace.Dy[lRun1 * 11]*tmpDy[0] + nmpcWorkspace.Dy[lRun1 * 11 
 }
 
 tmpDyN[0] = + nmpcWorkspace.DyN[0]*nmpcVariables.WN[0];
-tmpDyN[1] = + nmpcWorkspace.DyN[1]*nmpcVariables.WN[7];
-tmpDyN[2] = + nmpcWorkspace.DyN[2]*nmpcVariables.WN[14];
-tmpDyN[3] = + nmpcWorkspace.DyN[3]*nmpcVariables.WN[21];
-tmpDyN[4] = + nmpcWorkspace.DyN[4]*nmpcVariables.WN[28];
-tmpDyN[5] = + nmpcWorkspace.DyN[5]*nmpcVariables.WN[35];
-objVal += + nmpcWorkspace.DyN[0]*tmpDyN[0] + nmpcWorkspace.DyN[1]*tmpDyN[1] + nmpcWorkspace.DyN[2]*tmpDyN[2] + nmpcWorkspace.DyN[3]*tmpDyN[3] + nmpcWorkspace.DyN[4]*tmpDyN[4] + nmpcWorkspace.DyN[5]*tmpDyN[5];
+tmpDyN[1] = + nmpcWorkspace.DyN[1]*nmpcVariables.WN[8];
+tmpDyN[2] = + nmpcWorkspace.DyN[2]*nmpcVariables.WN[16];
+tmpDyN[3] = + nmpcWorkspace.DyN[3]*nmpcVariables.WN[24];
+tmpDyN[4] = + nmpcWorkspace.DyN[4]*nmpcVariables.WN[32];
+tmpDyN[5] = + nmpcWorkspace.DyN[5]*nmpcVariables.WN[40];
+tmpDyN[6] = + nmpcWorkspace.DyN[6]*nmpcVariables.WN[48];
+objVal += + nmpcWorkspace.DyN[0]*tmpDyN[0] + nmpcWorkspace.DyN[1]*tmpDyN[1] + nmpcWorkspace.DyN[2]*tmpDyN[2] + nmpcWorkspace.DyN[3]*tmpDyN[3] + nmpcWorkspace.DyN[4]*tmpDyN[4] + nmpcWorkspace.DyN[5]*tmpDyN[5] + nmpcWorkspace.DyN[6]*tmpDyN[6];
 
 objVal *= 0.5;
 return objVal;

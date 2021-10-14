@@ -42,7 +42,6 @@ extern "C"
 #define NMPC_QPDUNES  3
 /** HPMPC QP solver indicator. */
 #define NMPC_HPMPC    4
-#define NMPC_GENERIC    5
 
 /** Indicator for determining the QP solver used by the ACADO solver code. */
 #define NMPC_QP_SOLVER NMPC_QPOASES
@@ -65,8 +64,6 @@ extern "C"
 #define NMPC_N 30
 /** Number of online data values. */
 #define NMPC_NOD 6
-/** Number of path constraints. */
-#define NMPC_NPAC 0
 /** Number of control variables. */
 #define NMPC_NU 4
 /** Number of differential variables. */

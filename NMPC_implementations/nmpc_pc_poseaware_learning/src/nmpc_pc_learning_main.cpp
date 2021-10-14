@@ -186,9 +186,9 @@ int main(int argc, char** argv)
 
     state_sub = nh.subscribe<mavros_msgs::State>("mavros/state", 1, state_cb);
 
-    ref_position_sub = nh.subscribe<geometry_msgs::Vector3>("ref_position/position", 1, ref_position_cb);
-    ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_position/velocity", 1, ref_velocity_cb);
-    ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_position/yaw", 1, ref_yaw_cb);
+    ref_position_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_position_cb);
+    ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
+    ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_trajectory/yaw", 1, ref_yaw_cb);
     ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("point_to_view", 1, ref_point_cb);
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);
     //    vel_sub = private_nh.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity", 1, vel_cb);
@@ -254,6 +254,7 @@ int main(int argc, char** argv)
 
     current_pos_att.resize(6);
     current_vel_rate.resize(6);
+    ref_point.resize(3);
     dist_Fx.data.resize(NMPC_N + 1);
     dist_Fy.data.resize(NMPC_N + 1);
     dist_Fz.data.resize(NMPC_N + 1);
@@ -337,6 +338,8 @@ int main(int argc, char** argv)
                                 cos(current_pos_att[5]) * sin(current_pos_att[3]) * sin(current_pos_att[4]) * n2 -
                                 cos(current_pos_att[3]) * sin(current_pos_att[4]) * n3);
 
+            std::cout << "current_s = " << current_s << "\n";
+
             // Setting up state-feedback [x,y,z,u,v,w,s,p,q,r]
             current_states = {current_pos_att.at(0),
                               current_pos_att.at(1),
@@ -357,6 +360,20 @@ int main(int argc, char** argv)
                               ref_velocity(1),
                               ref_velocity(2),
                               1.0};
+
+            std::cout << "current_states = ";
+            for (int idx = 0; idx < current_states.size(); idx++)
+            {
+                std::cout << current_states[idx] << ",";
+            }
+            std::cout << "\n";
+
+            std::cout << "ref_trajectory = ";
+            for (int idx = 0; idx < ref_trajectory.size(); idx++)
+            {
+                std::cout << ref_trajectory[idx] << ",";
+            }
+            std::cout << "\n";
 
             online_data.distFx = dist_Fx.data;
             online_data.distFy = dist_Fy.data;
