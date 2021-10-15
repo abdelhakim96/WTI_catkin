@@ -72,6 +72,11 @@ target_link_libraries(GP_statemachine ${catkin_LIBRARIES})
 add_dependencies(GP_statemachine ${PROJECT_NAME}_gencfg)
 
 
+add_executable(point_node src/point_node.cpp)
+target_link_libraries(point_node ${catkin_LIBRARIES})
+add_dependencies(point_node ${PROJECT_NAME}_gencfg)
+
+
 
 
 
