@@ -111,7 +111,10 @@ void NMPC_PC::nmpc_init(std::vector<double> posref, struct acado_struct& acadost
     // ---------------------
     for (int i = 0; i < acadostruct.acado_NOD * (acadostruct.acado_N + 1); ++i)
     {
-        acadostruct.od[i] = 0.0;
+        if (i < acadostruct.acado_NOD - 3)
+            acadostruct.od[i] = 0;
+        else
+            acadostruct.od[i] = 0.001;
     }
 
     // NMPC: initialize the measurements/reference
@@ -151,7 +154,7 @@ void NMPC_PC::nmpc_init(std::vector<double> posref, struct acado_struct& acadost
                 acadostruct.W[(i * acadostruct.acado_NY) + j] = 0.0;
         }
     }
-    //  std::cout<<"W_0 = "<<nmpc_inp_struct.W<<"\n";
+    //    std::cout << "W_0 = " << nmpc_inp_struct.W << "\n";
     for (int i = 0; i < acadostruct.acado_NYN; ++i)
     {
         for (int j = 0; j < acadostruct.acado_NYN; ++j)
