@@ -36,6 +36,7 @@ n_w=n_w/norm(n_w) ;
 
 s=b_w(1)*n_w(1)+b_w(2)*n_w(2)+b_w(3)*n_w(3);
 
+
 s_d=diff(s,psi)*psid+diff(s,theta)*thetad+diff(s,phi)*phid
 
 
