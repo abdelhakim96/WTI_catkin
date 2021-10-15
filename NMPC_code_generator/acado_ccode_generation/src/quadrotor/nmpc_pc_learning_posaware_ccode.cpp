@@ -19,7 +19,6 @@ int main()
     DifferentialState u;  // the translation velocity along X_B
     DifferentialState v;  // the translation velocity along Y_B
     DifferentialState w;  // the translation velocity along Z_B
-    DifferentialState s;  // relative distance to the inspection point
 
     OnlineData p_rate;  // the roll rate
     OnlineData q_rate;  // the pitch rate
@@ -33,6 +32,7 @@ int main()
     OnlineData px;  // x-position of the inspection point
     OnlineData py;  // y-position of the inspection point
     OnlineData pz;  // z-position of the inspection point
+    DifferentialState aux_state_px, aux_state_py, aux_state_pz;
 
     Control phi;    // the roll angle
     Control theta;  // the pitch angle
@@ -41,17 +41,6 @@ int main()
 
     const double m = 3.8;   // kg
     const double g = 9.81;  // m/s^2
-
-    // equation for s
-    //    IntermediateState n =
-    //        std::pow((pow((x - px) * (x - px), 2) + pow((y - py) * (y - py), 2) + pow((z - pz) * (z - pz), 2)),
-    //                 0.5);                //norm of vector n
-    IntermediateState n1 = (px - x);  //vector n components n=[n1;n2;n3]
-    IntermediateState n2 = (py - y);
-    IntermediateState n3 = (pz - z);
-    IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
-    //IntermediateState s
-    //s =        (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +  cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
 
     // Model equations:
     DifferentialEquation f;
@@ -70,22 +59,23 @@ int main()
     f << dot(w) == q_rate * u - p_rate * v - g * cos(phi) * cos(theta) + (1 / m) * (Fz) + Fz_dist;
     //    f << dot(w) == q_rate*u - p_rate*v - g*cos(phi)*cos(theta) + (1/m)*(Fz);
 
-    // f << dot(s) ==
-    //   (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
-    //                 cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
+    f << dot(aux_state_px) == px;
+    f << dot(aux_state_py) == py;
+    f << dot(aux_state_pz) == pz;
 
-    f << dot(s) == (1 / norm_n) * ((p_rate) * (sin(phi) * sin(theta) * n3 + cos(phi) * cos(psi) * sin(theta) * n2 -
-                                               cos(phi) * sin(psi) * sin(theta) * n1) -
-                                   r_rate * ((cos(theta) * sin(psi) + cos(psi) * sin(theta)) * n1 -
-                                             (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta)) * n2) -
-                                   q_rate * ((cos(psi) * sin(theta) + cos(theta) * sin(phi) * sin(psi)) * n1 +
-                                             (sin(psi) * sin(theta) - cos(psi) * cos(theta) * sin(phi)) * n2 +
-                                             cos(phi) * cos(theta) * n2));
+    // equation for s
+    IntermediateState n1 = (px - x);  //vector n components n=[n1;n2;n3]
+    IntermediateState n2 = (py - y);
+    IntermediateState n3 = (pz - z);
+    IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
+    IntermediateState s;  // relative distance to the inspection point?
+    s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
+                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
 
     // Reference functions and weighting matrices:
     Function h, hN;
     h << x << y << z << u << v << w << s << phi << theta << psi << Fz;
-    hN << x << y << z << u << v << w << s;
+    hN << x << y << z << u << v << w;
     //    h << x << y << z << u << v << w << phi << theta << psi<< Fz << Fx_dist << Fy_dist << Fz_dist;
     //    hN << x << y << z << u << v << w << Fx_dist << Fy_dist << Fz_dist;
 
