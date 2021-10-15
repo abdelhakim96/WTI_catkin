@@ -326,8 +326,6 @@ int main(int argc, char** argv)
                 std::cout << "loop time for outer NMPC: " << t_cc_loop << " (sec)"
                           << "\n";
 
-            //            ref_point = {current_pos_att[0] + 2, current_pos_att[1], current_pos_att[2]};
-
             // Setting up state-feedback [x,y,z,u,v,w,px,py,pz,p,q,r]
             current_states = {current_pos_att.at(0),
                               current_pos_att.at(1),
@@ -362,6 +360,13 @@ int main(int argc, char** argv)
             for (int idx = 0; idx < ref_trajectory.size(); idx++)
             {
                 std::cout << ref_trajectory[idx] << ",";
+            }
+            std::cout << "\n";
+
+            std::cout << "ref_point = ";
+            for (int idx = 0; idx < ref_point.size(); idx++)
+            {
+                std::cout << ref_point[idx] << ",";
             }
             std::cout << "\n";
 

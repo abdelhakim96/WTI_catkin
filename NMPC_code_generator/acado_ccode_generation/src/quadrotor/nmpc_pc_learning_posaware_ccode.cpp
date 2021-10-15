@@ -69,15 +69,10 @@ int main()
     IntermediateState n3 = (pz - z);
     IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
     IntermediateState s;  // relative distance to the inspection point?
-    
-    
-    //s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
-      //                  cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
-
+    //    s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
+    //                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
     //simple s
-    s=(1/norm_n)*(cos(psi)*n1+sin(psi)*n2);
-
-
+    s = (1 / norm_n) * (cos(psi) * n1 + sin(psi) * n2);
 
     // Reference functions and weighting matrices:
     Function h, hN;

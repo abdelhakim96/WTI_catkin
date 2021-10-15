@@ -109,12 +109,15 @@ void NMPC_PC::nmpc_init(std::vector<double> posref, struct acado_struct& acadost
 
     // NMPC: initialize/set the online data
     // ---------------------
-    for (int i = 0; i < acadostruct.acado_NOD * (acadostruct.acado_N + 1); ++i)
+    for (int i = 0; i < acadostruct.acado_N + 1; ++i)
     {
-        if (i < acadostruct.acado_NOD - 3)
-            acadostruct.od[i] = 0;
-        else
-            acadostruct.od[i] = 0.001;
+        for (int j = 0; j < acadostruct.acado_NOD; ++j)
+        {
+            if (j < acadostruct.acado_NOD - 3)
+                acadostruct.od[(i * acadostruct.acado_NOD) + j] = 0.0;
+            else
+                acadostruct.od[(i * acadostruct.acado_NOD) + j] = 0.001;
+        }
     }
 
     // NMPC: initialize the measurements/reference
@@ -285,10 +288,10 @@ void NMPC_PC::set_reftrajectory(struct acado_struct& acadostruct, std::vector<do
     {
         for (int j = 0; j < acadostruct.acado_NY; ++j)
         {
-            if (j < acadostruct.acado_NYN)
-                acadostruct.y[(i * acadostruct.acado_NY) + j] = acadostruct.yN[j];
+            if (j < reftrajectory.size())
+                acadostruct.y[(i * acadostruct.acado_NY) + j] = reftrajectory[j];
             else
-                acadostruct.y[(i * acadostruct.acado_NY) + j] = nmpc_inp_struct.U_ref(j - acadostruct.acado_NYN);
+                acadostruct.y[(i * acadostruct.acado_NY) + j] = nmpc_inp_struct.U_ref(j - reftrajectory.size());
         }
     }
 }
