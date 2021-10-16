@@ -59,7 +59,7 @@ int main(int argc, char **argv)
      * This is a message object. You stuff it with data, and then publish it.
      */
     point_d.pose.position.x = 1;
-	point_d.pose.position.y = 0;
+  	point_d.pose.position.y = 1;
     point_d.pose.position.z = 2;
 
 

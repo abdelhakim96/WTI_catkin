@@ -214,9 +214,12 @@ void NMPC_PC::nmpc_core(struct nmpc_struct_& _nmpc_inp_struct,
     commandstruct.control_attitude_vec[0] = acadostruct.u[0];
     commandstruct.control_attitude_vec[1] = acadostruct.u[1];
     if (nmpc_inp_struct.yaw_control)
-        commandstruct.control_thrust_vec[2] = acadostruct.u[2];
+        //commandstruct.control_thrust_vec[2] = acadostruct.u[2];
+        
+       // commandstruct.control_thrust_vec[2] = acadostruct.u[2];
+       commandstruct.control_attitude_vec[2] = nmpc_inp_struct.U_ref(2);
     else
-        commandstruct.control_thrust_vec[2] = nmpc_inp_struct.U_ref(2);
+        commandstruct.control_attitude_vec[2] = nmpc_inp_struct.U_ref(2);
 
     commandstruct.control_thrust_vec = {acadostruct.u[3],
                                         ((1 - 0) / (nmpc_inp_struct.max_Fz_scale - nmpc_inp_struct.min_Fz_scale)) *

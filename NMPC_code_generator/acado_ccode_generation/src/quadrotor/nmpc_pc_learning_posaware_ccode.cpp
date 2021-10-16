@@ -77,7 +77,7 @@ int main()
     // Reference functions and weighting matrices:
     Function h, hN;
     h << x << y << z << u << v << w << s << phi << theta << psi << Fz;
-    hN << x << y << z << u << v << w;
+    hN << x << y << z << u << v << w ;
     //    h << x << y << z << u << v << w << phi << theta << psi<< Fz << Fx_dist << Fy_dist << Fz_dist;
     //    hN << x << y << z << u << v << w << Fx_dist << Fy_dist << Fz_dist;
 
