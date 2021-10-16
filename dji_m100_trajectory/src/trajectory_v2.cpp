@@ -28,6 +28,9 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config &co
     max_z = config.max_z;
     x_hover = config.x_hover;
     v_d=config.v_d;
+    px=config.px;
+    py=config.py;
+    pz=config.pz;
     y_hover = config.y_hover;
     z_hover = config.z_hover;
     yaw_hover = config.yaw_hover;
@@ -180,6 +183,7 @@ int main(int argc, char **argv) {
     
     ros::Publisher lidar_read_filtered_pub = nh.advertise<std_msgs::Float64>("range_filter", 1);
     ros::Publisher drone_velocity_pub = nh.advertise<std_msgs::Float64>("drone_vel", 1);
+    ros::Publisher point_to_view_pub = nh.advertise<geometry_msgs::PoseStamped>("point_to_view", 1);
 
     // Subscriber
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>(mocap_topic, 1, pos_cb);
@@ -1139,6 +1143,16 @@ int main(int argc, char **argv) {
         std_msgs::Float64 v_d_m; 
         v_d_m.data=v_d;
         drone_velocity_pub.publish(v_d_m);
+
+        geometry_msgs::PoseStamped ref_point; 
+        ref_point.pose.position.x=px;
+        ref_point.pose.position.y=py;
+        ref_point.pose.position.z=pz;
+        //ref_point.pose.position.z=2;
+
+        point_to_view_pub.publish(ref_point);
+
+
         if (!pub_setpoint_pos) {
             reftrajectory_msg.x = x;
             reftrajectory_msg.y = y;

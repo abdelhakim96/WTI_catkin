@@ -74,6 +74,11 @@ double u,v,w;
 bool x_delay_started = false, y_delay_started = false, z_delay_started = false;
 double x_delay_start,y_delay_start,z_delay_start;
 double x_delay,y_delay,z_delay;
+double px;
+double py;
+double pz;
+
+
 
 double t, t_last, traj_time, t_last_eachRun, traj_time_eachRun, traj_time_z, t_last_z, t_Clidar_lost_start, t_Clidar_return_start, t_ALLlidar_lost_start;
 bool traj_started_flag = 0, climbed_flag = 0, landed_flag = 0, lidar_started_flag = 0;
