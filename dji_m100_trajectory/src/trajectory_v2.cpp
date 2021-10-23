@@ -56,6 +56,7 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config &co
 // Callback function
 std::vector<double> current_pos, current_att(3, 0.0);
 geometry_msgs::PoseStamped  desired_pos;
+geometry_msgs::PoseStamped  point;
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
     current_pos = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
     // TO BE: try to get the Euler angles in one line of code!
@@ -70,8 +71,10 @@ void GP_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
     desired_pos = *msg;
     
 }
-
-
+void point_cb(const geometry_msgs::PoseStamped::ConstPtr &msg) {
+    point = *msg;
+    
+}
 
 
 
@@ -183,7 +186,7 @@ int main(int argc, char **argv) {
     
     ros::Publisher lidar_read_filtered_pub = nh.advertise<std_msgs::Float64>("range_filter", 1);
     ros::Publisher drone_velocity_pub = nh.advertise<std_msgs::Float64>("drone_vel", 1);
-    ros::Publisher point_to_view_pub = nh.advertise<geometry_msgs::PoseStamped>("point_to_view", 1);
+    ros::Publisher point_to_view_pub = nh.advertise<geometry_msgs::PoseStamped>("/point_to_view", 1);
 
     // Subscriber
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>(mocap_topic, 1, pos_cb);
@@ -191,6 +194,8 @@ int main(int argc, char **argv) {
     Clidar_read_sub = nh.subscribe<sensor_msgs::Range>(Clidar_topic, 1, Clidar_read_cb);
     Rlidar_read_sub = nh.subscribe<sensor_msgs::Range>(Rlidar_topic, 1, Rlidar_read_cb);
     ros::Subscriber GP_WP_sub = nh.subscribe<geometry_msgs::PoseStamped>("/WP_GP", 1, GP_cb);
+    ros::Subscriber point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view_traj", 1, point_cb);
+
     if (use_sonar)
         sonar_read_sub = nh.subscribe<sensor_msgs::Range>(sonar_topic, 1, sonar_read_cb);
 
@@ -358,6 +363,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 1;
                     print_flag_setpoint = 1;
+                    print_flag_GP = 1;
                 }
                 x = pos_ref_start_msg.pose.position.x;
                 y = pos_ref_start_msg.pose.position.y;
@@ -395,7 +401,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 1;
                     print_flag_setpoint = 1;
-
+                    print_flag_GP = 1;
 
                     // TO BE: check is required?
                     x_B_atTrajStart = R_BI[0][0] * x_atTrajStart + R_BI[0][1] * y_atTrajStart;
@@ -438,7 +444,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 1;
                     print_flag_setpoint = 1;
-
+                    print_flag_GP = 1;
                     x_atTrajStart = x;
                     y_atTrajStart = y;
                     z_atTrajStart = z;
@@ -532,7 +538,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 1;
                     print_flag_setpoint = 1;
-
+                    print_flag_GP = 1;
                     x_atTrajStart = pos_ref_start_msg.pose.position.x + x_hover;
                     y_atTrajStart = pos_ref_start_msg.pose.position.y + y_hover;
                     z_atTrajStart = pos_ref_start_msg.pose.position.z + z_hover;
@@ -607,7 +613,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 0;
                     print_flag_square = 1;
                     print_flag_setpoint = 1;
-
+                    print_flag_GP = 1;
                     x_atTrajStart = pos_ref_start_msg.pose.position.x + x_hover;
                     y_atTrajStart = pos_ref_start_msg.pose.position.y + y_hover;
                     z_atTrajStart = pos_ref_start_msg.pose.position.z + z_hover;
@@ -674,7 +680,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 0;
                     print_flag_setpoint = 1;
-
+                    print_flag_GP = 1;
                     x_atTrajStart = pos_ref_start_msg.pose.position.x + x_hover;
                     y_atTrajStart = pos_ref_start_msg.pose.position.y + y_hover;
                     z_atTrajStart = pos_ref_start_msg.pose.position.z + z_hover;
@@ -735,7 +741,7 @@ int main(int argc, char **argv) {
                     print_flag_fig8 = 1;
                     print_flag_square = 1;
                     print_flag_setpoint = 0;
-
+                    print_flag_GP = 1;
                     x = x_sp_start;
                     y = y_sp_start;
                     z = z_sp_start;
@@ -944,7 +950,18 @@ int main(int argc, char **argv) {
             x=desired_pos.pose.position.x;
             y=desired_pos.pose.position.y;
             z=desired_pos.pose.position.z;
+            //x=0.0;
+            //y=0.0;
+            //z=2.0;
+            
+            //if x-x_d
+       
+            //x_delay = x;
+            //y_delay = y;
+           // z_delay = z;
+
             }
+            
 
 
             ref_yaw_msg.data = compute_ref_yaw();
@@ -1149,9 +1166,28 @@ int main(int argc, char **argv) {
         ref_point.pose.position.y=py;
         ref_point.pose.position.z=pz;
         //ref_point.pose.position.z=2;
+        
+        //point_to_view_pub.publish(ref_point);
+        
+        float px_p=point.pose.position.x;
+        float py_p=point.pose.position.y;
+        float pz_p=point.pose.position.z;
 
+
+        
+        //ref_point.pose.position.x=px_p;
+        //ref_point.pose.position.y=py_p;
+        //ref_point.pose.position.z=pz_p;
+
+        //ref_point.pose.position.x=-1;
+        //ref_point.pose.position.y=0;
+        //ref_point.pose.position.z=2;
+        
+        //ROS_INFO("point x1 %f", point.pose.position.x);
+        //ROS_INFO("point x2 %f", px_p);
+        //ROS_INFO("point x3 %f", ref_point.pose.position.x);
         point_to_view_pub.publish(ref_point);
-
+       
 
         if (!pub_setpoint_pos) {
             reftrajectory_msg.x = x;

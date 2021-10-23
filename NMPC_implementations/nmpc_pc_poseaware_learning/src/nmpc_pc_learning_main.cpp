@@ -189,7 +189,7 @@ int main(int argc, char** argv)
     ref_position_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_position_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
     ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_trajectory/yaw", 1, ref_yaw_cb);
-    ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("point_to_view", 1, ref_point_cb);
+    ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view", 1, ref_point_cb);
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);
     //    vel_sub = private_nh.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity", 1, vel_cb);
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/" + mocap_topic_part + "/pose", 1, pos_cb);
@@ -243,6 +243,8 @@ int main(int argc, char** argv)
     ros::param::get("W_v", nmpc_struct.W(w_idx++));
     ros::param::get("W_w", nmpc_struct.W(w_idx++));
     ros::param::get("W_s", nmpc_struct.W(w_idx++));
+
+    //w_sd
     ros::param::get("W_phi", nmpc_struct.W(w_idx++));
     ros::param::get("W_theta", nmpc_struct.W(w_idx++));
     ros::param::get("W_psi", nmpc_struct.W(w_idx++));
@@ -347,7 +349,7 @@ int main(int argc, char** argv)
                               ref_velocity(0),
                               ref_velocity(1),
                               ref_velocity(2),
-                              1.0};
+                              1.0};   //set_ref
 
             std::cout << "current_states = ";
             for (int idx = 0; idx < current_states.size(); idx++)

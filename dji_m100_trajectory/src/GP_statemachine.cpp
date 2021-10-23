@@ -58,7 +58,7 @@ geometry_msgs::PoseStamped current_pose_g;
 geometry_msgs::Pose correction_vector_g;
 geometry_msgs::Point local_offset_pose_g;
 geometry_msgs::PoseStamped waypoint_g;
-geometry_msgs::PointStamped point_g;
+geometry_msgs::PoseStamped point_g;
 geometry_msgs::TwistStamped move;
 
 
@@ -200,9 +200,9 @@ void set_point(float x, float y, float z)
 	
 
 
-	point_g.point.x = x;
-	point_g.point.y = y;
-	point_g.point.z = z;
+	point_g.pose.position.x = x;
+	point_g.pose.position.y = y;
+	point_g.pose.position.z = z;
 	//waypoint_g.pose.orientation.yaw = psi;
     //set_heading(psi);
 	mesh_pos_pub.publish(point_g);
@@ -211,9 +211,9 @@ void set_point(float x, float y, float z)
 
 
 
-int check_waypoint_reached(float pos_tolerance=1, float heading_tolerance=1)
+int check_waypoint_reached(float pos_tolerance=2, float heading_tolerance=10)
 {
-	local_pos_pub.publish(waypoint_g);
+	//local_pos_pub.publish(waypoint_g);
 	
 	//check for correct position 
 	float deltaX = abs(waypoint_g.pose.position.x - current_pose_g.pose.position.x);
@@ -235,6 +235,7 @@ int check_waypoint_reached(float pos_tolerance=1, float heading_tolerance=1)
 	}else{
 		return 0;
 	}
+	ROS_INFO("Dmag: %f" , dMag);
 }
 
 
@@ -253,19 +254,17 @@ int init_publisher_subscriber(ros::NodeHandle controlnode)
 		controlnode.getParam("namespace", ros_namespace);
 		ROS_INFO("using namespace %s", ros_namespace.c_str());
 	}
-	local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/WP_GP").c_str(), 10);  //change to hummingbird topic
-	//mesh_pos_pub = controlnode.advertise<geometry_msgs::PointStamped>((ros_namespace + "/point_d_GP").c_str(), 10);  //change to point desired topic
-	currentPos = controlnode.subscribe<geometry_msgs::PoseStamped>((ros_namespace + "/mavros/mocap/pose").c_str(), 10, pose_cb); //point.x
+	local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/WP_GP").c_str(), 10);  
+	mesh_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_to_view_traj").c_str(), 10);  
+	currentPos = controlnode.subscribe<geometry_msgs::PoseStamped>((ros_namespace + "/mavros/mocap/pose").c_str(), 10, pose_cb); 
 	dronevelocity_sub = controlnode.subscribe<std_msgs::Float64>((ros_namespace + "/drone_vel").c_str(), 10, drone_v_cb); 
-	
-	
+
 	return 0;
 }
 
-
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "gnc_node");
+    ros::init(argc, argv, "GP_node");
 	ros::NodeHandle gnc_node("~");
 
 	init_publisher_subscriber(gnc_node);
@@ -275,10 +274,6 @@ int main(int argc, char** argv)
     //wait4connect();
 	//wait4start();mavros_msgs::State current_state;
 
-    
-
-
-	
     std::vector<gnc_api_waypoint> waypointList;
 	std::vector<gnc_api_point> pointList;
 	gnc_api_waypoint nextWayPoint;
@@ -290,17 +285,17 @@ int main(int argc, char** argv)
     double wp_x, wp_y,wp_z,y1,y2,y3;
 	double p_x,p_y,p_z;
     //std::vector<int> myVector = {1, 2, 3, 4, 5, 6};
-    //std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/Path.txt");
-	std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
+    std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/path_2500.txt");
+	//std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
 
     while (inputFile >> wp_x >> wp_y >> wp_z >> y1 >> y2 >> y3)
     {
-    vecX.push_back(wp_x/10);
-    vecY.push_back(wp_y/10);
-    vecZ.push_back(wp_z/10);
-	vec1.push_back(y1/10);
-    vec2.push_back(y2/10);
-    vec3.push_back(y3/10);
+    vecX.push_back(wp_x/1.0);
+    vecY.push_back(wp_y/1.0);
+    vecZ.push_back(wp_z/1.0);
+	vec1.push_back(y1/1.0);
+    vec2.push_back(y2/1.0);
+    vec3.push_back(y3/1.0);
 	
     }
    
@@ -318,15 +313,15 @@ int main(int argc, char** argv)
    
     std::vector<double> meshX1, meshX2,meshX3, meshY1, meshY2,meshY3,meshZ1, meshZ2,meshZ3,vx,vy,vz;
     
-    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/px.txt");  //meshfile
-    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/py.txt");  //meshfile
-	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/pz.txt");
+    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/px_2500.txt");  //meshfile
+    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/py_2500.txt");  //meshfile
+	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/pz_2500.txt");
     while (inputFilex >> p_x )
     {
     meshX1.push_back(p_x);
     meshX2.push_back(p_y);
     meshX3.push_back(p_z);
-	vx.push_back((p_x)/10.0);
+	vx.push_back((p_x)/1.0);
 	
     }
 
@@ -336,7 +331,7 @@ int main(int argc, char** argv)
     meshY1.push_back(p_x);
     meshY2.push_back(p_y);
     meshY3.push_back(p_z);
-	vy.push_back((p_y)/10.0);
+	vy.push_back((p_y)/1.0);
     }
 
 
@@ -345,7 +340,7 @@ int main(int argc, char** argv)
     meshZ1.push_back(p_z);
     meshZ2.push_back(p_z);
     meshZ3.push_back(p_z);
-	vz.push_back((p_z)/10.0);
+	vz.push_back((p_z)/1.0);
     }
    
     
@@ -357,19 +352,24 @@ int main(int argc, char** argv)
 	pointList.push_back(pointm);
 	}
 
-	ros::Rate rate(10.0);
-	int counter = 1;
+	ros::Rate rate(5);
     
 	ros::Time last_request = ros::Time::now();
 
-	float tx=-8.0;
-	float ty=0.0;
+	float tx=0.1;
+	float ty=10;
     //set_destination(waypointList[counter].x,waypointList[counter].y,waypointList[counter].z, waypointList[counter].psi);
 	//set_heading( current_pose_g.pose.pose.position.x, current_pose_g.pose.pose.position.y, pointList[counter].x, pointList[counter].y);
     //set_point(pointList[counter].x,pointList[counter].y,pointList[counter].z);
 	//set_heading( current_pose_g.pose.pose.position.x, current_pose_g.pose.pose.position.y, tx, ty);
     //set_point(tx,ty,current_pose_g.pose.pose.position.z);
-    
+    int counter = 1;
+	set_destination(waypointList[1].x,waypointList[1].y,waypointList[1].z, waypointList[1].psi);
+	set_point(-80.0,0.0,current_pose_g.pose.position.z);
+	//int v_d=1;
+	int c;
+	c=1;
+	int n;
 	while(ros::ok())
 	{   
 	    ros::spinOnce();
@@ -379,32 +379,57 @@ int main(int argc, char** argv)
         //set_heading( current_pose_g.pose.position.x,current_pose_g.pose.position.y, tx, ty);
         //set_point(pointList[counter].x,pointList[counter].y,current_pose_g.pose.pose.position.z);
 				
-		//if(check_waypoint_reached(1,1) == 1)
+		//
+        //set_point(-8.0,0.0,current_pose_g.pose.position.z);
+		//{  
 
-		//{   
-			int n=v_d*counter*10;
-            if(counter == 1 && check_waypoint_reached(0.1,1) != 1) {
+			//set_point(-8,0,current_pose_g.pose.position.z);
+			
+			n=counter;
+
+	
+            if(counter == 1 && check_waypoint_reached(1,1) != 1)
+			
+			 {
                set_destination(waypointList[1].x,waypointList[1].y,waypointList[1].z, waypointList[1].psi);
-			   ROS_INFO("first point");
+			   
+			   //set_point(pointList[1].x,pointList[1].y,pointList[1].z);
+			
 			}
+			
 			else{
 	         //ROS_INFO("reached w.p");
-			if (counter < waypointList.size())
+			
+			if (counter < waypointList.size()-1)
 			{   
-				set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
-				//set_point(pointList[counter].x,pointList[counter].y,pointList[counter].z);
-				//set_point(pointList[counter].x,pointList[counter].y,current_pose_g.pose.pose.position.z);
-			if (counter != waypointList.size()){
-              counter++;
-			}	
-			}
+				
+                
+			  	set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
+                
+   
+				set_point(pointList[n].x,pointList[n].y,pointList[n].z);
+				ROS_INFO("x %f", waypointList[n].x);
+				ROS_INFO("y %f", waypointList[n].y);
+				ROS_INFO("py %f", pointList[n].y);
+				ROS_INFO("n %d", n);
+				counter++;
 	
+                
+				//}
+			  //ROS_INFO("counter");
+			 
+			}
+
+			
+			//else{
+                 //set_destination(waypointList[waypointList.size()-10].x,waypointList[waypointList.size()-10].y,waypointList[waypointList.size()-10].z, waypointList[waypointList.size()-10].psi);
+			//}
 			}
         //ROS_INFO("x %f", waypointList[counter-1].x);
 		//ROS_INFO("y %f", waypointList[counter-1].y);
 		//ROS_INFO("z %f", waypointList[counter-1].z);     
-        ROS_INFO("Drone velocity %f", v_d);
-		ROS_INFO("counter %d", n);
+        //ROS_INFO("Drone velocity %f", v_d);
+		//ROS_INFO("counter %d", n);
 	   // }
 		/*
 		ROS_INFO("current x %f", current_pose_g.pose.pose.position.x);
