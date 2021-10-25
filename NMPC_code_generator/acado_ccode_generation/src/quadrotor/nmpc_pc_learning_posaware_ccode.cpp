@@ -67,30 +67,19 @@ int main()
     IntermediateState n1 = (px - x);  //vector n components n=[n1;n2;n3]
     IntermediateState n2 = (py - y);
     IntermediateState n3 = (pz - z);
-    IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3);
-    IntermediateState norm_n1 = sqrt(n1 * n1 + n2 * n2);
-    IntermediateState s;  // relative distance to the inspection point?
+    IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3) + 0.001;  // Constant added for numerical stability
+    IntermediateState s, s_dot;                                            // relative distance to the inspection point?
     //    s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
     //                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
-    //simple s
-     s = (1 / norm_n1) * (cos(psi) * n1 + sin(psi) * n2);
- 
-    //s_dot= (1 / norm_n)*((p_rate)* ( sin(phi) * sin(theta) * n3 + cos(phi) *cos(psi)* sin(theta)*n2
-     //                   - cos(phi)* sin(psi)* sin(theta)*n1) 
-      //                       - r_rate*((cos(theta) *sin(psi) + cos(psi)*sin(theta)) *n1
-       //                              - (cos(psi) *cos(theta) - sin(phi) *sin(psi) * sin(theta))*n2)
-        //                                     -q_rate*((cos(psi) * sin(theta) + cos(theta) *sin(phi) *sin(psi))*n1
-          //                                            + (sin(psi) * sin(theta) - cos(psi) *cos(theta) * sin(phi))*n2
-            //                                                          + cos(phi) * cos(theta) * n2));   
-
-    //s  = (1 / norm_n) * ((cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta)) * n1 + (cos(theta) * sin(psi) +
-    //                     cos(psi) * sin(phi) * sin(theta)) * n2 - cos(phi) * sin(theta) * n3);
-
+    //simple s and s_dot
+    s = (1 / norm_n) * (cos(psi) * n1 + sin(psi) * n2);
+    // s_dot assumes px, py, pz velocities are negligible
+    s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << u << v << w << s << phi << theta << psi << Fz;
-    hN << x << y << z << u << v << w ;
+    h << x << y << z << u << v << w << s << s_dot << phi << theta << psi << Fz;
+    hN << x << y << z << u << v << w;
     //    h << x << y << z << u << v << w << phi << theta << psi<< Fz << Fx_dist << Fy_dist << Fz_dist;
     //    hN << x << y << z << u << v << w << Fx_dist << Fy_dist << Fz_dist;
 

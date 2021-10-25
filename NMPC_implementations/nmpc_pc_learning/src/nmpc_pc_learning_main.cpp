@@ -313,8 +313,6 @@ int main(int argc, char** argv)
             if (online_ref_yaw)
             {
                 nmpc_struct.U_ref(2) = ref_yaw_rad;
-                
-                 std::cout<<"yaw set to nmpc_struct.U_ref(2) = "<<nmpc_struct.U_ref(2)<<"\n";
             }
             t_cc_loop = ros::Time::now().toSec() - t;
             if (std::fmod(std::abs(t_cc_loop - (int)(t_cc_loop)), (double)(sampleTime)) == 0)
@@ -359,7 +357,7 @@ int main(int argc, char** argv)
             }
 
             nmpc_pc->publish_rpyFz(nmpc_pc->nmpc_cmd_struct);
-            
+
             print_flag_offboard = 1;
             print_flag_arm = 1;
             print_flag_altctl = 1;
