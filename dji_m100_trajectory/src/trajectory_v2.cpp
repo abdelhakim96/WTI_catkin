@@ -1225,9 +1225,20 @@ int main(int argc, char** argv)
             }
         }
 
-        u = (x - x_last) / sampleTime;
-        v = (y - y_last) / sampleTime;
-        w = (z - z_last) / sampleTime;
+        double u_global = (x - x_last) / sampleTime;
+        double v_global = (y - y_last) / sampleTime;
+        double w_global = (z - z_last) / sampleTime;
+
+        // desired velocity data in body frame
+        tf::Matrix3x3 rotational_matrix_BI(current_att_quat);
+        rotational_matrix_BI = rotational_matrix_BI.transpose();
+
+        u = rotational_matrix_BI[0][0] * u_global + rotational_matrix_BI[0][1] * v_global +
+            rotational_matrix_BI[0][2] * w_global;
+        v = rotational_matrix_BI[1][0] * u_global + rotational_matrix_BI[1][1] * v_global +
+            rotational_matrix_BI[1][2] * w_global;
+        w = rotational_matrix_BI[2][0] * u_global + rotational_matrix_BI[2][1] * v_global +
+            rotational_matrix_BI[2][2] * w_global;
 
         //        std::cout<<"absolute vel along x & y = "<<sqrt(u*u + v*v)<<"\n";
 

@@ -35,7 +35,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </x_axis>
                                 <y_axis>
@@ -48,7 +48,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </y_axis>
                             </axes>
@@ -287,7 +287,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </x_axis>
                                 <y_axis>
@@ -300,7 +300,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </y_axis>
                             </axes>
@@ -539,7 +539,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </x_axis>
                                 <y_axis>
@@ -552,7 +552,7 @@
                                         <relative_minimum>-1000</relative_minimum>
                                         <type>0</type>
                                     </scale>
-                                    <topic>/ref_trajectory/pose_delayed</topic>
+                                    <topic>/ref_trajectory/position</topic>
                                     <type>geometry_msgs/Vector3</type>
                                 </y_axis>
                             </axes>
