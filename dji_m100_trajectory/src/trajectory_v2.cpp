@@ -180,7 +180,7 @@ int main(int argc, char** argv)
     // Publisher
     ref_pos_pub = nh.advertise<geometry_msgs::Vector3>("ref_trajectory/position", 1);
     ref_pose_pub = nh.advertise<geometry_msgs::PoseStamped>("ref_trajectory/pose", 1);
-    ref_pos_delay_pub = nh.advertise<geometry_msgs::Vector3>("ref_trajectory/position_delayed", 1);
+    ref_pos_delay_pub = nh.advertise<geometry_msgs::PoseStamped>("ref_trajectory/pose", 1);
     ref_vel_pub = nh.advertise<geometry_msgs::Vector3>("ref_trajectory/velocity", 1);
     ref_yaw_pub = nh.advertise<std_msgs::Float64>("ref_trajectory/yaw", 1);
     setpoint_pos_pub = nh.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 1);
@@ -1318,22 +1318,22 @@ void publish_inspection_point()
     ref_point.header.frame_id = "map";
     if (point_tracking_on)
     {
-        ref_point.pose.position.x = px;
-        ref_point.pose.position.y = py;
-        ref_point.pose.position.z = pz;
+        //ref_point.pose.position.x = px;
+        //ref_point.pose.position.y = py;
+       // ref_point.pose.position.z = pz;
 
-        //            float px_p = point.pose.position.x;
-        //            float py_p = point.pose.position.y;
-        //            float pz_p = point.pose.position.z;
-        //            ref_point.pose.position.x = px_p;
-        //            ref_point.pose.position.y = py_p;
-        //            ref_point.pose.position.z = pz_p;
-    }
+                   float px_p = point.pose.position.x;
+                    float py_p = point.pose.position.y;
+                   float pz_p = point.pose.position.z;
+                    ref_point.pose.position.x = px_p;
+                    ref_point.pose.position.y = py_p;
+                    ref_point.pose.position.z = pz_p;
+   }
     else
     {
-        ref_point.pose.position.x = x + 1;
+       ref_point.pose.position.x = x + 1;
         ref_point.pose.position.y = y;
-        ref_point.pose.position.z = z;
+       ref_point.pose.position.z = z;
     }
 
     //ROS_INFO("point x1 %f", point.pose.position.x);

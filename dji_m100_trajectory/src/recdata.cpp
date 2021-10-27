@@ -31,6 +31,19 @@ void ref_trajectory_cb(const geometry_msgs::Vector3::ConstPtr& msg)
 {
     ref_trajectory << msg->x, msg->y, msg->z;
 }
+
+void ref_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    ref_pose <<  msg->pose.position.x,  msg->pose.position.y,  msg->pose.position.z;
+}
+
+
+void ref_point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    ref_point <<  msg->pose.position.x,  msg->pose.position.y,  msg->pose.position.z;
+}
+
+
 void ref_trajectory_delay_cb(const geometry_msgs::Vector3::ConstPtr& msg)
 {
     ref_trajectory_delay << msg->x, msg->y, msg->z;
@@ -154,6 +167,11 @@ int main(int argc, char **argv)
     // Other subscribers
     trajectory_start_sub = nh.subscribe<std_msgs::Bool>("trajectory_on", 1, trajectory_start_cb);
     ref_trajectory_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_trajectory_cb);
+
+    ref_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("ref_trajectory/pose", 1, ref_pose_cb);
+    ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view", 1, ref_point_cb);
+
+
     ref_trajectory_delay_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position_delayed", 1, ref_trajectory_delay_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
 
@@ -318,9 +336,11 @@ int main(int argc, char **argv)
 
             print_results<< std::fixed << std::setprecision(6) <<traj_time<<",";
             for(int j=0; j<3; j++)
-                print_results<<ref_trajectory(j)<<",";
+                //print_results<<ref_trajectory(j)<<",";
+                print_results<<ref_pose(j)<<",";
             for(int j=0; j<3; j++)
-                print_results<<ref_trajectory_delay(j)<<",";
+                //print_results<<ref_trajectory_delay(j)<<",";
+                print_results<<ref_point(j)<<",";
             for(int j=0; j<3; j++)
                 print_results<<ref_velocity(j)<<",";
             for(int j=0; j<3; j++)
@@ -331,6 +351,8 @@ int main(int argc, char **argv)
                 print_results<<current_att(j)<<",";
             for(int j=0; j<3; j++)
                 print_results<<current_rates(j)<<",";
+
+            /*    
             print_results<<rad2deg*nmpc_ryp(0)<<","<<rad2deg*nmpc_ryp(1)<<","<<rad2deg*nmpc_ryp(2)
                          <<","<<nmpc_Fz(0)<<","<<nmpc_exeTime<<","<<nmpc_kkt<<",";
             for(int j=0; j<3; j++)
@@ -372,6 +394,7 @@ int main(int argc, char **argv)
                     print_results<<","<<nmhe_uvw(j);
                 print_results<<","<<nmpc_exeTime<<","<<nmpc_kkt;
             }
+            */
             print_results<<endl;
 
             if (std::fmod(std::abs(traj_time - std::floor(traj_time)), (double)(1)) < sampleTime)

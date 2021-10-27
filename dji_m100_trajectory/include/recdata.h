@@ -33,8 +33,20 @@ ros::Subscriber nmpc_rpy_sub, nmpc_Fz_sub, nmpc_exeTime_sub, nmpc_kkt_sub;
 // NMHE subscribers
 ros::Subscriber nmhe_vel_sub, nmhe_exeTime_sub, nmhe_kkt_sub;
 
+
+
+//
+ros::Subscriber ref_pose_sub, ref_point_sub, objective_sub;
+
+
+
 // Callback variables
 std_msgs::Bool trajectory_start_flag;
+
+
+Vector3d ref_pose;
+Vector3d ref_point;
+float objective;
 Vector3d ref_trajectory;
 Vector3d ref_trajectory_delay;
 Vector3d ref_velocity;

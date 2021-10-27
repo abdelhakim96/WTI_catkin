@@ -64,7 +64,7 @@ c=array2D2
 
 array2D3 = []
 
-filename="Path_half.txt"
+filename="hakim_path.txt"
 c1 = np.genfromtxt('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/Interpolation/Path_half.txt', usecols=0, dtype=float )
 c2 = np.genfromtxt('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/Interpolation/Path_half.txt', usecols=1, dtype=float )
 c3 = np.genfromtxt('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/Interpolation/Path_half.txt', usecols=2, dtype=float )
@@ -78,19 +78,22 @@ data2=np.c_[c1, c2,c3]
 
 
 
+data3=data2
+
+for i in range(161):
+    data3 = np.delete(data3, 1, 0)
+   # data2 = np.delete(array2D, 1, 1) 
+   # data2 = np.delete(array2D, 4, 1) 
+   # data2= np.delete(array2D, 3, 0)
 
 
-
-#array2D = np.delete(array2D, 4, 1) 
-#array2D = np.delete(array2D, 4, 1) 
-#array2D = np.delete(array2D, 3, 1)
 #data=np.column_stack((a,b,c))
-
-
-#count=1
-c = np.array(c, dtype=np.float32)
-a = np.array(a, dtype=np.float32)
-b = np.array(b, dtype=np.float32)
+    
+    
+    #count=1
+    c = np.array(c, dtype=np.float32)
+    a = np.array(a, dtype=np.float32)
+    b = np.array(b, dtype=np.float32)
 
 
 for i in range(80):
@@ -128,17 +131,17 @@ a=a.transpose()
 b=b.transpose()
 c=c.transpose()
 #now we get all the knots and info about the interpolated spline
-tck, u= interpolate.splprep(c, k=1)
+tck, u= interpolate.splprep(data, k=3)
 #here we generate the new interpolated dataset, 
 #increase the resolution by increasing the spacing, 500 in this example
-new = interpolate.splev(np.linspace(0,1,1000), tck, der=0)
+new = interpolate.splev(np.linspace(0,1,2577*2), tck, der=0)
 
 numpy_array = np. array(new)
 transpose = numpy_array.T
 out = transpose.tolist()
 
 
-np.savetxt('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/Interpolation/pzz_new_1000.txt', out, fmt = '%.6f')
+np.savetxt('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/Interpolation/hakim_path_inter.txt', out, fmt = '%.6f')
 
 #now lets plot it!
 fig = plt.figure()

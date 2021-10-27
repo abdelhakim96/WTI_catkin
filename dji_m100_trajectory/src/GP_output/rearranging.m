@@ -5803,6 +5803,41 @@ pz=pz1;
 
 
 
+for  i=1:length(px)-1
+    px1(2*i-1)=px(i);
+    px1(2*i)=(px(i)+px(i+1))/2;
+    
+    px1(2*i+1)=px(i+1);
+    
+    py1(2*i-1)=py(i);
+    py1(2*i)=(py(i)+py(i+1))/2;
+    
+    py1(2*i+1)=py(i+1);
+    
+    pz1(2*i-1)=pz(i);
+    pz1(2*i)=(pz(i)+pz(i+1))/2;
+    
+    pz1(2*i+1)=pz(i+1);
+    
+    path_new1(2*i-1,:)= path_new(i,:);
+    path_new1(2*i,:)=( path_new(i,:)+ path_new(i+1,:))/2;
+    
+    path_new1(2*i+1,:)= path_new(i+1,:);
+    
+    
+    
+    
+    
+end
+
+path_new=path_new1;
+px=px1;
+py=py1;
+pz=pz1;
+
+
+
+
 
 
 
