@@ -19,9 +19,7 @@ c2=M(1321:26954,13);
 
 e=((a1-a2).^2+(b1-b2).^2+(c1-c2).^2).^0.5;
 
-e1=a1-a2;
-e2=b1-b2;
-e3=c1-c2;
+
 
 
 %plot3(M(1321:26954,2),M(1321:26954,3),M(1321:26954,4),'k', 'LineWidth', 3.0,'LineSmoothing', 'on');
@@ -54,29 +52,30 @@ hold on
 hold on
 set(gcf,'color','w');
 
-subplot(3,2,2)
+subplot(3,2,1)
 
-plot(M(1321:26954,1)-M(1321,1),e1,'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
+plot(M(1321:26954,1)-M(1321,1),e(:,1),'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
 
 
 xlabel('time (s)') 
 ylabel('error x-axis (m)')
 xlim([0 510])
 
-subplot(3,2,4)
+subplot(3,2,2)
 
 
+plot(M(1321:26954,1)-M(1321,1),e(:,2),'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
 
 hold on
 xlim([0 510])
 
-plot(M(1321:26954,1)-M(1321,1),e2,'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
+plot(M(1321:26954,1)-M(1321,1),e(:,3),'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
 
 xlabel('time (s)') 
 ylabel('error y-axis (m)') 
-subplot(3,2,6)
+subplot(3,2,3)
 
-plot(M(1321:26954,1)-M(1321,1),e3,'r', 'LineWidth', 1.0,'LineSmoothing', 'on');
+plot(M(1321:26954,1)-M(1321,1),M(1321:26954,13),'b', 'LineWidth', 1.0,'LineSmoothing', 'on');
 
 xlabel('time (s)') 
 ylabel('error z-axis (m)') 
@@ -95,7 +94,7 @@ ylabel('x-axis (m)')
 xlim([0 510])
 
 legend('NMPC','REF')
-subplot(3,2,3)
+subplot(3,2,2)
 
 
 plot(M(1321:26954,1)-M(1321,1),M(1321:26954,12),'b', 'LineWidth', 1.0,'LineSmoothing', 'on');
@@ -109,7 +108,7 @@ plot(M(1321:26954,1)-M(1321,1),M(1321:26954,3),'k', 'LineWidth', 1.0,'LineSmooth
 xlabel('time (s)') 
 ylabel('y-axis (m)') 
 legend('NMPC','REF')
-subplot(3,2,5)
+subplot(3,2,3)
 
 plot(M(1321:26954,1)-M(1321,1),M(1321:26954,13),'b', 'LineWidth', 1.0,'LineSmoothing', 'on');
 hold on

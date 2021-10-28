@@ -175,6 +175,8 @@ int main(int argc, char **argv)
     ref_trajectory_delay_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position_delayed", 1, ref_trajectory_delay_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
 
+    objective_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
+
     // UAV feedback subscribers
     pos_att_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/mocap/pose", 1, pos_cb);
     local_vel_rates_sub = nh.subscribe<geometry_msgs::TwistStamped>("mavros/mocap/velocity", 1, local_vel_rates_cb);
@@ -184,6 +186,7 @@ int main(int argc, char **argv)
     nmpc_Fz_sub = nh.subscribe<std_msgs::Float64MultiArray>("outer_nmpc_cmd/Fz_FzScaled", 1, nmpc_Fz_cb);
     nmpc_exeTime_sub = nh.subscribe<std_msgs::Float64>("outer_nmpc_cmd/exeTime", 1, nmpc_exeTime_cb);
     nmpc_kkt_sub = nh.subscribe<std_msgs::Float64>("outer_nmpc_cmd/kkt", 1, nmpc_kkt_cb);
+    
 
     // Wind subscribers
     wind_commanded_sub = nh.subscribe<geometry_msgs::Vector3>("/wind_3d", 1, wind_commanded_cb);
