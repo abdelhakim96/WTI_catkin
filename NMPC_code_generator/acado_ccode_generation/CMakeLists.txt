@@ -87,6 +87,13 @@ if(QUADROTOR)
       	   ${PROJECT_LIBS}
 	)
 	
+	add_executable(posaware_ratecommand_nmpc_pc_learning_ccode 
+	   src/quadrotor/posaware_ratecommand_nmpc_pc_learning_ccode.cpp
+	)
+	target_link_libraries(posaware_ratecommand_nmpc_pc_learning_ccode
+      	   ${PROJECT_LIBS}
+	)
+	
 	add_executable(nmpc_pc_learning_posaware_ccode 
 	   src/quadrotor/nmpc_pc_learning_posaware_ccode.cpp
 	)

@@ -194,7 +194,7 @@ void NMPC_PC::publish_rpyFz(struct command_struct& commandstruct)
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "nmpc_pc_poseaware_learning");
+    ros::init(argc, argv, "poseaware_nmpc_pc_learning");
     ros::NodeHandle nh;
 
     ros::param::get("mocap_topic_part", mocap_topic_part);
@@ -233,6 +233,7 @@ int main(int argc, char** argv)
     nmpc_cmd_exeTime_pub = nh.advertise<std_msgs::Float64>("outer_nmpc_cmd/exeTime", 1, true);
     nmpc_cmd_kkt_pub = nh.advertise<std_msgs::Float64>("outer_nmpc_cmd/kkt", 1, true);
     nmpc_cmd_obj_pub = nh.advertise<std_msgs::Float64>("outer_nmpc_cmd/obj", 1, true);
+
     s_sdot_pub = nh.advertise<std_msgs::Float64MultiArray>("outer_nmpc_cmd/s_sdot", 1, true);
 
     nmpc_struct.U_ref.resize(NMPC_NU);
@@ -250,7 +251,7 @@ int main(int argc, char** argv)
     int u_idx = 0;
     ros::param::get("phi_ref", nmpc_struct.U_ref(u_idx++));
     ros::param::get("theta_ref", nmpc_struct.U_ref(u_idx++));
-    ros::param::get("psi_ref", nmpc_struct.U_ref(u_idx++));
+    ros::param::get("r_rate_ref", nmpc_struct.U_ref(u_idx++));
     ros::param::get("Fz_ref", nmpc_struct.U_ref(u_idx++));
     nmpc_struct.U_ref(3) =
         ((nmpc_struct.max_Fz_scale - nmpc_struct.min_Fz_scale) / (1 - 0)) * (nmpc_struct.U_ref(3) - 0);
@@ -264,13 +265,16 @@ int main(int argc, char** argv)
     ros::param::get("W_u", nmpc_struct.W(w_idx++));
     ros::param::get("W_v", nmpc_struct.W(w_idx++));
     ros::param::get("W_w", nmpc_struct.W(w_idx++));
+    ros::param::get("W_psi", nmpc_struct.W(w_idx++));
     ros::param::get("W_s", nmpc_struct.W(w_idx++));
     ros::param::get("W_sdot", nmpc_struct.W(w_idx++));
     ros::param::get("W_phi", nmpc_struct.W(w_idx++));
     ros::param::get("W_theta", nmpc_struct.W(w_idx++));
-    ros::param::get("W_psi", nmpc_struct.W(w_idx++));
+    ros::param::get("W_r_rate", nmpc_struct.W(w_idx++));
     ros::param::get("W_Fz", nmpc_struct.W(w_idx++));
     assert(w_idx == NMPC_NY);
+
+    nmpc_struct.sample_time = sampleTime;
 
     NMPC_PC* nmpc_pc = new NMPC_PC(nmpc_struct);
     ros::Rate rate(1 / sampleTime);
@@ -343,34 +347,35 @@ int main(int argc, char** argv)
         {
             if (online_ref_yaw)
             {
-                nmpc_struct.U_ref(2) = ref_yaw_rad;
+                nmpc_struct.ref_yaw = ref_yaw_rad;
             }
             t_cc_loop = ros::Time::now().toSec() - t;
             if (std::fmod(std::abs(t_cc_loop - (int)(t_cc_loop)), (double)(sampleTime)) == 0)
                 std::cout << "loop time for outer NMPC: " << t_cc_loop << " (sec)"
                           << "\n";
 
-            // Setting up state-feedback [x,y,z,u,v,w,px,py,pz,p,q,r]
+            // Setting up state-feedback [x,y,z,u,v,w,psi,0,0,0,p,q]
             current_states = {current_pos_att.at(0),
                               current_pos_att.at(1),
                               current_pos_att.at(2),
                               current_vel_rate.at(0),
                               current_vel_rate.at(1),
                               current_vel_rate.at(2),
+                              current_pos_att.at(5),
                               ref_point[0],
                               ref_point[1],
                               ref_point[2],
                               current_vel_rate.at(3),
-                              current_vel_rate.at(4),
-                              current_vel_rate.at(5)};
+                              current_vel_rate.at(4)};
 
-            // Setting up references [x,y,z,u,v,w,s]
+            // Setting up references [x,y,z,u,v,w,psi,s,s_dot]
             ref_trajectory = {ref_position(0),
                               ref_position(1),
                               ref_position(2),
                               ref_velocity(0),
                               ref_velocity(1),
                               ref_velocity(2),
+                              ref_yaw_rad,
                               0.0,
                               0.0};
 
