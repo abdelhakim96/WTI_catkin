@@ -100,7 +100,6 @@ if(QUADROTOR)
 	target_link_libraries(posaware_ratecommand_quaternion_nmpc_pc_learning_ccode
       	   ${PROJECT_LIBS}
 	)
-
 	
 	add_executable(nmpc_pc_learning_posaware_ccode 
 	   src/quadrotor/nmpc_pc_learning_posaware_ccode.cpp

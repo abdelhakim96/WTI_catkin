@@ -13,28 +13,27 @@ int main()
     USING_NAMESPACE_ACADO
 
     // Variables:
-    DifferentialState x;    // the body position w.r.t X_I
-    DifferentialState y;    // the body position w.r.t Y_I
-    DifferentialState z;    // the body position w.r.t Z_I
-    DifferentialState u;    // the translation velocity along X_B
-    DifferentialState v;    // the translation velocity along Y_B
-    DifferentialState w;    // the translation velocity along Z_B
-    DifferentialState     q_w, q_x, q_y, q_z;
-   //OnlineData p_rate;  // the roll rate
-  //  OnlineData q_rate;  // the pitch rate
+    DifferentialState x;  // the body position w.r.t X_I
+    DifferentialState y;  // the body position w.r.t Y_I
+    DifferentialState z;  // the body position w.r.t Z_I
+    DifferentialState u;  // the translation velocity along X_B
+    DifferentialState v;  // the translation velocity along Y_B
+    DifferentialState w;  // the translation velocity along Z_B
+    DifferentialState q_w, q_x, q_y, q_z;
 
     OnlineData Fx_dist;  // the external disturbance force along X_B
     OnlineData Fy_dist;  // the external disturbance force along Y_B
     OnlineData Fz_dist;  // the external disturbance force along Z_B
-                         //    OnlineData m;                       // the mass of the UAV
 
     OnlineData px;  // x-position of the inspection point
     OnlineData py;  // y-position of the inspection point
     OnlineData pz;  // z-position of the inspection point
-    
+
     DifferentialState aux_state_px, aux_state_py, aux_state_pz;
 
-    Control p_rate, q_rate, r_rate;
+    Control p_rate;  // the roll rate
+    Control q_rate;  // the pitch rate
+    Control r_rate;  // the yaw rate
     Control Fz;      // the external force along Z_B
 
     const double m = 3.8;   // kg
@@ -43,38 +42,30 @@ int main()
     // Model equations:
     DifferentialEquation f;
 
+    // f << dot(x) == (1 - 2 * q_y * q_y - 2 * q_z * q_z ) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
 
-   // f << dot(x) == (1 - 2 * q_y * q_y - 2 * q_z * q_z ) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
+    // f << dot(y) == 2 * (q_x * q_y -q_w * q_z) * u + ( 1- 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
 
-   // f << dot(y) == 2 * (q_x * q_y -q_w * q_z) * u + ( 1- 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
+    // f << dot(z) == 2 * (q_x * q_z +q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y ) * w;
 
-   // f << dot(z) == 2 * (q_x * q_z +q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y ) * w;
+    f << dot(x) ==
+        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y - q_w * q_z) * v + 2 * (q_x * q_z + q_w * q_y) * w;
+    f << dot(y) ==
+        2 * (q_x * q_y + q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
+    f << dot(z) ==
+        2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
 
-    
-    f << dot(x) == (1 - 2 * q_y * q_y - 2 * q_z * q_z ) * u + 2 * (q_x * q_y -q_w * q_z) * v + 2 * (q_x * q_z +q_w * q_y) * w;
-
-    f << dot(y) == 2 * (q_x * q_y + q_w * q_z) * u + ( 1- 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
-
-    f << dot(z) == 2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x)* v + (1 - 2 * q_x * q_x - 2 * q_y * q_y ) * w;
-
-    f << dot(u) == r_rate * v - q_rate * w  - 2 * (q_x * q_z -q_w * q_y)* g + Fx_dist;
-
+    f << dot(u) == r_rate * v - q_rate * w - 2 * (q_x * q_z - q_w * q_y) * g + Fx_dist;
     f << dot(v) == p_rate * w - r_rate * u - g * 2 * (q_y * q_z - q_w * q_x) + Fy_dist;
+    f << dot(w) == q_rate * u - p_rate * v - g * (1 - 2 * q_x * q_x - 2 * q_y * q_y) + Fz_dist;
 
-    f << dot(w) == q_rate * u - p_rate * v - g *(1 - 2 * q_x * q_x - 2 * q_y * q_y )  + Fz_dist;
+    f << dot(q_w) == 0.5 * (-p_rate * q_x - q_rate * q_y - r_rate * q_z);
+    f << dot(q_x) == 0.5 * (p_rate * q_w + r_rate * q_y - q_rate * q_z);
+    f << dot(q_y) == 0.5 * (q_rate * q_w - r_rate * q_x + p_rate * q_z);
+    f << dot(q_z) == 0.5 * (r_rate * q_w + q_rate * q_x - p_rate * q_y);
 
-    f << dot(q_w) ==  0.5 * ( - p_rate * q_x - q_rate * q_y - r_rate * q_z);
-
-    f << dot(q_x) ==  0.5 * ( p_rate * q_w + r_rate * q_y - q_rate * q_z);
-
-    f << dot(q_y) ==  0.5 * ( q_rate * q_w - r_rate * q_x + p_rate * q_z);
-
-    f << dot(q_z) ==  0.5 * ( r_rate * q_w + q_rate * q_x - p_rate * q_y);
-    
     f << dot(aux_state_px) == px;
-
     f << dot(aux_state_py) == py;
-    
     f << dot(aux_state_pz) == pz;
 
     // equation for s
@@ -90,16 +81,13 @@ int main()
     // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
-
-
-
     //quaternion objective
-    s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z )  * n1 + 2 * (q_x * q_y + q_w * q_z)* n2);
+    s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
 
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << q_w << << q_x << q_y << q_z << u << v << w  << s << p_rate << q_rate << r_rate << Fz;
-    hN << x << y << z << q_w << << q_x << q_y << q_z << u << v << w;
+    h << x << y << z << q_w << q_x << q_y << q_z << u << v << w << s << p_rate << q_rate << r_rate << Fz;
+    hN << x << y << z << q_w << q_x << q_y << q_z << u << v << w;
 
     BMatrix W = eye<bool>(h.getDim());
     BMatrix WN = eye<bool>(hN.getDim());
@@ -116,8 +104,8 @@ int main()
     ocp.minimizeLSQ(W, h);
     ocp.minimizeLSQEndTerm(WN, hN);
 
-    ocp.subjectTo(-40 * M_PI / 180 <= phi <= 40 * M_PI / 180);
-    ocp.subjectTo(-40 * M_PI / 180 <= theta <= 40 * M_PI / 180);
+    //    ocp.subjectTo(-40 * M_PI / 180 <= phi <= 40 * M_PI / 180);
+    //    ocp.subjectTo(-40 * M_PI / 180 <= theta <= 40 * M_PI / 180);
     //    ocp.subjectTo(-60 * M_PI / 180 <= r_rate <= 60 * M_PI / 180);
     ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
 
