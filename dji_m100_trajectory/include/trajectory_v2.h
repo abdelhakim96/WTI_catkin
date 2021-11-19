@@ -42,6 +42,8 @@ ros::Publisher setpoint_pos_pub;
 ros::Publisher traj_on_pub;
 ros::Publisher reg_on_pub;
 ros::Publisher point_to_view_pub;
+ros::Publisher surface_normal_pub;
+
 
 // Subscriber
 ros::Subscriber pos_sub;
@@ -82,6 +84,10 @@ double x_delay, y_delay, z_delay;
 double px;
 double py;
 double pz;
+
+double ax;
+double ay;
+double az;
 
 double t, t_last, traj_time, t_last_eachRun, traj_time_eachRun, traj_time_z, t_last_z, t_Clidar_lost_start,
     t_Clidar_return_start, t_ALLlidar_lost_start;

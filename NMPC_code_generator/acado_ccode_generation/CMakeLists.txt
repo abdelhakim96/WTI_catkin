@@ -94,6 +94,19 @@ if(QUADROTOR)
       	   ${PROJECT_LIBS}
 	)
 
+       	add_executable(nmpc_pc_learning_posaware_point_traj_ccode
+	   src/quadrotor/nmpc_pc_learning_posaware_point_traj_ccode.cpp
+	)
+	target_link_libraries(nmpc_pc_learning_posaware_point_traj_ccode
+      	   ${PROJECT_LIBS}
+	)      
+
+
+
+
+
+
+
 	add_executable(nmpc_pc_quadrotor_ccode 
 	   src/quadrotor/nmpc_pc_quadrotor_ccode.cpp
 	)

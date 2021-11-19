@@ -33,6 +33,11 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config& co
     px = config.px;
     py = config.py;
     pz = config.pz;
+
+    ax = config.ax;
+    ay = config.ay;
+    az = config.az;
+
     y_hover = config.y_hover;
     z_hover = config.z_hover;
     yaw_hover = config.yaw_hover;
@@ -190,7 +195,7 @@ int main(int argc, char** argv)
     ros::Publisher lidar_read_filtered_pub = nh.advertise<std_msgs::Float64>("range_filter", 1);
     ros::Publisher drone_velocity_pub = nh.advertise<std_msgs::Float64>("drone_vel", 1);
     point_to_view_pub = nh.advertise<geometry_msgs::PoseStamped>("/point_to_view", 1);
-
+    surface_normal_pub = nh.advertise<geometry_msgs::PoseStamped>("/surface_normal", 1);
     // Subscriber
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>(mocap_topic, 1, pos_cb);
     Llidar_read_sub = nh.subscribe<sensor_msgs::Range>(Llidar_topic, 1, Llidar_read_cb);
@@ -1314,20 +1319,26 @@ int main(int argc, char** argv)
 void publish_inspection_point()
 {
     geometry_msgs::PoseStamped ref_point;
+    geometry_msgs::PoseStamped ref_norm;
     ref_point.header.stamp = ros::Time::now();
     ref_point.header.frame_id = "map";
     if (point_tracking_on)
     {
-        //ref_point.pose.position.x = px;
-        //ref_point.pose.position.y = py;
-       // ref_point.pose.position.z = pz;
+        ref_point.pose.position.x = px;
+        ref_point.pose.position.y = py;
+        ref_point.pose.position.z = pz;
+        ref_norm.pose.position.x = ax;
+        ref_norm.pose.position.y = ay;
+        ref_norm.pose.position.z = az;
 
                    float px_p = point.pose.position.x;
                     float py_p = point.pose.position.y;
                    float pz_p = point.pose.position.z;
-                    ref_point.pose.position.x = px_p;
-                    ref_point.pose.position.y = py_p;
-                    ref_point.pose.position.z = pz_p;
+
+
+                   // ref_point.pose.position.x = px_p;
+                   // ref_point.pose.position.y = py_p;
+                   // ref_point.pose.position.z = pz_p;
    }
     else
     {
@@ -1340,6 +1351,7 @@ void publish_inspection_point()
     //ROS_INFO("point x2 %f", px_p);
     //ROS_INFO("point x3 %f", ref_point.pose.position.x);
     point_to_view_pub.publish(ref_point);
+    surface_normal_pub.publish(ref_norm);
 }
 
 double compute_ref_yaw()

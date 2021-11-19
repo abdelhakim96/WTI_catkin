@@ -265,10 +265,11 @@ void NMPC_PC::set_measurements(struct acado_struct& acadostruct,
         {
             acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_point.at(idx);
         }
-
-   
-
-
+        for (int idx = 0; idx < 3; idx++)
+        
+        {
+            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_norm.at(idx);
+        }
     }
 
     // Recompute U_ref based on new disturbance estimates
