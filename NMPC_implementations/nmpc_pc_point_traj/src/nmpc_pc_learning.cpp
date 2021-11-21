@@ -116,7 +116,7 @@ void NMPC_PC::nmpc_init(std::vector<double> posref, struct acado_struct& acadost
             if (j < acadostruct.acado_NOD - 3)
                 acadostruct.od[(i * acadostruct.acado_NOD) + j] = 0.0;
             else
-                acadostruct.od[(i * acadostruct.acado_NOD) + j] = 0.001;
+                acadostruct.od[(i * acadostruct.acado_NOD) + j] = 20.0;
         }
     }
 
@@ -261,15 +261,20 @@ void NMPC_PC::set_measurements(struct acado_struct& acadostruct,
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFx[i];
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFy[i];
         acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.distFz[i];
-        for (int idx = 0; idx < 3; idx++)
-        {
-            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_point.at(idx);
-        }
+
         for (int idx = 0; idx < 3; idx++)
         
         {
             acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_norm.at(idx);
         }
+        for (int idx = 0; idx < 3; idx++)
+        {
+            acadostruct.od[(i * acadostruct.acado_NOD) + ref_idx++] = online_data.ref_point.at(idx);
+        }
+
+
+
+
     }
 
     // Recompute U_ref based on new disturbance estimates

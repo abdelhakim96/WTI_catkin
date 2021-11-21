@@ -39,6 +39,10 @@ int main()
     OnlineData az;  // z-position of the inspection point
 
     DifferentialState aux_state_px, aux_state_py, aux_state_pz;
+    DifferentialState aux_state_ax, aux_state_ay, aux_state_az;   
+
+
+
 
     Control phi;    // the roll angle
     Control theta;  // the pitch angle
@@ -68,6 +72,15 @@ int main()
     f << dot(aux_state_px) == px;
     f << dot(aux_state_py) == py;
     f << dot(aux_state_pz) == pz;
+
+    f << dot(aux_state_ax) == ax;
+    f << dot(aux_state_ay) == ay;
+    f << dot(aux_state_az) == az;
+
+
+
+
+
 
     // equation for s
     IntermediateState n1 = (px - x);  //vector n components n=[n1;n2;n3]
@@ -115,7 +128,7 @@ int main()
     ocp.subjectTo(-40 * M_PI / 180 <= phi <= 40 * M_PI / 180);
     ocp.subjectTo(-40 * M_PI / 180 <= theta <= 40 * M_PI / 180);
 
-    ocp.subjectTo(ax * n1 + ay * n2 + az * n3 <= -d);
+    //ocp.subjectTo(ax * n1 + ay * n2 + az * n3 <= -d);
     ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
     //    ocp.subjectTo( 0.3*4.0*g <= Fz <= 2*4.0*g);
 
