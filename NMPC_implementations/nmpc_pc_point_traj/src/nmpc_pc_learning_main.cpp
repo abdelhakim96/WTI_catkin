@@ -252,7 +252,8 @@ int main(int argc, char** argv)
     ros::param::get("W_w", nmpc_struct.W(w_idx++));
     ros::param::get("W_s", nmpc_struct.W(w_idx++));
     ros::param::get("W_sdot", nmpc_struct.W(w_idx++));
-    ros::param::get("W_s2", nmpc_struct.W(w_idx++));
+    ros::param::get("W_n", nmpc_struct.W(w_idx++));
+    ros::param::get("W_a", nmpc_struct.W(w_idx++));
     ros::param::get("W_phi", nmpc_struct.W(w_idx++));
     ros::param::get("W_theta", nmpc_struct.W(w_idx++));
     ros::param::get("W_psi", nmpc_struct.W(w_idx++));
@@ -363,7 +364,8 @@ int main(int argc, char** argv)
                               ref_velocity(2),
                               1.0,
                               0.0,
-                              0.0};
+                              0.0,
+                              5.0};
 
             std::cout << "current_states = ";
             for (int idx = 0; idx < current_states.size(); idx++)

@@ -51,7 +51,7 @@ int main()
 
     const double m = 3.8;   // kg
     const double g = 9.81;  // m/s^2
-    const double d =10;
+    const double d =1;
     // Model equations:
     DifferentialEquation f;
 
@@ -87,12 +87,14 @@ int main()
     IntermediateState n2 = (py - y);
     IntermediateState n3 = (pz - z);
     IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2 + n3 * n3) + 0.001;  // Constant added for numerical stability
-    IntermediateState s, s_dot, s2;                                            // relative distance to the inspection point?
+    IntermediateState s, s_dot,s2;                                           // relative distance to the inspection point?
     //    s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
     //                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
     //simple s and s_dot
     s = (1 / norm_n) * (cos(psi) * n1 + sin(psi) * n2);
+    
 
+    s2= ax * n1 + ay * n2 + az * n3  ;
 
 
     // s_dot assumes px, py, pz velocities are negligible
@@ -102,17 +104,17 @@ int main()
      
     //s2 = norm_n;
 
-
+    
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << u << v << w << s << s_dot << norm_n << phi << theta << psi << Fz;
+    h << x << y << z << u << v << w << s << s_dot << norm_n << s2<< phi << theta << psi << Fz;
     hN << x << y << z << u << v << w;
     //    h << x << y << z << u << v << w << phi << theta << psi<< Fz << Fx_dist << Fy_dist << Fz_dist;
     //    hN << x << y << z << u << v << w << Fx_dist << Fy_dist << Fz_dist;
-
+    
     BMatrix W = eye<bool>(h.getDim());
     BMatrix WN = eye<bool>(hN.getDim());
-
+ 
     //
     // Optimal Control Problem
     //
