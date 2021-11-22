@@ -19,7 +19,10 @@ int main()
     DifferentialState u;  // the translation velocity along X_B
     DifferentialState v;  // the translation velocity along Y_B
     DifferentialState w;  // the translation velocity along Z_B
-    DifferentialState q_w, q_x, q_y, q_z;
+    DifferentialState q_x;
+    DifferentialState q_y;
+    DifferentialState q_z;
+    DifferentialState q_w;
 
     OnlineData Fx_dist;  // the external disturbance force along X_B
     OnlineData Fy_dist;  // the external disturbance force along Y_B
@@ -42,27 +45,28 @@ int main()
     // Model equations:
     DifferentialEquation f;
 
-    // f << dot(x) == (1 - 2 * q_y * q_y - 2 * q_z * q_z ) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
-
-    // f << dot(y) == 2 * (q_x * q_y -q_w * q_z) * u + ( 1- 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
-
-    // f << dot(z) == 2 * (q_x * q_z +q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y ) * w;
-
     f << dot(x) ==
-        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y - q_w * q_z) * v + 2 * (q_x * q_z + q_w * q_y) * w;
+        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
     f << dot(y) ==
-        2 * (q_x * q_y + q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
+        2 * (q_x * q_y - q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
     f << dot(z) ==
-        2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
+        2 * (q_x * q_z + q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
 
-    f << dot(u) == r_rate * v - q_rate * w - 2 * (q_x * q_z - q_w * q_y) * g + Fx_dist;
+    //    f << dot(x) ==
+    //        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y - q_w * q_z) * v + 2 * (q_x * q_z + q_w * q_y) * w;
+    //    f << dot(y) ==
+    //        2 * (q_x * q_y + q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
+    //    f << dot(z) ==
+    //        2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
+
+    f << dot(u) == r_rate * v - q_rate * w - g * 2 * (q_x * q_z - q_w * q_y) + Fx_dist;
     f << dot(v) == p_rate * w - r_rate * u - g * 2 * (q_y * q_z - q_w * q_x) + Fy_dist;
-    f << dot(w) == q_rate * u - p_rate * v - g * (1 - 2 * q_x * q_x - 2 * q_y * q_y) + Fz_dist;
+    f << dot(w) == q_rate * u - p_rate * v - g * (1 - 2 * q_x * q_x - 2 * q_y * q_y) + (1 / m) * (Fz) + Fz_dist;
 
-    f << dot(q_w) == 0.5 * (-p_rate * q_x - q_rate * q_y - r_rate * q_z);
     f << dot(q_x) == 0.5 * (p_rate * q_w + r_rate * q_y - q_rate * q_z);
     f << dot(q_y) == 0.5 * (q_rate * q_w - r_rate * q_x + p_rate * q_z);
     f << dot(q_z) == 0.5 * (r_rate * q_w + q_rate * q_x - p_rate * q_y);
+    f << dot(q_w) == 0.5 * (-p_rate * q_x - q_rate * q_y - r_rate * q_z);
 
     f << dot(aux_state_px) == px;
     f << dot(aux_state_py) == py;
@@ -74,20 +78,18 @@ int main()
     IntermediateState n3 = (pz - z);
     IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2) + 0.001;  // Constant added for numerical stability
     IntermediateState s, s_dot;                                  // relative distance to the inspection point?
-    //    s = (1 / norm_n) * (cos(psi) * cos(theta) - sin(phi) * sin(psi) * sin(theta) * n1 - cos(theta) * sin(psi) +
-    //                        cos(psi) * sin(phi) * sin(theta) * n2 - cos(phi) * sin(theta) * n3);
-    //simple s and s_dot
-    //s = (1 / norm_n) * (cos(psi) * n1 + sin(psi) * n2);
-    // s_dot assumes px, py, pz velocities are negligible
+                                                                 // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     //quaternion objective
-    s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
+    //    s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
+    s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
+    s_dot = (1 / norm_n) * (1.0);
 
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << q_w << q_x << q_y << q_z << u << v << w << s << p_rate << q_rate << r_rate << Fz;
-    hN << x << y << z << q_w << q_x << q_y << q_z << u << v << w;
+    h << x << y << z << u << v << w << q_x << q_y << q_z << q_w << s << s_dot << p_rate << q_rate << r_rate << Fz;
+    hN << x << y << z << u << v << w << q_x << q_y << q_z << q_w;
 
     BMatrix W = eye<bool>(h.getDim());
     BMatrix WN = eye<bool>(hN.getDim());
@@ -104,9 +106,9 @@ int main()
     ocp.minimizeLSQ(W, h);
     ocp.minimizeLSQEndTerm(WN, hN);
 
-    //    ocp.subjectTo(-40 * M_PI / 180 <= phi <= 40 * M_PI / 180);
-    //    ocp.subjectTo(-40 * M_PI / 180 <= theta <= 40 * M_PI / 180);
-    //    ocp.subjectTo(-60 * M_PI / 180 <= r_rate <= 60 * M_PI / 180);
+    ocp.subjectTo(-100 * M_PI / 180 <= p_rate <= 100 * M_PI / 180);
+    ocp.subjectTo(-100 * M_PI / 180 <= q_rate <= 100 * M_PI / 180);
+    ocp.subjectTo(-100 * M_PI / 180 <= r_rate <= 100 * M_PI / 180);
     ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
 
     // Export the code:
@@ -138,7 +140,7 @@ int main()
     mpc.set(CG_MODULE_PREFIX, "NMPC");
 
     std::string path = ros::package::getPath("acado_ccode_generation");
-    std::string path_dir = path + "/solver/posaware_ratecommand_NMPC_PC_learning";
+    std::string path_dir = path + "/solver/posaware_ratecommand_quaternion_NMPC_PC_learning";
     ROS_INFO("%s", path_dir.c_str());
 
     try
