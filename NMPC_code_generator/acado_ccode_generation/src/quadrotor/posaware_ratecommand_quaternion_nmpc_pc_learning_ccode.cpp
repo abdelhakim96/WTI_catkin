@@ -45,22 +45,22 @@ int main()
     // Model equations:
     DifferentialEquation f;
 
-    f << dot(x) ==
-        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
-    f << dot(y) ==
-        2 * (q_x * q_y - q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
-    f << dot(z) ==
-        2 * (q_x * q_z + q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
-
     //    f << dot(x) ==
-    //        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y - q_w * q_z) * v + 2 * (q_x * q_z + q_w * q_y) * w;
+    //        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y + q_w * q_z) * v + 2 * (q_x * q_z - q_w * q_y) * w;
     //    f << dot(y) ==
-    //        2 * (q_x * q_y + q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
+    //        2 * (q_x * q_y - q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z + q_w * q_x) * w;
     //    f << dot(z) ==
-    //        2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
+    //        2 * (q_x * q_z + q_w * q_y) * u + 2 * (q_y * q_z - q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
+
+    f << dot(x) ==
+        (1 - 2 * q_y * q_y - 2 * q_z * q_z) * u + 2 * (q_x * q_y - q_w * q_z) * v + 2 * (q_x * q_z + q_w * q_y) * w;
+    f << dot(y) ==
+        2 * (q_x * q_y + q_w * q_z) * u + (1 - 2 * q_x * q_x - 2 * q_z * q_z) * v + 2 * (q_y * q_z - q_w * q_x) * w;
+    f << dot(z) ==
+        2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
 
     f << dot(u) == r_rate * v - q_rate * w - g * 2 * (q_x * q_z - q_w * q_y) + Fx_dist;
-    f << dot(v) == p_rate * w - r_rate * u - g * 2 * (q_y * q_z - q_w * q_x) + Fy_dist;
+    f << dot(v) == p_rate * w - r_rate * u - g * 2 * (q_y * q_z + q_w * q_x) + Fy_dist;
     f << dot(w) == q_rate * u - p_rate * v - g * (1 - 2 * q_x * q_x - 2 * q_y * q_y) + (1 / m) * (Fz) + Fz_dist;
 
     f << dot(q_x) == 0.5 * (p_rate * q_w + r_rate * q_y - q_rate * q_z);
