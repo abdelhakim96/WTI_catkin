@@ -22,6 +22,6 @@
     <param name="W_sdot" type="double" value="0.0" /> <!-- Weight for ref_point derivative. -->
     <param name="W_p_rate" type="double" value="10.2" /> <!-- Weight for roll rate. -->
     <param name="W_q_rate" type="double" value="10.2" /> <!-- Weight for pitch rate. -->
-    <param name="W_r_rate" type="double" value="8.2" /> <!-- Weight for yaw rate. -->
+    <param name="W_r_rate" type="double" value="8.8" /> <!-- Weight for yaw rate. -->
     <param name="W_Fz" type="double" value="0.015" /> <!-- Weight for throttle. -->
 </launch>

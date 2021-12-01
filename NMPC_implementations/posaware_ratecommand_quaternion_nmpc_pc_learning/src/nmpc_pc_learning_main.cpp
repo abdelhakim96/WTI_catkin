@@ -143,8 +143,8 @@ void NMPC_PC::publish_cmds(struct command_struct& commandstruct)
     geometry_msgs::TwistStamped att_rate_msg;
     att_rate_msg.header.frame_id = "";
     att_rate_msg.header.stamp = ros::Time::now();
-    att_rate_msg.twist.angular.x = commandstruct.control_rate_vec[0];
-    att_rate_msg.twist.angular.y = commandstruct.control_rate_vec[1];
+    att_rate_msg.twist.angular.x = -commandstruct.control_rate_vec[1];
+    att_rate_msg.twist.angular.y = commandstruct.control_rate_vec[0];
     att_rate_msg.twist.angular.z = commandstruct.control_rate_vec[2];
     att_rate_pub.publish(att_rate_msg);
 
