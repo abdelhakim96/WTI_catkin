@@ -47,6 +47,16 @@ void ref_point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 
     current_s_sdot = {s, s_dot};
 }
+
+void ref_norm_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    ref_norm = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
+}
+
+
+
+
+
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     double roll = 0, pitch = 0, yaw = 0;
@@ -209,6 +219,7 @@ int main(int argc, char** argv)
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
     ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_trajectory/yaw", 1, ref_yaw_cb);
     ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("point_to_view", 1, ref_point_cb);
+    ref_norm_sub = nh.subscribe<geometry_msgs::PoseStamped>("/surface_normal", 1, ref_norm_cb);
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);
     //    vel_sub = private_nh.subscribe<geometry_msgs::TwistStamped>("mavros/local_position/velocity", 1, vel_cb);
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/" + mocap_topic_part + "/pose", 1, pos_cb);
@@ -267,8 +278,9 @@ int main(int argc, char** argv)
     ros::param::get("W_q_y", nmpc_struct.W(w_idx++));
     ros::param::get("W_q_z", nmpc_struct.W(w_idx++));
     ros::param::get("W_q_w", nmpc_struct.W(w_idx++));
-    ros::param::get("W_s", nmpc_struct.W(w_idx++));
-    ros::param::get("W_sdot", nmpc_struct.W(w_idx++));
+    ros::param::get("W_s1", nmpc_struct.W(w_idx++));
+    ros::param::get("W_s2", nmpc_struct.W(w_idx++));
+    ros::param::get("W_s3", nmpc_struct.W(w_idx++));
     ros::param::get("W_p_rate", nmpc_struct.W(w_idx++));
     ros::param::get("W_q_rate", nmpc_struct.W(w_idx++));
     ros::param::get("W_r_rate", nmpc_struct.W(w_idx++));
@@ -283,6 +295,7 @@ int main(int argc, char** argv)
     current_pos_att.resize(7);   // position + attitude_quaternion
     current_vel_rate.resize(6);  // linear_vel + angular_vel
     ref_point.resize(3);
+    ref_norm.resize(3);
     current_s_sdot.resize(2);
     dist_Fx.data.resize(NMPC_N + 1);
     dist_Fy.data.resize(NMPC_N + 1);
@@ -368,7 +381,11 @@ int main(int argc, char** argv)
                               current_pos_att.at(6),
                               ref_point[0],
                               ref_point[1],
-                              ref_point[2]};
+                              ref_point[2],
+                              ref_norm[0],
+                              ref_norm[1],
+                              ref_norm[2]
+                              };
 
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]
             ref_trajectory = {ref_position(0),
@@ -382,7 +399,9 @@ int main(int argc, char** argv)
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              0.0};
+                              0.0,
+                              2.0
+                              };
 
             std::cout << "current_states = ";
             for (int idx = 0; idx < current_states.size(); idx++)
@@ -404,12 +423,20 @@ int main(int argc, char** argv)
                 std::cout << ref_point[idx] << ",";
             }
             std::cout << "\n";
+            
+            std::cout << "ref_norm = ";
+            for (int idx = 0; idx < ref_norm.size(); idx++)
+            {
+                std::cout << ref_norm[idx] << ",";
+            }
+            std::cout << "\n";
 
             online_data.distFx = dist_Fx.data;
             online_data.distFy = dist_Fy.data;
             online_data.distFz = dist_Fz.data;
             online_data.ref_point = ref_point;
-
+            online_data.ref_norm = ref_norm;
+            
             nmpc_pc->nmpc_core(nmpc_struct,
                                nmpc_pc->nmpc_struct,
                                nmpc_pc->nmpc_cmd_struct,

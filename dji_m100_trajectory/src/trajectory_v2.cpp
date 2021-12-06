@@ -59,6 +59,7 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config& co
 std::vector<double> current_pos, current_att(3, 0.0);
 geometry_msgs::PoseStamped desired_pos;
 geometry_msgs::PoseStamped point;
+geometry_msgs::PoseStamped normal;
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     current_pos = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
@@ -76,6 +77,11 @@ void GP_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 void point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     point = *msg;
+}
+
+void norm_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    normal = *msg;
 }
 
 void Llidar_read_cb(const sensor_msgs::Range::ConstPtr& msg)
@@ -190,6 +196,7 @@ int main(int argc, char** argv)
     ros::Publisher lidar_read_filtered_pub = nh.advertise<std_msgs::Float64>("range_filter", 1);
     ros::Publisher drone_velocity_pub = nh.advertise<std_msgs::Float64>("drone_vel", 1);
     point_to_view_pub = nh.advertise<geometry_msgs::PoseStamped>("/point_to_view", 1);
+    norm_desired_pub = nh.advertise<geometry_msgs::PoseStamped>("/surface_normal", 1);
 
     // Subscriber
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>(mocap_topic, 1, pos_cb);
@@ -198,6 +205,7 @@ int main(int argc, char** argv)
     Rlidar_read_sub = nh.subscribe<sensor_msgs::Range>(Rlidar_topic, 1, Rlidar_read_cb);
     ros::Subscriber GP_WP_sub = nh.subscribe<geometry_msgs::PoseStamped>("/WP_GP", 1, GP_cb);
     ros::Subscriber point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view_traj", 1, point_cb);
+    ros::Subscriber norm_sub = nh.subscribe<geometry_msgs::PoseStamped>("/norm_traj", 1, norm_cb);
 
     if (use_sonar)
         sonar_read_sub = nh.subscribe<sensor_msgs::Range>(sonar_topic, 1, sonar_read_cb);
@@ -1316,30 +1324,45 @@ void publish_inspection_point()
     geometry_msgs::PoseStamped ref_point;
     ref_point.header.stamp = ros::Time::now();
     ref_point.header.frame_id = "map";
+    geometry_msgs::PoseStamped ref_normal;
+    ref_normal.header.stamp = ros::Time::now();
+    ref_normal.header.frame_id = "map";
     if (point_tracking_on)
     {
-        ref_point.pose.position.x = px;
-        ref_point.pose.position.y = py;
-        ref_point.pose.position.z = pz;
+        //ref_point.pose.position.x = px;
+        //ref_point.pose.position.y = py;
+        //ref_point.pose.position.z = pz;
 
-        //            float px_p = point.pose.position.x;
-        //            float py_p = point.pose.position.y;
-        //            float pz_p = point.pose.position.z;
-        //            ref_point.pose.position.x = px_p;
-        //            ref_point.pose.position.y = py_p;
-        //            ref_point.pose.position.z = pz_p;
+                    float px_p = point.pose.position.x;
+                    float py_p = point.pose.position.y;
+                    float pz_p = point.pose.position.z;
+                    float nx = normal.pose.position.x;
+                    float ny = normal.pose.position.y;
+                    float nz = normal.pose.position.z;
+
+                    ref_normal.pose.position.x = nx;
+                    ref_normal.pose.position.y = ny;
+                    ref_normal.pose.position.z = nz;
+                    ref_point.pose.position.x = px_p;
+                    ref_point.pose.position.y = py_p;
+                    ref_point.pose.position.z = pz_p;
+
     }
     else
     {
         ref_point.pose.position.x = x + 1;
         ref_point.pose.position.y = y;
         ref_point.pose.position.z = z;
+        ref_normal.pose.position.x = 1.0;
+        ref_normal.pose.position.y = 0.0;
+        ref_normal.pose.position.z = 0.0;
     }
 
     //ROS_INFO("point x1 %f", point.pose.position.x);
     //ROS_INFO("point x2 %f", px_p);
     //ROS_INFO("point x3 %f", ref_point.pose.position.x);
     point_to_view_pub.publish(ref_point);
+    norm_desired_pub.publish(ref_normal);
 }
 
 double compute_ref_yaw()

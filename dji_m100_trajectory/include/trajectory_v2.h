@@ -42,6 +42,7 @@ ros::Publisher setpoint_pos_pub;
 ros::Publisher traj_on_pub;
 ros::Publisher reg_on_pub;
 ros::Publisher point_to_view_pub;
+ros::Publisher norm_desired_pub;
 
 // Subscriber
 ros::Subscriber pos_sub;

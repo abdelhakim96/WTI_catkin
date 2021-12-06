@@ -40,6 +40,7 @@
 
 ros::Publisher local_pos_pub;
 ros::Publisher mesh_pos_pub;
+ros::Publisher norm_pub;
 ros::Publisher vel_pub;
 ros::Subscriber currentPos;
 ros::Subscriber state_sub;
@@ -59,6 +60,7 @@ geometry_msgs::Pose correction_vector_g;
 geometry_msgs::Point local_offset_pose_g;
 geometry_msgs::PoseStamped waypoint_g;
 geometry_msgs::PoseStamped point_g;
+geometry_msgs::PoseStamped norm_g;
 geometry_msgs::TwistStamped move;
 
 
@@ -210,6 +212,23 @@ void set_point(float x, float y, float z)
 }
 
 
+void set_norm(float nx, float ny, float nz)
+{
+
+	//ROS_INFO("Point of view set to x: %f y: %f z: %f origin frame", x*10, y*10, z*10);
+	
+
+
+	norm_g.pose.position.x = nx;
+	norm_g.pose.position.y = ny;
+	norm_g.pose.position.z = nz;
+	//waypoint_g.pose.orientation.yaw = psi;
+    //set_heading(psi);
+	norm_pub.publish(norm_g);
+	
+}
+
+
 
 int check_waypoint_reached(float pos_tolerance=2, float heading_tolerance=10)
 {
@@ -256,6 +275,7 @@ int init_publisher_subscriber(ros::NodeHandle controlnode)
 	}
 	local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/WP_GP").c_str(), 10);  
 	mesh_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_to_view_traj").c_str(), 10);  
+	norm_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/norm_traj").c_str(), 10); 
 	currentPos = controlnode.subscribe<geometry_msgs::PoseStamped>((ros_namespace + "/mavros/mocap/pose").c_str(), 10, pose_cb); 
 	dronevelocity_sub = controlnode.subscribe<std_msgs::Float64>((ros_namespace + "/drone_vel").c_str(), 10, drone_v_cb); 
 
@@ -276,26 +296,29 @@ int main(int argc, char** argv)
 
     std::vector<gnc_api_waypoint> waypointList;
 	std::vector<gnc_api_point> pointList;
+	std::vector<gnc_api_point> normList;
 	gnc_api_waypoint nextWayPoint;
 	gnc_api_point pointm;
+	gnc_api_point normm;
     //geometry_msgs::PointStamped pointm;            
 
 
     std::vector<double> vecX, vecY,vecZ, vec1,vec2,vec3;
     double wp_x, wp_y,wp_z,y1,y2,y3;
 	double p_x,p_y,p_z;
+	double normx,normy,normz;
     //std::vector<int> myVector = {1, 2, 3, 4, 5, 6};
-    std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/path_2500.txt");
+    std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/hakim.txt");
 	//std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
 
-    while (inputFile >> wp_x >> wp_y >> wp_z >> y1 >> y2 >> y3)
+    while (inputFile >> wp_x >> wp_y >> wp_z)
     {
-    vecX.push_back(wp_x/1.0);
-    vecY.push_back(wp_y/1.0);
-    vecZ.push_back(wp_z/1.0);
-	vec1.push_back(y1/1.0);
-    vec2.push_back(y2/1.0);
-    vec3.push_back(y3/1.0);
+    vecX.push_back(wp_x+68);
+    vecY.push_back(wp_y-32);
+    vecZ.push_back(wp_z-70);
+	//vec1.push_back(y1);
+    //vec2.push_back(y2);
+    //vec3.push_back(y3);
 	
     }
    
@@ -311,39 +334,46 @@ int main(int argc, char** argv)
 
  
    
-    std::vector<double> meshX1, meshX2,meshX3, meshY1, meshY2,meshY3,meshZ1, meshZ2,meshZ3,vx,vy,vz;
+    std::vector<double> meshX1, meshX2,meshX3, meshY1, meshY2,meshY3,meshZ1, meshZ2,meshZ3,vx,vy,vz,vnx, vny,vnz;
     
-    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/px_2500.txt");  //meshfile
-    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/py_2500.txt");  //meshfile
-	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/pz_2500.txt");
+    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/px.txt");  //meshfile
+    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/py.txt");  //meshfile
+	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/pz.txt");
+	std::ifstream inputFilenx("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/nx.txt");
+	std::ifstream inputFileny("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/ny.txt");
+	std::ifstream inputFilenz("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/nz.txt");
     while (inputFilex >> p_x )
     {
-    meshX1.push_back(p_x);
-    meshX2.push_back(p_y);
-    meshX3.push_back(p_z);
-	vx.push_back((p_x)/1.0);
-	
+	vx.push_back((p_x)+68);
     }
-
-
 	while (inputFiley >> p_y  )
     {
-    meshY1.push_back(p_x);
-    meshY2.push_back(p_y);
-    meshY3.push_back(p_z);
-	vy.push_back((p_y)/1.0);
+	vy.push_back((p_y)-32);
     }
-
 
 	while (inputFilez >> p_z )
     {
-    meshZ1.push_back(p_z);
-    meshZ2.push_back(p_z);
-    meshZ3.push_back(p_z);
-	vz.push_back((p_z)/1.0);
+	vz.push_back((p_z)-70);
     }
-   
-    
+
+
+
+
+    while (inputFilenx >> normx )
+    {
+	vnx.push_back((normx));
+    }
+	while (inputFileny >> normy  )
+    {
+	vny.push_back((normy));
+    }
+	while (inputFilenz >> normz )
+    {
+	vnz.push_back((normz));
+    }
+
+
+
 
 	for(int i(0); i < vx.size(); i++){
 	pointm.x = vx[i];
@@ -352,7 +382,18 @@ int main(int argc, char** argv)
 	pointList.push_back(pointm);
 	}
 
-	ros::Rate rate(5);
+
+    for(int i(0); i < vnx.size(); i++){
+	normm.x = vnx[i];
+	normm.y =  vny[i];
+	normm.z = vnz[i];
+	normList.push_back(normm);
+	}
+
+
+
+
+	ros::Rate rate(10);
     
 	ros::Time last_request = ros::Time::now();
 
@@ -366,6 +407,8 @@ int main(int argc, char** argv)
     int counter = 1;
 	set_destination(waypointList[1].x,waypointList[1].y,waypointList[1].z, waypointList[1].psi);
 	set_point(-80.0,0.0,current_pose_g.pose.position.z);
+
+	set_norm(1.0,0.0,0.0);
 	//int v_d=1;
 	int c;
 	c=1;
@@ -374,49 +417,30 @@ int main(int argc, char** argv)
 	{   
 	    ros::spinOnce();
 		rate.sleep();
-        //set_destination(waypointList[2*counter].x,waypointList[2*counter].y,waypointList[2*counter].z, waypointList[2*counter].psi);
-	    //ROS_INFO("current x %f", current_pose_g.pose.pose.position.x);
-        //set_heading( current_pose_g.pose.position.x,current_pose_g.pose.position.y, tx, ty);
-        //set_point(pointList[counter].x,pointList[counter].y,current_pose_g.pose.pose.position.z);
-				
-		//
-        //set_point(-8.0,0.0,current_pose_g.pose.position.z);
-		//{  
 
-			//set_point(-8,0,current_pose_g.pose.position.z);
 			
 			n=counter;
 
-	
-            if(counter == 1 && check_waypoint_reached(1,1) != 1)
 			
-			 {
-               set_destination(waypointList[1].x,waypointList[1].y,waypointList[1].z, waypointList[1].psi);
-			   
-			   //set_point(pointList[1].x,pointList[1].y,pointList[1].z);
-			
-			}
-			
-			else{
-	         //ROS_INFO("reached w.p");
-			
-			if (counter < waypointList.size()-1)
+			if (counter < waypointList.size()-10)
 			{   
 				
                 
 			  	set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
                 
-   
+           
 				set_point(pointList[n].x,pointList[n].y,pointList[n].z);
-				ROS_INFO("x %f", waypointList[n].x);
-				ROS_INFO("y %f", waypointList[n].y);
-				ROS_INFO("py %f", pointList[n].y);
+
+                set_norm(normList[n].x,normList[n].y,normList[n].z);
+                
+
+				ROS_INFO("x %f", waypointList[n].x-68.0);
+				ROS_INFO("y %f", waypointList[n].y+32.0);
+				ROS_INFO("px %f", pointList[n].x-68.0);
+				ROS_INFO("py %f", pointList[n].y+32.0);
 				ROS_INFO("n %d", n);
 				counter++;
 	
-                
-				//}
-			  //ROS_INFO("counter");
 			 
 			}
 
@@ -424,7 +448,7 @@ int main(int argc, char** argv)
 			//else{
                  //set_destination(waypointList[waypointList.size()-10].x,waypointList[waypointList.size()-10].y,waypointList[waypointList.size()-10].z, waypointList[waypointList.size()-10].psi);
 			//}
-			}
+			//}
         //ROS_INFO("x %f", waypointList[counter-1].x);
 		//ROS_INFO("y %f", waypointList[counter-1].y);
 		//ROS_INFO("z %f", waypointList[counter-1].z);     

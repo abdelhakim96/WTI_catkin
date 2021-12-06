@@ -114,6 +114,13 @@ if(QUADROTOR)
 	target_link_libraries(nmpc_pc_quadrotor_ccode
       	   ${PROJECT_LIBS}
 	)
-	
+	add_executable(quaternion_point_traj_ccode 
+	   src/quadrotor/quaternion_point_traj_ccode.cpp
+	)
+	target_link_libraries(quaternion_point_traj_ccode
+      	   ${PROJECT_LIBS}
+	)
+
+
 endif(QUADROTOR)
 

@@ -28,12 +28,16 @@ int main()
     OnlineData Fy_dist;  // the external disturbance force along Y_B
     OnlineData Fz_dist;  // the external disturbance force along Z_B
 
-    OnlineData px;  // x-position of the inspection point
-    OnlineData py;  // y-position of the inspection point
-    OnlineData pz;  // z-position of the inspection point
+    OnlineData p_x;  // x-position of the inspection point
+    OnlineData p_y;  // y-position of the inspection point
+    OnlineData p_z;  // z-position of the inspection point
+
+    OnlineData n_x;  // surface normal x component
+    OnlineData n_y;  // surface normal x component
+    OnlineData n_z;  // surface normal x component
 
     DifferentialState aux_state_px, aux_state_py, aux_state_pz;
-
+    DifferentialState aux_state_nx, aux_state_ny, aux_state_nz;
     Control p_rate;  // the roll rate
     Control q_rate;  // the pitch rate
     Control r_rate;  // the yaw rate
@@ -41,7 +45,7 @@ int main()
 
     const double m = 3.8;   // kg
     const double g = 9.81;  // m/s^2
-
+    const double d=10.0;   //m
     // Model equations:
     DifferentialEquation f;
 
@@ -68,27 +72,32 @@ int main()
     f << dot(q_z) == 0.5 * (r_rate * q_w + q_rate * q_x - p_rate * q_y);
     f << dot(q_w) == 0.5 * (-p_rate * q_x - q_rate * q_y - r_rate * q_z);
 
-    f << dot(aux_state_px) == px;
-    f << dot(aux_state_py) == py;
-    f << dot(aux_state_pz) == pz;
+    f << dot(aux_state_px) == p_x;
+    f << dot(aux_state_py) == p_y;
+    f << dot(aux_state_pz) == p_z;
+    f << dot(aux_state_nx) == n_x;
+    f << dot(aux_state_ny) == n_y;
+    f << dot(aux_state_nz) == n_z;
 
     // equation for s
-    IntermediateState n1 = (px - x);  //vector n components n=[n1;n2;n3]
-    IntermediateState n2 = (py - y);
-    IntermediateState n3 = (pz - z);
-    IntermediateState norm_n = sqrt(n1 * n1 + n2 * n2) + 0.001;  // Constant added for numerical stability
-    IntermediateState s, s_dot;                                  // relative distance to the inspection point?
+    IntermediateState a_x = (p_x - x);  //vector n components a=[a_x;a_y;a_z]
+    IntermediateState a_y = (p_y - y);
+    IntermediateState a_z = (p_z - z);
+    IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y) + 0.0001;  // Constant added for numerical stability
+    IntermediateState s_1, s_2 , s_3;                                 // relative distance to the inspection point?
                                                                  // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     //quaternion objective
-      s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
+    s_1 = (1 / norm_a) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * a_x + 2 * (q_x * q_y + q_w * q_z) * a_y);
+    s_2 = norm_a;
+    s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
    // s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
    // s_dot = (1 / norm_n) * (1.0);
 
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << u << v << w << q_x << q_y << q_z << q_w << s << s_dot << p_rate << q_rate << r_rate << Fz;
+    h << x << y << z << u << v << w << q_x << q_y << q_z << q_w << s_1 << s_2 << s_3 << p_rate << q_rate << r_rate << Fz;
     hN << x << y << z << u << v << w << q_x << q_y << q_z << q_w;
 
     BMatrix W = eye<bool>(h.getDim());
@@ -140,7 +149,7 @@ int main()
     mpc.set(CG_MODULE_PREFIX, "NMPC");
 
     std::string path = ros::package::getPath("acado_ccode_generation");
-    std::string path_dir = path + "/solver/posaware_ratecommand_quaternion_NMPC_PC_learning";
+    std::string path_dir = path + "/solver/quaternion_point_traj_ccode";
     ROS_INFO("%s", path_dir.c_str());
 
     try
