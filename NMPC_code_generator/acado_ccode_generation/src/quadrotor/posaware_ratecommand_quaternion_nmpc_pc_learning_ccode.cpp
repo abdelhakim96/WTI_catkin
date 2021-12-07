@@ -82,9 +82,9 @@ int main()
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     //quaternion objective
-    //    s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
-    s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
-    s_dot = (1 / norm_n) * (1.0);
+      s = (1 / norm_n) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * n1 + 2 * (q_x * q_y + q_w * q_z) * n2);
+   // s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
+   // s_dot = (1 / norm_n) * (1.0);
 
     // Reference functions and weighting matrices:
     Function h, hN;
