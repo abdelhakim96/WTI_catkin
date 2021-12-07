@@ -399,8 +399,8 @@ int main(int argc, char** argv)
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              0.0,
-                              2.0
+                              3.0,
+                              5.0
                               };
 
             std::cout << "current_states = ";

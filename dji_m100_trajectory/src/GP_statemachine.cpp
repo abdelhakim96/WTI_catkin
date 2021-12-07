@@ -336,9 +336,9 @@ int main(int argc, char** argv)
    
     std::vector<double> meshX1, meshX2,meshX3, meshY1, meshY2,meshY3,meshZ1, meshZ2,meshZ3,vx,vy,vz,vnx, vny,vnz;
     
-    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/px.txt");  //meshfile
-    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/py.txt");  //meshfile
-	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/pz.txt");
+    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/px_5000.txt");  //meshfile
+    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/py_5000.txt");  //meshfile
+	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/pz_5000.txt");
 	std::ifstream inputFilenx("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/nx.txt");
 	std::ifstream inputFileny("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/ny.txt");
 	std::ifstream inputFilenz("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Generating_normals/nz.txt");
@@ -393,7 +393,7 @@ int main(int argc, char** argv)
 
 
 
-	ros::Rate rate(10);
+	ros::Rate rate(0.1);
     
 	ros::Time last_request = ros::Time::now();
 

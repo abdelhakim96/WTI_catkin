@@ -33,6 +33,11 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config& co
     px = config.px;
     py = config.py;
     pz = config.pz;
+
+    nxx = config.nx;
+    nyy = config.ny;
+    nzz = config.nz;
+
     y_hover = config.y_hover;
     z_hover = config.z_hover;
     yaw_hover = config.yaw_hover;
@@ -1332,7 +1337,7 @@ void publish_inspection_point()
         //ref_point.pose.position.x = px;
         //ref_point.pose.position.y = py;
         //ref_point.pose.position.z = pz;
-
+                    
                     float px_p = point.pose.position.x;
                     float py_p = point.pose.position.y;
                     float pz_p = point.pose.position.z;
@@ -1340,20 +1345,21 @@ void publish_inspection_point()
                     float ny = normal.pose.position.y;
                     float nz = normal.pose.position.z;
 
-                    ref_normal.pose.position.x = nx;
-                    ref_normal.pose.position.y = ny;
-                    ref_normal.pose.position.z = nz;
-                    ref_point.pose.position.x = px_p;
-                    ref_point.pose.position.y = py_p;
-                    ref_point.pose.position.z = pz_p;
+                    ref_normal.pose.position.x = nxx;
+                    ref_normal.pose.position.y = nyy;
+                    ref_normal.pose.position.z = nzz;
+
+                    ref_point.pose.position.x = px;
+                    ref_point.pose.position.y = py;
+                    ref_point.pose.position.z = pz;
 
     }
     else
     {
-        ref_point.pose.position.x = x + 1;
-        ref_point.pose.position.y = y;
+        ref_point.pose.position.x = -5.0;
+        ref_point.pose.position.y = 0.0;
         ref_point.pose.position.z = z;
-        ref_normal.pose.position.x = 1.0;
+        ref_normal.pose.position.x = -1.0;
         ref_normal.pose.position.y = 0.0;
         ref_normal.pose.position.z = 0.0;
     }
