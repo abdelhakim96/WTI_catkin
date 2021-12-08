@@ -1345,21 +1345,21 @@ void publish_inspection_point()
                     float ny = normal.pose.position.y;
                     float nz = normal.pose.position.z;
 
-                    ref_normal.pose.position.x = nxx;
-                    ref_normal.pose.position.y = nyy;
-                    ref_normal.pose.position.z = nzz;
+                    ref_normal.pose.position.x = nx;
+                    ref_normal.pose.position.y = ny;
+                    ref_normal.pose.position.z = 0;
 
-                    ref_point.pose.position.x = px;
-                    ref_point.pose.position.y = py;
-                    ref_point.pose.position.z = pz;
+                    ref_point.pose.position.x = px_p;
+                    ref_point.pose.position.y = py_p;
+                    ref_point.pose.position.z = pz_p;
 
     }
     else
     {
-        ref_point.pose.position.x = -5.0;
+        ref_point.pose.position.x = -8.0;
         ref_point.pose.position.y = 0.0;
         ref_point.pose.position.z = z;
-        ref_normal.pose.position.x = -1.0;
+        ref_normal.pose.position.x = 1.0;
         ref_normal.pose.position.y = 0.0;
         ref_normal.pose.position.z = 0.0;
     }

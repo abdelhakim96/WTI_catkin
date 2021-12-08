@@ -14,8 +14,14 @@ clc
 mx = dlmread('MeshX.txt');
 my = dlmread('MeshY.txt');
 mz = dlmread('MeshZ.txt');
-path=dlmread('hakim.txt');
+path=dlmread('path.txt');
 
+
+for i=1:length(path)/2
+   path(i+1,:)=[]; 
+end
+path(:,4:6)=[];
+path_i=path;
 px=(mx(:,1)+mx(:,2)+mx(:,3))/3;
 py=(my(:,1)+my(:,2)+my(:,3))/3;
 pz=(mz(:,1)+mz(:,2)+mz(:,3))/3;
@@ -39,6 +45,52 @@ end
 nx=n(:,1);
 ny=n(:,2);
 nz=n(:,3);
+d=1000;
+
+for i=1:length(path)
+for j=1:length(path)
+    
+    d1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
+    %d1= (Path(2*i-1,2)-y(j))^2;
+    %d1=(path_new(i,2)-py(j))^2;
+    
+    if (d1-0)^2<(d-0)^2
+        d=d1;
+        n=j;
+        
+    end
+    
+
+end 
+
+
+
+
+nn(i)=n;
+
+dd(i)=d;
+x1(i)=px(n);
+y1(i)=py(n);
+z1(i)=pz(n);
+nx_o(i)=nx(n);
+ny_o(i)=ny(n);
+nz_o(i)=nz(n);
+d=100000;
+n=0;
+end
+
+
+px=x1;
+py=y1;
+pz=z1;
+nx=nx_o;
+ny=ny_o;
+nz=nz_o;
+
+
+
+
+
 
 for j=1:5
 for  i=1:length(px)-1
@@ -74,13 +126,13 @@ for  i=1:length(px)-1
     nz1(2*i+1)=nz(i+1);
     
     
-    %path_new1(2*i-1,:)= path(i,:);
-    %path_new1(2*i,:)=( path(i,:)+ path(i+1,:))/2;
-    %path_new1(2*i+1,:)= path(i+1,:);
+    path1(2*i-1,:)= path(i,:);
+    path1(2*i,:)=( path(i,:)+ path(i+1,:))/2;
+    path1(2*i+1,:)= path(i+1,:);
     
     
     if i==length(px)-1
-       % path=path_new;
+        path=path1;
         px=px1;
         py=py1;
         pz=pz1;
