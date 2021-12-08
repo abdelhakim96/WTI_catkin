@@ -1347,7 +1347,7 @@ void publish_inspection_point()
 
                     ref_normal.pose.position.x = nx;
                     ref_normal.pose.position.y = ny;
-                    ref_normal.pose.position.z = nz;
+                    ref_normal.pose.position.z = 0;
 
                     ref_point.pose.position.x = px_p;
                     ref_point.pose.position.y = py_p;
