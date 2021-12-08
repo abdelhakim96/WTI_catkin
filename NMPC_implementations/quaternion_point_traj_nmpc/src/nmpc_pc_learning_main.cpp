@@ -390,7 +390,7 @@ int main(int argc, char** argv)
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]
             ref_trajectory = {ref_position(0),
                               ref_position(1),
-                              ref_position(2),
+                              ref_point[2],
                               ref_velocity(0),
                               ref_velocity(1),
                               ref_velocity(2),
@@ -399,8 +399,8 @@ int main(int argc, char** argv)
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              3.0,
-                              5.0
+                              5,
+                              -10.0
                               };
 
             std::cout << "current_states = ";
