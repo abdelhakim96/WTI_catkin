@@ -388,8 +388,8 @@ int main(int argc, char** argv)
                               };
 
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]
-            ref_trajectory = {ref_position(0),
-                              ref_position(1),
+            ref_trajectory = {ref_point[0],
+                              ref_point[1],
                               ref_point[2],
                               ref_velocity(0),
                               ref_velocity(1),
@@ -399,8 +399,8 @@ int main(int argc, char** argv)
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              5,
-                              -10.0
+                              10.0,
+                              -11.0
                               };
 
             std::cout << "current_states = ";
@@ -430,6 +430,8 @@ int main(int argc, char** argv)
                 std::cout << ref_norm[idx] << ",";
             }
             std::cout << "\n";
+
+            
 
             online_data.distFx = dist_Fx.data;
             online_data.distFy = dist_Fy.data;

@@ -20,7 +20,7 @@ using namespace Eigen;
 const double rad2deg = 180/M_PI;
 
 // Other Subscribers
-ros::Subscriber trajectory_start_sub, ref_trajectory_sub, ref_trajectory_delay_sub, ref_velocity_sub;
+ros::Subscriber trajectory_start_sub, ref_trajectory_sub, ref_trajectory_delay_sub, ref_velocity_sub, point_sub, normal_sub;
 
 // UAV feedback subscribers
 ros::Subscriber pos_att_sub, local_vel_rates_sub;
@@ -39,6 +39,7 @@ Vector3d ref_trajectory;
 Vector3d ref_trajectory_delay;
 Vector3d ref_velocity;
 Vector3d current_pos,current_att;
+Vector3d point,normal;
 Vector3d current_vel,current_rates;
 Vector3d nmpc_ryp;
 Vector2d nmpc_Fz;

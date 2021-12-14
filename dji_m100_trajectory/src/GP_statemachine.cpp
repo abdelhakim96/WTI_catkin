@@ -393,7 +393,7 @@ int main(int argc, char** argv)
 
 
 
-	ros::Rate rate(10);
+	ros::Rate rate(2);
     
 	ros::Time last_request = ros::Time::now();
 

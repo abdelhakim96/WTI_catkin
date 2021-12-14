@@ -31,6 +31,16 @@ void ref_trajectory_cb(const geometry_msgs::Vector3::ConstPtr& msg)
 {
     ref_trajectory << msg->x, msg->y, msg->z;
 }
+
+
+
+
+
+
+
+
+
+
 void ref_trajectory_delay_cb(const geometry_msgs::Vector3::ConstPtr& msg)
 {
     ref_trajectory_delay << msg->x, msg->y, msg->z;
@@ -52,6 +62,31 @@ void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
     current_att(2) = rad2deg*current_att(2);
 
 }
+
+
+void point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    point << msg->pose.position.x,msg->pose.position.y,msg->pose.position.z;
+}
+
+void norm_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    normal << msg->pose.position.x,msg->pose.position.y,msg->pose.position.z;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void local_vel_rates_cb(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
     current_vel << msg->twist.linear.x,msg->twist.linear.y,msg->twist.linear.z;
@@ -156,6 +191,10 @@ int main(int argc, char **argv)
     ref_trajectory_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_trajectory_cb);
     ref_trajectory_delay_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position_delayed", 1, ref_trajectory_delay_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
+
+    point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view_traj", 1, point_cb);
+    normal_sub = nh.subscribe<geometry_msgs::PoseStamped>("/norm_traj", 1, norm_cb);
+
 
     // UAV feedback subscribers
     pos_att_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/mocap/pose", 1, pos_cb);
@@ -319,16 +358,22 @@ int main(int argc, char **argv)
             print_results<< std::fixed << std::setprecision(6) <<traj_time<<",";
             for(int j=0; j<3; j++)
                 print_results<<ref_trajectory(j)<<",";
-            for(int j=0; j<3; j++)
-                print_results<<ref_trajectory_delay(j)<<",";
-            for(int j=0; j<3; j++)
-                print_results<<ref_velocity(j)<<",";
+         //   for(int j=0; j<3; j++)
+         //       print_results<<ref_trajectory_delay(j)<<",";
             for(int j=0; j<3; j++)
                 print_results<<current_pos(j)<<",";
+            for(int j=0; j<3; j++)
+                print_results<<point(j)<<","; 
+            for(int j=0; j<3; j++)
+                print_results<<normal(j)<<",";       
             for(int j=0; j<3; j++)
                 print_results<<current_vel(j)<<",";
             for(int j=0; j<3; j++)
                 print_results<<current_att(j)<<",";
+            for(int j=0; j<3; j++)
+                print_results<<current_vel(j)<<",";
+           // for(int j=0; j<3; j++)
+           //     print_results<<ref_velocity(j)<<",";    
             for(int j=0; j<3; j++)
                 print_results<<current_rates(j)<<",";
             print_results<<rad2deg*nmpc_ryp(0)<<","<<rad2deg*nmpc_ryp(1)<<","<<rad2deg*nmpc_ryp(2)

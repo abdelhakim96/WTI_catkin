@@ -63,6 +63,7 @@ int main()
     f << dot(z) ==
         2 * (q_x * q_z - q_w * q_y) * u + 2 * (q_y * q_z + q_w * q_x) * v + (1 - 2 * q_x * q_x - 2 * q_y * q_y) * w;
 
+
     f << dot(u) == r_rate * v - q_rate * w - g * 2 * (q_x * q_z - q_w * q_y) + Fx_dist;
     f << dot(v) == p_rate * w - r_rate * u - g * 2 * (q_y * q_z + q_w * q_x) + Fy_dist;
     f << dot(w) == q_rate * u - p_rate * v - g * (1 - 2 * q_x * q_x - 2 * q_y * q_y) + (1 / m) * (Fz) + Fz_dist;
@@ -79,11 +80,20 @@ int main()
     f << dot(aux_state_ny) == n_y;
     f << dot(aux_state_nz) == n_z;
 
+
+
     // equation for s
     IntermediateState a_x = (p_x - x);  //vector n components a=[a_x;a_y;a_z]
     IntermediateState a_y = (p_y - y);
     IntermediateState a_z = (p_z - z);
-    IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y) + 0.0001;  // Constant added for numerical stability
+
+    IntermediateState a_xr = (p_x - x);  //vector n components a=[a_x;a_y;a_z]
+    IntermediateState a_yr = (p_y - y);
+    IntermediateState a_zr = (p_z - z);
+
+
+
+    IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y) + 0.00001;  // Constant added for numerical stability
     IntermediateState s_1, s_2 , s_3;                                 // relative distance to the inspection point?
                                                                  // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
@@ -93,6 +103,7 @@ int main()
     s_1 = (1 / norm_a) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     s_2 = norm_a;
     s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
+    
    // s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
    // s_dot = (1 / norm_n) * (1.0);
 
