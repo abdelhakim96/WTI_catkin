@@ -15,8 +15,7 @@ mx = dlmread('MeshX.txt');
 my = dlmread('MeshY.txt');
 mz = dlmread('MeshZ.txt');
 path=dlmread('path.txt');
-
-
+mxx=mx;
 for i=1:length(path)/2
    path(i+1,:)=[]; 
 end
@@ -25,6 +24,8 @@ path_i=path;
 px=(mx(:,1)+mx(:,2)+mx(:,3))/3;
 py=(my(:,1)+my(:,2)+my(:,3))/3;
 pz=(mz(:,1)+mz(:,2)+mz(:,3))/3;
+
+
 
 v1=[mx(:,1) my(:,1) mz(:,1)];
 v2=[mx(:,2) my(:,2) mz(:,2)];
@@ -45,6 +46,11 @@ end
 nx=n(:,1);
 ny=n(:,2);
 nz=n(:,3);
+
+nx_160=n(:,1);
+ny_160=n(:,2);
+nz_160=n(:,3);
+
 d=1000;
 
 for i=1:length(path)
@@ -75,9 +81,16 @@ z1(i)=pz(n);
 nx_o(i)=nx(n);
 ny_o(i)=ny(n);
 nz_o(i)=nz(n);
+mx_o(i,:)=mx(n,:);
+my_o(i,:)=my(n,:);
+mz_o(i,:)=mz(n,:);
+
 d=100000;
 n=0;
 end
+
+
+
 
 
 px=x1;
@@ -86,9 +99,16 @@ pz=z1;
 nx=nx_o;
 ny=ny_o;
 nz=nz_o;
+mx=mx_o;
+my=my_o;
+mz=mz_o;
+px_160=px;
+py_160=py;
+pz_160=pz;
 
-
-
+mesh_x=mx_o;
+mesh_y=my_o;
+mesh_z=mz_o;
 
 
 
@@ -131,6 +151,25 @@ for  i=1:length(px)-1
     path1(2*i+1,:)= path(i+1,:);
     
     
+    
+    mx1(2*i-1,:)=mx(i,:);
+    mx1(2*i,:)=(mx(i,:)+mx(i+1,:))/2;
+    
+    mx1(2*i+1,:)=mx(i+1,:);
+    
+    my1(2*i-1,:)=my(i,:);
+    my1(2*i,:)=(my(i,:)+my(i+1,:))/2;
+    
+    my1(2*i+1,:)=my(i+1,:);
+    
+    mz1(2*i-1,:)=mz(i,:);
+    mz1(2*i,:)=(mz(i,:)+mz(i+1,:))/2;
+    
+    mz1(2*i+1,:)=mz(i+1,:);
+    
+    
+    
+    
     if i==length(px)-1
         path=path1;
         px=px1;
@@ -139,6 +178,9 @@ for  i=1:length(px)-1
         nx=nx1;
         ny=ny1;
         nz=nz1;
+        mx=mx1;
+        my=my1;
+        mz=mz1;
         
     end
     
@@ -156,17 +198,27 @@ writematrix(nz', "nz.txt");
 
 writematrix(n, "n.txt");
 
+writematrix(mx', "mx.txt");
+
+writematrix(my', "my.txt");
+
+writematrix(mz', "mz.txt");
 
 
+writematrix(px_160', "px_160.txt");
+writematrix(py_160', "py_160.txt");
+writematrix(pz_160', "pz_160.txt");
+
+writematrix(nx_o', "nx_160.txt");
+writematrix(ny_o', "ny_160.txt");
+writematrix(nz_o', "nz_160.txt");
 
 
+writematrix(mesh_x', "mesh_x.txt");
 
+writematrix(mesh_y', "mesh_y.txt");
 
-
-
-
-
-
+writematrix(mesh_z', "mesh_z.txt");
 
 
 
@@ -178,9 +230,11 @@ set(0,'defaultfigurecolor',[1 1 1])
 handle = figure;
 plot3(path(:,1),path(:,2),path(:,3),'b', 'LineWidth', 2.0,'LineSmoothing', 'on');
 hold on
-quiver3(px',py',pz',nx',ny',nz','g')
+quiver3(px_160',py_160',pz_160',nx_o',ny_o',nz_o','g')
+%quiver3(px',py',pz',nx',ny',nz','g')
+
 hold on;
-patch(mx',my',mz','r','EdgeColor','k','FaceAlpha',0.7);
+patch(mx_o',my_o',mz_o','r','EdgeColor','k','FaceAlpha',0.7);
 xlabel('x[m]');
 ylabel('y[m]');
 zlabel('z[m]');

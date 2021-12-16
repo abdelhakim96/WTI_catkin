@@ -51,14 +51,22 @@ set(gcf,'color','w');
 plot(t,s1, 'LineWidth', 3.0,'LineSmoothing', 'on');
 
 figure
+set(gcf,'color','w');
+plot(t,s22, 'k','LineWidth', 3.0,'LineSmoothing', 'on');
+hold on
 plot(t,s2,'b','LineWidth', 3.0,'LineSmoothing', 'on');
 hold on
-plot(t,s22, 'k','LineWidth', 3.0,'LineSmoothing', 'on');
+yline(10,'--','r','LineWidth', 3.0);
 
+legend('Waypoint trajectory','MPC obtained trajectory', 'Safe Distance')
+xlabel('time [s]');
+ylabel('Distance from turbine [m]');
 figure 
 
-plot(t,s3, 'LineWidth', 3.0,'LineSmoothing', 'on');
-
+plot(t(1:20:end),s1(1:20:end)*100, 'k', 'LineWidth', 3.0,'LineSmoothing', 'on');
+hold on
+xlabel('time [s]');
+ylabel('Coverage %');
 count=0;
 for i=1:length(p)-1
    
@@ -76,19 +84,28 @@ for i=1:length(p)-1
 end
 event(i+1)=0;
 figure
+
+set(gcf,'color','w');
+
 plot3(x_ref(:,1),x_ref(:,2),x_ref(:,3),'g', 'LineWidth', 3.0,'LineSmoothing', 'on');
 hold on
 scatter3(x_ref(:,1),x_ref(:,2),x_ref(:,3),10,s22, 'filled');
 
 figure
+
+set(gcf,'color','w');
+
 plot3(x_ref(:,1)-68,x_ref(:,2)+32,x_ref(:,3)+70,'k', 'LineWidth', 3.0,'LineSmoothing', 'on');
 hold on
 scatter3(x(:,1)-68,x(:,2)+32,x(:,3)+70,10,s2, 'filled');
 hold on
-patch(mx',my',mz','r','EdgeColor','k','FaceAlpha',0.7);
-
-
+patch(mx',my',mz','w','EdgeColor','k','FaceAlpha',0.7);
+xlabel('x [m]');
+ylabel('y [m]');
+zlabel('z [m]');
+legend('Waypoint trajectory','MPC obtained trajectory')
 cb1 = colorbar(); 
+ylabel(cb1, 'distance from turbine [m]')
 
 
 %scatter(t(1:50:end), s1(1:50:end))

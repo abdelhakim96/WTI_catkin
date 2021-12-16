@@ -15,8 +15,7 @@ mx = dlmread('MeshX.txt');
 my = dlmread('MeshY.txt');
 mz = dlmread('MeshZ.txt');
 path=dlmread('path.txt');
-
-
+mxx=mx;
 for i=1:length(path)/2
    path(i+1,:)=[]; 
 end
@@ -26,16 +25,15 @@ px=(mx(:,1)+mx(:,2)+mx(:,3))/3;
 py=(my(:,1)+my(:,2)+my(:,3))/3;
 pz=(mz(:,1)+mz(:,2)+mz(:,3))/3;
 
+px_160=px;
+py_160=py;
+pz_160=pz;
+
+
 v1=[mx(:,1) my(:,1) mz(:,1)];
 v2=[mx(:,2) my(:,2) mz(:,2)];
+
 v3=[mx(:,3) my(:,3) mz(:,3)];
-
-
-v=v2-v1;
-vx=v(:,1);
-vy=v(:,2);
-vz=v(:,3);
-
 
 for i=1:length(mx)
     
@@ -56,8 +54,7 @@ d=1000;
 for i=1:length(path)
 for j=1:length(path)
     
-    d1 = ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
-    
+    d1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
     %d1= (Path(2*i-1,2)-y(j))^2;
     %d1=(path_new(i,2)-py(j))^2;
     
@@ -82,7 +79,10 @@ z1(i)=pz(n);
 nx_o(i)=nx(n);
 ny_o(i)=ny(n);
 nz_o(i)=nz(n);
-v_o(i)=v(n);
+mx_o(i,:)=mx(n,:);
+my_o(i,:)=my(n,:);
+mz_o(i,:)=mz(n,:);
+
 d=100000;
 n=0;
 end
@@ -94,8 +94,11 @@ pz=z1;
 nx=nx_o;
 ny=ny_o;
 nz=nz_o;
+mx=mx_o;
+my=my_o;
+mz=mz_o;
 
-v=v_o;
+
 
 
 
@@ -134,14 +137,27 @@ for  i=1:length(px)-1
     nz1(2*i+1)=nz(i+1);
     
     
-    v1(2*i-1)=v(i);
-    v1(2*i)=(v(i)+v(i+1))/2;
-    v1(2*i+1)=v(i+1);
-    
-    
     path1(2*i-1,:)= path(i,:);
     path1(2*i,:)=( path(i,:)+ path(i+1,:))/2;
     path1(2*i+1,:)= path(i+1,:);
+    
+    
+    
+    mx1(2*i-1,:)=mx(i,:);
+    mx1(2*i,:)=(mx(i,:)+mx(i+1,:))/2;
+    
+    mx1(2*i+1,:)=mx(i+1,:);
+    
+    my1(2*i-1,:)=my(i,:);
+    my1(2*i,:)=(my(i,:)+my(i+1,:))/2;
+    
+    my1(2*i+1,:)=my(i+1,:);
+    
+    mz1(2*i-1,:)=mz(i,:);
+    mz1(2*i,:)=(mz(i,:)+mz(i+1,:))/2;
+    
+    mz1(2*i+1,:)=mz(i+1,:);
+    
     
     
     
@@ -153,6 +169,9 @@ for  i=1:length(px)-1
         nx=nx1;
         ny=ny1;
         nz=nz1;
+        mx=mx1;
+        my=my1;
+        mz=mz1;
         
     end
     
@@ -167,13 +186,28 @@ writematrix(pz', "pz.txt");
 writematrix(nx', "nx.txt");
 writematrix(ny', "ny.txt");
 writematrix(nz', "nz.txt");
-writematrix(v, "v.txt");
+
 writematrix(n, "n.txt");
 
+writematrix(mx', "mx.txt");
+
+writematrix(my', "my.txt");
+
+writematrix(mz', "mz.txt");
+
+
+writematrix(px_160', "px_160.txt");
+writematrix(py_160', "py_160.txt");
+writematrix(pz_160', "pz_160.txt");
 
 
 
 
+
+
+
+
+    
 
 
 %run('inspectionScenario');
@@ -183,7 +217,7 @@ plot3(path(:,1),path(:,2),path(:,3),'b', 'LineWidth', 2.0,'LineSmoothing', 'on')
 hold on
 quiver3(px',py',pz',nx',ny',nz','g')
 hold on;
-patch(mx',my',mz','r','EdgeColor','k','FaceAlpha',0.7);
+patch(mx_o',my_o',mz_o','r','EdgeColor','k','FaceAlpha',0.7);
 xlabel('x[m]');
 ylabel('y[m]');
 zlabel('z[m]');

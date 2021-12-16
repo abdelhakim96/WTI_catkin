@@ -108,6 +108,13 @@ if(QUADROTOR)
       	   ${PROJECT_LIBS}
 	)
 
+	add_executable(PAMPC_ccode 
+	   src/quadrotor/PAMPC_ccode.cpp
+	)
+	target_link_libraries(PAMPC_ccode
+      	   ${PROJECT_LIBS}
+	)
+
 	add_executable(nmpc_pc_quadrotor_ccode 
 	   src/quadrotor/nmpc_pc_quadrotor_ccode.cpp
 	)
