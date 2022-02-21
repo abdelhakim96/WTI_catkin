@@ -387,13 +387,13 @@ int main(int argc, char** argv)
             ref_trajectory = {ref_position[0],
                               ref_position[1],
                               ref_position[2],
-                              ref_att_quat.getX(),
-                              ref_att_quat.getY(),
-                              ref_att_quat.getZ(),
-                              ref_att_quat.getW(),
-                              ref_velocity(0),
-                              ref_velocity(1),
-                              ref_velocity(2),
+                              ref_att_quat.getX(),  //qx
+                              ref_att_quat.getY(),  //qy
+                              ref_att_quat.getZ(),  //qz
+                              ref_att_quat.getW(),  //qw
+                              0.0,
+                              0.0,
+                              0.0,
                               0.0,
                               0.0
                               };

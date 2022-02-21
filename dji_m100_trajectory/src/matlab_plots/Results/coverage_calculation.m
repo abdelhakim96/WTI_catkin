@@ -4,7 +4,7 @@ clear all
 
 %input data
 
-M = dlmread('Results_1/test3.txt');
+M = dlmread('Results_1/test2.txt');
 mx = dlmread('mesh_x.txt');
 my = dlmread('mesh_y.txt');
 mz = dlmread('mesh_z.txt');
@@ -96,7 +96,7 @@ roll=0*pi/180;
 
 %for i=1:length(px)
 count=0;
-for i=1:10
+for i=1:162
 
  p_c= [px(i);py(i);pz(i);1];
  p1=[mx(i,1);my(i,1);mz(i,1);1];
@@ -223,7 +223,7 @@ hold on
 %plot3(x1(1:40,1),x1(1:40,2),x1(1:40,3),'r', 'LineWidth', 3.0,'LineSmoothing', 'on');
 
 
-for i=10:10
+for i=1:162
     if out(i)==1
         
         scatter3(x1(i,1),x1(i,2),x1(i,3),'r', 'LineWidth', 3.0);

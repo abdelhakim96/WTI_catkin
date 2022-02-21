@@ -121,6 +121,12 @@ void nmpc_kkt_cb(const std_msgs::Float64::ConstPtr& msg)
     nmpc_kkt = msg->data;
 }
 
+void nmpc_obj_cb(const std_msgs::Float64::ConstPtr& msg)
+{
+    nmpc_obj = msg->data;
+}
+
+
 // NMHE subscribers
 void nmhe_uvw_cb(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
@@ -205,7 +211,7 @@ int main(int argc, char **argv)
     nmpc_Fz_sub = nh.subscribe<std_msgs::Float64MultiArray>("outer_nmpc_cmd/Fz_FzScaled", 1, nmpc_Fz_cb);
     nmpc_exeTime_sub = nh.subscribe<std_msgs::Float64>("outer_nmpc_cmd/exeTime", 1, nmpc_exeTime_cb);
     nmpc_kkt_sub = nh.subscribe<std_msgs::Float64>("outer_nmpc_cmd/kkt", 1, nmpc_kkt_cb);
-
+    nmpc_obj_sub = nh.subscribe<std_msgs::Float64>("outer_nmpc_cmd/obj", 1, nmpc_obj_cb);
     // Wind subscribers
     wind_commanded_sub = nh.subscribe<geometry_msgs::Vector3>("/wind_3d", 1, wind_commanded_cb);
 
@@ -372,8 +378,12 @@ int main(int argc, char **argv)
                 print_results<<current_att(j)<<",";
             for(int j=0; j<3; j++)
                 print_results<<current_vel(j)<<",";
-           // for(int j=0; j<3; j++)
-           //     print_results<<ref_velocity(j)<<",";    
+            for(int j=0; j<3; j++)
+                print_results<<ref_velocity(j)<<",";  
+
+            print_results<<nmpc_obj<<",";
+            print_results<<nmpc_kkt<<",";
+
             for(int j=0; j<3; j++)
                 print_results<<current_rates(j)<<",";
             print_results<<rad2deg*nmpc_ryp(0)<<","<<rad2deg*nmpc_ryp(1)<<","<<rad2deg*nmpc_ryp(2)

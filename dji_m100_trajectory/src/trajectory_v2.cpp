@@ -64,7 +64,9 @@ void dynamicReconfigureCallback(dji_m100_trajectory::set_trajectory_v2Config& co
 std::vector<double> current_pos, current_att(3, 0.0);
 geometry_msgs::PoseStamped desired_pos;
 geometry_msgs::PoseStamped point;
+geometry_msgs::PoseStamped point_delayed;
 geometry_msgs::PoseStamped normal;
+geometry_msgs::PoseStamped vel_d_g;
 void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     current_pos = {msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
@@ -79,9 +81,23 @@ void GP_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     desired_pos = *msg;
 }
+
+
+void vel_point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+   vel_d_g = *msg;
+
+}
+
+
 void point_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
     point = *msg;
+}
+
+void point_cb_delayed(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    point_delayed = *msg;
 }
 
 void norm_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
@@ -209,7 +225,10 @@ int main(int argc, char** argv)
     Clidar_read_sub = nh.subscribe<sensor_msgs::Range>(Clidar_topic, 1, Clidar_read_cb);
     Rlidar_read_sub = nh.subscribe<sensor_msgs::Range>(Rlidar_topic, 1, Rlidar_read_cb);
     ros::Subscriber GP_WP_sub = nh.subscribe<geometry_msgs::PoseStamped>("/WP_GP", 1, GP_cb);
+    ros::Subscriber velocity_ref_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_vel_ref", 1, vel_point_cb);
+
     ros::Subscriber point_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view_traj", 1, point_cb);
+    ros::Subscriber point_delayed_sub = nh.subscribe<geometry_msgs::PoseStamped>("/point_to_view_traj_delayed", 1, point_cb_delayed);
     ros::Subscriber norm_sub = nh.subscribe<geometry_msgs::PoseStamped>("/norm_traj", 1, norm_cb);
 
     if (use_sonar)
@@ -294,11 +313,28 @@ int main(int argc, char** argv)
                                   ? z_delay_start
                                   : z_delay + climb_rate * sampleTime;
 
-                    u = (x - x_last) / sampleTime;
-                    v = (y - y_last) / sampleTime;
-                    w = (z - z_last) / sampleTime;
-
                     publish_inspection_point();
+                   // double u_global = ( point.pose.position.x -  point_delayed.pose.position.x) / sampleTime;
+                   // double v_global = (point.pose.position.y -  point_delayed.pose.position.y) / sampleTime;
+                   // double w_global = ( point.pose.position.z -  point_delayed.pose.position.z) / sampleTime;
+                    double u_global = vel_d_g.pose.position.x;
+                    double v_global = vel_d_g.pose.position.y;
+                    double w_global = vel_d_g.pose.position.z;
+
+
+                    // desired velocity data in body frame
+                    tf::Matrix3x3 rotational_matrix_BI(current_att_quat);
+                    rotational_matrix_BI = rotational_matrix_BI.transpose();
+
+                    u = rotational_matrix_BI[0][0] * u_global + rotational_matrix_BI[0][1] * v_global +
+                        rotational_matrix_BI[0][2] * w_global;
+                    v = rotational_matrix_BI[1][0] * u_global + rotational_matrix_BI[1][1] * v_global +
+                        rotational_matrix_BI[1][2] * w_global;
+                    w = rotational_matrix_BI[2][0] * u_global + rotational_matrix_BI[2][1] * v_global +
+                        rotational_matrix_BI[2][2] * w_global;
+
+
+                   
 
                     ref_yaw_msg.data = compute_ref_yaw();
                     if (!pub_setpoint_pos)
@@ -312,9 +348,15 @@ int main(int argc, char** argv)
                         reftrajectory_delay_msg.z = z_delay;
                         ref_pos_delay_pub.publish(reftrajectory_delay_msg);
 
-                        reftrajectory_vel_msg.x = std::abs(u) <= absvel ? u : (u < 0 ? -absvel : absvel);
-                        reftrajectory_vel_msg.y = std::abs(v) <= absvel ? v : (v < 0 ? -absvel : absvel);
-                        reftrajectory_vel_msg.z = std::abs(w) <= absvel ? w : (w < 0 ? -absvel : absvel);
+                        //reftrajectory_vel_msg.x = std::abs(u) <= absvel ? u : (u < 0 ? -absvel : absvel);
+                        //reftrajectory_vel_msg.y = std::abs(v) <= absvel ? v : (v < 0 ? -absvel : absvel);
+                        //reftrajectory_vel_msg.z = std::abs(w) <= absvel ? w : (w < 0 ? -absvel : absvel);
+
+                        
+
+
+
+
                         ref_vel_pub.publish(reftrajectory_vel_msg);
 
                         ref_yaw_pub.publish(ref_yaw_msg);
@@ -1159,12 +1201,12 @@ int main(int argc, char** argv)
                               ? z_delay_start
                               : z_delay - land_rate * sampleTime;
 
-                u = (x - x_last) / sampleTime;
-                v = (y - y_last) / sampleTime;
-                w = (z - z_last) / sampleTime;
-
-                publish_inspection_point();
-
+                //u = (x - x_last) / sampleTime;
+                //v = (y - y_last) / sampleTime;
+                //w = (z - z_last) / sampleTime;
+                
+                //publish_inspection_point();
+               
                 ref_yaw_msg.data = compute_ref_yaw();
                 if (!pub_setpoint_pos)
                 {
@@ -1177,12 +1219,16 @@ int main(int argc, char** argv)
                     reftrajectory_delay_msg.z = z_delay;
                     ref_pos_delay_pub.publish(reftrajectory_delay_msg);
 
-                    reftrajectory_vel_msg.x = std::abs(u) <= absvel ? u : (u < 0 ? -absvel : absvel);
-                    reftrajectory_vel_msg.y = std::abs(v) <= absvel ? v : (v < 0 ? -absvel : absvel);
-                    reftrajectory_vel_msg.z = std::abs(w) <= absvel ? w : (w < 0 ? -absvel : absvel);
-                    ref_vel_pub.publish(reftrajectory_vel_msg);
+                    //reftrajectory_vel_msg.x = std::abs(u) <= absvel ? u : (u < 0 ? -absvel : absvel);
+                    //reftrajectory_vel_msg.y = std::abs(v) <= absvel ? v : (v < 0 ? -absvel : absvel);
+                    //reftrajectory_vel_msg.z = std::abs(w) <= absvel ? w : (w < 0 ? -absvel : absvel);
 
-                    ref_yaw_pub.publish(ref_yaw_msg);
+
+
+
+                    //ref_vel_pub.publish(reftrajectory_vel_msg);
+
+                    //ref_yaw_pub.publish(ref_yaw_msg);
                     // For rviz visualization:
                     setpoint_pos_msg.header.stamp = ros::Time::now();
                     setpoint_pos_msg.header.frame_id = "map";
@@ -1237,10 +1283,16 @@ int main(int argc, char** argv)
                 rate.sleep();
             }
         }
+        publish_inspection_point();
+        //double u_global = (x - x_last) / sampleTime;
+        //double v_global = (y - y_last) / sampleTime;
+       // double w_global = (z - z_last) / sampleTime;
+        double u_global = vel_d_g.pose.position.x;
+        double v_global =  vel_d_g.pose.position.y;
+        double w_global =  vel_d_g.pose.position.z;
+        
+       
 
-        double u_global = (x - x_last) / sampleTime;
-        double v_global = (y - y_last) / sampleTime;
-        double w_global = (z - z_last) / sampleTime;
 
         // desired velocity data in body frame
         tf::Matrix3x3 rotational_matrix_BI(current_att_quat);
@@ -1252,6 +1304,10 @@ int main(int argc, char** argv)
             rotational_matrix_BI[1][2] * w_global;
         w = rotational_matrix_BI[2][0] * u_global + rotational_matrix_BI[2][1] * v_global +
             rotational_matrix_BI[2][2] * w_global;
+
+
+
+
 
         //        std::cout<<"absolute vel along x & y = "<<sqrt(u*u + v*v)<<"\n";
 
@@ -1265,7 +1321,19 @@ int main(int argc, char** argv)
         v_d_m.data = v_d;
         drone_velocity_pub.publish(v_d_m);
 
+
+
+
+
+
+        reftrajectory_vel_msg.x = u*v_d;
+        reftrajectory_vel_msg.y = v*v_d;
+        reftrajectory_vel_msg.z = w*v_d;
+        ref_vel_pub.publish(reftrajectory_vel_msg);
+
         publish_inspection_point();
+
+
 
         if (!pub_setpoint_pos)
         {
@@ -1278,10 +1346,10 @@ int main(int argc, char** argv)
             reftrajectory_delay_msg.z = z_delay;
             ref_pos_delay_pub.publish(reftrajectory_delay_msg);
 
-            reftrajectory_vel_msg.x = std::abs(u) <= absvel ? u : (u < 0 ? -absvel : absvel);
-            reftrajectory_vel_msg.y = std::abs(v) <= absvel ? v : (v < 0 ? -absvel : absvel);
-            reftrajectory_vel_msg.z = std::abs(w) <= absvel ? w : (w < 0 ? -absvel : absvel);
-            ref_vel_pub.publish(reftrajectory_vel_msg);
+            reftrajectory_vel_msg.x = u*v_d;
+            reftrajectory_vel_msg.y = v*v_d;
+            reftrajectory_vel_msg.z = w*v_d;
+            //ref_vel_pub.publish(reftrajectory_vel_msg);
 
             ref_yaw_pub.publish(ref_yaw_msg);
             // For rviz visualization:
@@ -1344,6 +1412,10 @@ void publish_inspection_point()
                     float nx = normal.pose.position.x;
                     float ny = normal.pose.position.y;
                     float nz = normal.pose.position.z;
+                    
+                    float px_p_delayed = point_delayed.pose.position.x;
+                    float py_p_delayed = point_delayed.pose.position.y;
+                    float pz_p_delayed = point_delayed.pose.position.z;
 
                     ref_normal.pose.position.x = nx;
                     ref_normal.pose.position.y = ny;
@@ -1352,7 +1424,8 @@ void publish_inspection_point()
                     ref_point.pose.position.x = px_p;
                     ref_point.pose.position.y = py_p;
                     ref_point.pose.position.z = pz_p;
-
+                    
+                    
     }
     else
     {

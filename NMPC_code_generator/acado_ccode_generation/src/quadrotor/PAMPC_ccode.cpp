@@ -42,10 +42,10 @@ int main()
 
 
     
-    const double q_B_C_x = 0;
-    const double q_B_C_y = 0;
-    const double q_B_C_z = 0;
-    const double q_B_C_w = 1;
+    const double q_B_C_x = 0.0;
+    const double q_B_C_y = 0.0;
+    const double q_B_C_z = -0.7071;
+    const double q_B_C_w = 0.7071;
 
     const double m = 3.8;   // kg
     const double g = 9.81;  // m/s^2

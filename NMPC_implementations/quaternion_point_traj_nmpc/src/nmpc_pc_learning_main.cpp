@@ -225,6 +225,9 @@ int main(int argc, char** argv)
     pos_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/" + mocap_topic_part + "/pose", 1, pos_cb);
     //    vel_sub = nh.subscribe<geometry_msgs::TwistStamped>("mavros/" + mocap_topic_part + "/velocity", 1, vel_cb);
     vel_sub = nh.subscribe<geometry_msgs::TwistStamped>("mavros/" + mocap_topic_part + "/velocity_body", 1, vel_cb);
+
+
+
     dist_Fx_predInit_sub = nh.subscribe<std_msgs::Bool>(dist_Fx_predInit_topic, 1, dist_Fx_predInit_cb);
     dist_Fy_predInit_sub = nh.subscribe<std_msgs::Bool>(dist_Fy_predInit_topic, 1, dist_Fy_predInit_cb);
     dist_Fz_predInit_sub = nh.subscribe<std_msgs::Bool>(dist_Fz_predInit_topic, 1, dist_Fz_predInit_cb);
@@ -391,16 +394,16 @@ int main(int argc, char** argv)
             ref_trajectory = {ref_point[0],
                               ref_point[1],
                               ref_point[2],
-                              ref_velocity(0),
-                              ref_velocity(1),
-                              ref_velocity(2),
+                              0.0,
+                              0.0,
+                              0.0,
                               ref_att_quat.getX(),
                               ref_att_quat.getY(),
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
                               10.0,
-                              -11.0
+                              -12.5
                               };
 
             std::cout << "current_states = ";
@@ -423,6 +426,8 @@ int main(int argc, char** argv)
                 std::cout << ref_point[idx] << ",";
             }
             std::cout << "\n";
+
+
             
             std::cout << "ref_norm = ";
             for (int idx = 0; idx < ref_norm.size(); idx++)
@@ -430,7 +435,14 @@ int main(int argc, char** argv)
                 std::cout << ref_norm[idx] << ",";
             }
             std::cout << "\n";
+            
 
+            std::cout << "ref_velocity = ";
+            for (int idx = 0; idx < ref_velocity.size(); idx++)
+            {
+                std::cout << ref_velocity[idx] << ",";
+            }
+            std::cout << "\n";
             
 
             online_data.distFx = dist_Fx.data;

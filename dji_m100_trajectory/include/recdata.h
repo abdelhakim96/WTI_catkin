@@ -29,7 +29,7 @@ ros::Subscriber pos_att_sub, local_vel_rates_sub;
 ros::Subscriber wind_commanded_sub, dist_Fx_mu_sub, dist_Fy_mu_sub, dist_Fz_mu_sub, dist_Fx_var_sub, dist_Fy_var_sub, dist_Fz_var_sub;
 
 // NMPC subscribers
-ros::Subscriber nmpc_rpy_sub, nmpc_Fz_sub, nmpc_exeTime_sub, nmpc_kkt_sub;
+ros::Subscriber nmpc_rpy_sub, nmpc_Fz_sub, nmpc_exeTime_sub, nmpc_kkt_sub, nmpc_obj_sub;
 // NMHE subscribers
 ros::Subscriber nmhe_vel_sub, nmhe_exeTime_sub, nmhe_kkt_sub;
 
@@ -43,7 +43,7 @@ Vector3d point,normal;
 Vector3d current_vel,current_rates;
 Vector3d nmpc_ryp;
 Vector2d nmpc_Fz;
-double nmpc_exeTime, nmpc_kkt;
+double nmpc_exeTime, nmpc_kkt, nmpc_obj;
 Vector3d nmhe_uvw;
 double nmhe_exeTime, nmhe_kkt;
 Vector3d wind_commanded;
