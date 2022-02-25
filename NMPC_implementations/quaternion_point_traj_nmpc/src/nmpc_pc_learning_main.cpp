@@ -394,16 +394,16 @@ int main(int argc, char** argv)
             ref_trajectory = {ref_point[0],
                               ref_point[1],
                               ref_point[2],
-                              0.0,
-                              0.0,
-                              0.0,
+                              ref_velocity[0],
+                              ref_velocity[1],
+                              ref_velocity[2],
                               ref_att_quat.getX(),
                               ref_att_quat.getY(),
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              10.0,
-                              -12.5
+                              9.0,
+                              -13.5
                               };
 
             std::cout << "current_states = ";

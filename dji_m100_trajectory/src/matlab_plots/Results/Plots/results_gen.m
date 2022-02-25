@@ -13,14 +13,14 @@ z_shift= 70;
 
 %skip values
 skip=4;
-t_start=20;
+
 
 %Weights
 W_h=80;
 W_d=200;
 W_r=60;
 
-t_start=20;
+t_start=100;
 
 %colors defintion
 color_VTNMPC = [0 0.4470 0.7410];
@@ -36,10 +36,12 @@ color_Ct= [ 0 0 0];
 %% Read text files
 
 M = dlmread('plotting_data/Results_inter_1/test1.txt');  %Simulation data (trajectory, NMPC costs, drone states, etc.
-
+M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_new/VTMPC_results.txt');
+M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_2/VTMPC.txt');
 %M = dlmread('plotting_data/Results_vel_1/test1.txt'); 
 P = dlmread('plotting_data/Results_inter_1/PAMPC.txt'); 
-mx = dlmread('plotting_data/MeshX.txt');          %Triangular model stl file
+
+P=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_PAMPC_new/PAMPC_data.txt');mx = dlmread('plotting_data/MeshX.txt');          %Triangular model stl file
 my = dlmread('plotting_data/MeshY.txt');
 mz = dlmread('plotting_data/MeshZ.txt');
 
@@ -54,7 +56,7 @@ pz_160 = dlmread('plotting_data/d10cm_interp_z');
 
 t=M(:,1);                     %time
 x=M(:,5:7);                   %Drone position (x,y,z)
-x_pa=P(3982:55023,5:7);  
+x_pa=P(1:end,5:7);  
 
 x(:,1)=x(:,1)+x_shift;
 x(:,2)=x(:,2)+y_shift;
@@ -215,7 +217,7 @@ xlabel('t [s]','FontSize',30);
 
 %plot(time(1:skip:end),position_m(1:skip:end,1),'color',color_GP_NMPC);
 ylabel('{\it x}-axis (m)','FontSize',30);
-xlabel('t [s]','FontSize',30);
+xlabel('time [s]','FontSize',30);
 xlim([0 max(t)]);
 %ylim([-1 30]);
 ax_han = gca;
@@ -236,7 +238,7 @@ plot(t(1:skip:end),x_wp(1:skip:end,2),'LineWidth', 2.5,'color',color_GP);
 
 ylabel('{\it y}-axis (m)','FontSize',30);
 
-xlabel('t [s]','FontSize',30);
+xlabel('time [s]','FontSize',30);
 
 
 xlim([t_start max(t)]);
@@ -256,7 +258,7 @@ plot(t(1:skip:end),x_wp(1:skip:end,3),'LineWidth', 2.5,'color',color_GP);
 hold on
 
 ylabel('{\it z}-axis (m)','FontSize',30);
-xlabel('t [s]','FontSize',30);
+xlabel('time [s]','FontSize',30);
 
 xlim([t_start max(t)]);
 
@@ -272,13 +274,13 @@ grid on
 figure('name','Position','units', 'normalized', 'outerposition', [0 0.266 0.559 0.734])
 %subplot(2,1,1)
 
-semilogy(t(1:skip:end),C_h(1:skip:end,1),'LineWidth', 1.2,'color',color_Ch);
+plot(t(1:skip:end),C_h(1:skip:end,1),'LineWidth', 1.2,'color',color_Ch);
 hold on
-semilogy(t(1:skip:end),C_d(1:skip:end,1),'LineWidth', 2,'color',color_Cd);
+plot(t(1:skip:end),C_d(1:skip:end,1),'LineWidth', 2,'color',color_Cd);
 hold on
-semilogy(t(1:skip:end),C_r(1:skip:end,1),'LineWidth', 2,'color',color_Cr);
-hold on
-semilogy(t(1:skip:end),obj(1:skip:end,1),'LineWidth', 2,'color',color_Ct);
+plot(t(1:skip:end),C_r(1:skip:end,1),'LineWidth', 2,'color',color_Cr);
+%hold on
+%plot(t(1:skip:end),obj(1:skip:end,1),'LineWidth', 2,'color',color_Ct);
 
 %plot(time(1:skip:end),position_m(1:skip:end,1),'color',color_GP_NMPC);
 ylabel('Cost','FontSize',25);
@@ -363,7 +365,7 @@ set(ax_han,'FontSize',25)
 figure('name','Position','units', 'normalized', 'outerposition', [0 0.266 0.559 0.734])
 plot(t(1:skip*10:end),kkt(1:skip*10:end),'LineWidth', 2.5,'color',color_VTNMPC);
 hold on
-ylabel('KKT error','FontSize',30);
+ylabel('KKT tolerance','FontSize',30);
 xlabel('t [s]','FontSize',30);
 xlim([t_start max(t)]);
 ax_han = gca;

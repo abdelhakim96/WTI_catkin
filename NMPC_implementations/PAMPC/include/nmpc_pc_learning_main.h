@@ -30,6 +30,7 @@ ros::Subscriber dist_Fz_predInit_sub;
 ros::Subscriber dist_Fx_data_sub;
 ros::Subscriber dist_Fy_data_sub;
 ros::Subscriber dist_Fz_data_sub;
+ros::Subscriber ref_pose_sub;
 
 // Publishers
 ros::Publisher att_throttle_pub;
@@ -73,7 +74,7 @@ std::vector<double> ref_norm;
 std::vector<double> current_vel_rate;
 std::vector<double> current_states;
 std::vector<double> current_s_sdot;
-
+std::vector<double> ref_pos_att;
 struct _dist_struct
 {
     bool predInit;

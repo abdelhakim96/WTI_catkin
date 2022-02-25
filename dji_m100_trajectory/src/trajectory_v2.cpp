@@ -369,10 +369,10 @@ int main(int argc, char** argv)
                         setpoint_pos_msg.pose.position.z = z;
 
                         setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-                        setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-                        setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-                        setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-                        setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+                        setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+                        setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.y;
+                        setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.z;
+                        setpoint_pos_msg.pose.orientation.w = desired_pos.pose.orientation.w;
                         ref_pose_pub.publish(setpoint_pos_msg);
                     }
                     else
@@ -384,10 +384,10 @@ int main(int argc, char** argv)
                         setpoint_pos_msg.pose.position.z = z;
 
                         setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-                        setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-                        setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-                        setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-                        setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+                        setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+                        setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.y;
+                        setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.z;
+                        setpoint_pos_msg.pose.orientation.w = desired_pos.pose.orientation.w;
                         setpoint_pos_pub.publish(setpoint_pos_msg);
                         ref_pose_pub.publish(setpoint_pos_msg);
                     }
@@ -1070,6 +1070,8 @@ int main(int argc, char** argv)
                 x = desired_pos.pose.position.x;
                 y = desired_pos.pose.position.y;
                 z = desired_pos.pose.position.z;
+
+                
                 //x=0.0;
                 //y=0.0;
                 //z=2.0;
@@ -1237,10 +1239,10 @@ int main(int argc, char** argv)
                     setpoint_pos_msg.pose.position.z = z;
 
                     setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-                    setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-                    setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-                    setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-                    setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+                    setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+                    setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.x;
+                    setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.x;
+                    setpoint_pos_msg.pose.orientation.w = desired_pos.pose.orientation.x;;
                     ref_pose_pub.publish(setpoint_pos_msg);
                 }
                 else
@@ -1252,10 +1254,24 @@ int main(int argc, char** argv)
                     setpoint_pos_msg.pose.position.z = z;
 
                     setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-                    setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-                    setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-                    setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-                    setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+                    //setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
+                    //setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
+                    //setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
+                    //setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+
+
+ 
+
+                    setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+;
+                    setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.y;
+;
+                    setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.z;
+;
+                    setpoint_pos_msg.pose.orientation.w =desired_pos.pose.orientation.w;
+;
+
+
                     setpoint_pos_pub.publish(setpoint_pos_msg);
                     ref_pose_pub.publish(setpoint_pos_msg);
                 }
@@ -1319,7 +1335,7 @@ int main(int argc, char** argv)
         //        lidar_read_filtered_pub.publish(Clidar_read_filtered_msg);
         std_msgs::Float64 v_d_m;
         v_d_m.data = v_d;
-        drone_velocity_pub.publish(v_d_m);
+        //drone_velocity_pub.publish(v_d_m);
 
 
 
@@ -1360,10 +1376,10 @@ int main(int argc, char** argv)
             setpoint_pos_msg.pose.position.z = z;
 
             setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-            setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-            setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-            setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-            setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+            setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+            setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.y;
+            setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.z;
+            setpoint_pos_msg.pose.orientation.w = desired_pos.pose.orientation.w;
             ref_pose_pub.publish(setpoint_pos_msg);
         }
         else
@@ -1375,10 +1391,12 @@ int main(int argc, char** argv)
             setpoint_pos_msg.pose.position.z = z;
 
             setpoint_att_quat.setRPY(0, 0, ref_yaw_msg.data);
-            setpoint_pos_msg.pose.orientation.x = setpoint_att_quat.getX();
-            setpoint_pos_msg.pose.orientation.y = setpoint_att_quat.getY();
-            setpoint_pos_msg.pose.orientation.z = setpoint_att_quat.getZ();
-            setpoint_pos_msg.pose.orientation.w = setpoint_att_quat.getW();
+            setpoint_pos_msg.pose.orientation.x = desired_pos.pose.orientation.x;
+            setpoint_pos_msg.pose.orientation.y = desired_pos.pose.orientation.y;
+            setpoint_pos_msg.pose.orientation.z = desired_pos.pose.orientation.z;
+
+            setpoint_pos_msg.pose.orientation.w = desired_pos.pose.orientation.w;
+
             setpoint_pos_pub.publish(setpoint_pos_msg);
             ref_pose_pub.publish(setpoint_pos_msg);
         }
@@ -1402,9 +1420,7 @@ void publish_inspection_point()
     ref_normal.header.frame_id = "map";
     if (point_tracking_on)
     {
-        //ref_point.pose.position.x = px;
-        //ref_point.pose.position.y = py;
-        //ref_point.pose.position.z = pz;
+
                     
                     float px_p = point.pose.position.x;
                     float py_p = point.pose.position.y;
@@ -1424,7 +1440,11 @@ void publish_inspection_point()
                     ref_point.pose.position.x = px_p;
                     ref_point.pose.position.y = py_p;
                     ref_point.pose.position.z = pz_p;
-                    
+
+
+                    //ref_point.pose.position.x = px;
+                    //ref_point.pose.position.y = py;
+                    //ref_point.pose.position.z = pz;
                     
     }
     else

@@ -35,7 +35,10 @@ v3=[mx(:,3) my(:,3) mz(:,3)];
 for i=1:length(mx)
     
         n(i,:)=cross((v2(i,:)-v1(i,:)),(v3(i,:)-v2(i,:)))/2;
-        n(i,:)=n(i,:)/(n(i,1)^2+n(i,2)^2+n(i,3)^2)^0.5;
+        %n(i,:)=n(i,:)/(n(i,1)^2+n(i,2)^2+n(i,3)^2)^0.5;
+        n(i,3)=n(i,3)/(n(i,1)^2+n(i,2)^2+n(i,3)^2)^0.5;
+        n(i,1:2)=n(i,1:2)/(n(i,1)^2+n(i,2)^2)^0.5;
+     
         %cross((mx(i,2)-mx(i,1)),(mx(i,3)-mx(i,2)))/2;
        % ax(i)=cross((mx(i,2)-mx(i,1)),(mx(i,3)-mx(i,2)))/2;
       %  ay(i)=cross((my(i,2)-my(i,1)),(my(i,3)-my(i,2))/2;
@@ -52,28 +55,35 @@ ny_160=n(:,2);
 nz_160=n(:,3);
 
 d=1000;
-
+nn=[];
+aa=1;
 for i=1:length(path)
 for j=1:length(path)
     
     d1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
+    d2= ((px(j)-px(aa))^2+(py(j)-py(aa))^2+(pz(j)-pz(aa))^2)^0.5;
     %d1= (Path(2*i-1,2)-y(j))^2;
     %d1=(path_new(i,2)-py(j))^2;
     
-    if (d1-0)^2<(d-0)^2
+    if (d1-0)^2<(d-0)^2 
         d=d1;
         n=j;
         
     end
     
+    
+   %if ismember(j, nn)==0
+   %    n=aa+1; 
+   %end
 
 end 
 
+    
 
 
 
 nn(i)=n;
-
+aa=n;
 dd(i)=d;
 x1(i)=px(n);
 y1(i)=py(n);
@@ -192,9 +202,9 @@ end
 writematrix(px', "px.txt");
 writematrix(py', "py.txt");
 writematrix(pz', "pz.txt");
-writematrix(nx', "nx.txt");
-writematrix(ny', "ny.txt");
-writematrix(nz', "nz.txt");
+writematrix(nx', "nx_160.txt");
+writematrix(ny', "ny_160.txt");
+writematrix(nz', "nz_160.txt");
 
 writematrix(n, "n.txt");
 
@@ -214,14 +224,18 @@ writematrix(ny_o', "ny_160.txt");
 writematrix(nz_o', "nz_160.txt");
 
 
-writematrix(mesh_x', "mesh_x.txt");
+%writematrix(mesh_x', "mesh_x.txt");
 
-writematrix(mesh_y', "mesh_y.txt");
+%writematrix(mesh_y', "mesh_y.txt");
 
-writematrix(mesh_z', "mesh_z.txt");
+%writematrix(mesh_z', "mesh_z.txt");
 
 
+writematrix(mx_o', "mesh_x.txt");
 
+writematrix(my_o', "mesh_y.txt");
+
+writematrix(mz_o', "mesh_z.txt");
     
 
 
@@ -235,6 +249,11 @@ quiver3(px_160',py_160',pz_160',nx_o',ny_o',nz_o','g')
 
 hold on;
 patch(mx_o',my_o',mz_o','r','EdgeColor','k','FaceAlpha',0.7);
+
+hold on
+
+plot3(px,py,pz,'k', 'LineWidth', 2.0,'LineSmoothing', 'on');
+
 xlabel('x[m]');
 ylabel('y[m]');
 zlabel('z[m]');
@@ -242,4 +261,7 @@ zlabel('z[m]');
 legend('Optimal Path','Inspected Wind Turbine Blades')
 title(['Global Planner Inspection Path ']);
 axis equal;
+
+
+
 

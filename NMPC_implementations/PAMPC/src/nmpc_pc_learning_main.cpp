@@ -73,6 +73,24 @@ void pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
                        msg->pose.orientation.z,
                        msg->pose.orientation.w};
 }
+
+
+
+void ref_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    
+
+    ref_pos_att = {msg->pose.position.x,
+                       msg->pose.position.y,
+                       msg->pose.position.z,
+                       msg->pose.orientation.x,
+                       msg->pose.orientation.y,
+                       msg->pose.orientation.z,
+                       msg->pose.orientation.w};
+}
+
+
+
 void vel_cb(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
     current_vel_rate = {msg->twist.linear.x,
@@ -110,6 +128,11 @@ void dist_Fz_predInit_cb(const std_msgs::Bool::ConstPtr& msg)
         dist_Fz.print_predInit = 0;
     }
 }
+
+
+
+
+
 
 void dist_Fx_data_cb(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
@@ -214,7 +237,7 @@ int main(int argc, char** argv)
     ros::param::get("dist_Fz_data_topic", dist_Fz_data_topic);
 
     state_sub = nh.subscribe<mavros_msgs::State>("mavros/state", 1, state_cb);
-
+    ref_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("ref_trajectory/pose", 1, ref_pose_cb);
     ref_position_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_position_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
     ref_yaw_sub = nh.subscribe<std_msgs::Float64>("ref_trajectory/yaw", 1, ref_yaw_cb);
@@ -387,10 +410,10 @@ int main(int argc, char** argv)
             ref_trajectory = {ref_position[0],
                               ref_position[1],
                               ref_position[2],
-                              ref_att_quat.getX(),  //qx
-                              ref_att_quat.getY(),  //qy
-                              ref_att_quat.getZ(),  //qz
-                              ref_att_quat.getW(),  //qw
+                             ref_pos_att[3],     // ref_att_quat.getX(),  //qx
+                             ref_pos_att[4],// ref_att_quat.getY(),  //qy
+                             ref_pos_att[5],// ref_att_quat.getZ(),  //qz
+                             ref_pos_att[6], //ref_att_quat.getW(),  //qw
                               0.0,
                               0.0,
                               0.0,

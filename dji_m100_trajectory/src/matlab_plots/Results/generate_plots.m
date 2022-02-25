@@ -14,9 +14,9 @@ nx_160 = dlmread('nx_160.txt');
 ny_160 = dlmread('ny_160.txt');
 nz_160 = dlmread('nz_160.txt');
 
-px_160 = dlmread('d10cm_interp_x');
-py_160 = dlmread('d10cm_interp_y');
-pz_160 = dlmread('d10cm_interp_z');
+px_160 = dlmread('d10cm_interp_x.txt');
+py_160 = dlmread('d10cm_interp_y.txt');
+pz_160 = dlmread('d10cm_interp_z.txt');
 
 
 path=dlmread('path_half.txt');
@@ -57,7 +57,16 @@ p=M(:,8:10);
 n=M(:,11:13);
 kkt=M(:,26);
 obj=M(:,27);
-vel_d=M(:,14:16);
+
+
+
+
+velocity=M(:,14:16);
+
+vel_d=[0 0 0; diff(px_160)/0.125,diff(py_160)/0.125,diff(pz_160)/0.125]; 
+
+
+
 angles_d=M(:,17:19);
 rates_d=M(:,28:30);
 x_ref=M(:,2:4);
@@ -326,17 +335,20 @@ ylabel('Objective')
 
  figure
 set(gcf,'color','w');
-plot (t,vel_d(:,1),'-','Color',[0 0 1],'LineWidth', 2.0)
+plot (1:length(vel_d),vel_d(:,1),'-','Color',[0 0 1],'LineWidth', 2.0)
 
 hold on
-plot (t,vel_d(:,2),'-','Color',[1 0 0],'LineWidth', 2.0)
+plot (1:length(vel_d),vel_d(:,2),'-','Color',[1 0 0],'LineWidth', 2.0)
 
 hold on
-plot (t,vel_d(:,3),'-','Color',[0 1 0],'LineWidth', 2.0)
+plot (1:length(vel_d),vel_d(:,3),'-','Color',[0 1 0],'LineWidth', 2.0)
+
+
 
 vel_abs=(vel_d(:,1).^2+vel_d(:,2).^2+vel_d(:,3).^2).^0.5;
 
 
+velocity_abs=(velocity(:,1).^2+velocity(:,2).^2+velocity(:,3).^2).^0.5;
 
 
 xlim([50 1100])
@@ -350,7 +362,7 @@ figure
 
 figure 
 hold on
-plot (t,vel_abs,'-','Color',[0 0 1],'LineWidth', 2.0)
+plot (1:length(vel_abs),vel_abs,'-','Color',[0 0 1],'LineWidth', 2.0)
 xlabel('time [s]')
 ylabel('velocity [m/s]')
 
@@ -440,12 +452,24 @@ ylabel('z [m]')
 
 
 
-px_inter = interp1(1:length(px_160), px_160, linspace(1, length(px_160), 10000), 'nearest');
-py_inter = interp1(1:length(py_160), py_160, linspace(1, length(py_160), 10000), 'nearest');
-pz_inter = interp1(1:length(pz_160), pz_160, linspace(1, length(pz_160), 10000), 'nearest');
-nx_inter = interp1(1:length(nx_160), nx_160, linspace(1, length(nx_160), 10000), 'nearest');
-ny_inter = interp1(1:length(ny_160), ny_160, linspace(1, length(ny_160), 10000), 'nearest');
-nz_inter = interp1(1:length(nz_160), nz_160, linspace(1, length(nz_160), 10000), 'nearest');
+%px_inter = interp1(1:length(px_160), px_160, linspace(1, length(px_160), 10000), 'cubic');
+%py_inter = interp1(1:length(py_160), py_160, linspace(1, length(py_160), 10000), 'cubic');
+%pz_inter = interp1(1:length(pz_160), pz_160, linspace(1, length(pz_160), 10000), 'cubic');
+
+px_inter=px_160;
+py_inter=py_160;
+pz_inter=pz_160;
+
+
+
+
+px_inter_s = interp1(1:length(px_160), px_160, linspace(1, length(px_160), 10000), 'spline');
+py_inter_s = interp1(1:length(py_160), py_160, linspace(1, length(py_160), 10000), 'spline');
+pz_inter_s = interp1(1:length(pz_160), pz_160, linspace(1, length(pz_160), 10000), 'spline');
+
+nx_inter = interp1(1:length(nx_160), nx_160, linspace(1, length(nx_160), length(px_inter)));
+ny_inter = interp1(1:length(ny_160), ny_160, linspace(1, length(ny_160), length(px_inter)));
+nz_inter = interp1(1:length(nz_160), nz_160, linspace(1, length(nz_160), length(px_inter)));
 
 
 for i=1:length(path)/2
@@ -453,43 +477,54 @@ path([i],:) = [];
 end
 
 
-wpx_inter = interp1(1:length(path(:,1)), path(:,1), linspace(1, length(path(:,1)), 10000), 'nearest');
-wpy_inter = interp1(1:length(path(:,2)), path(:,2), linspace(1, length(path(:,2)), 10000), 'nearest');
-wpz_inter = interp1(1:length(path(:,3)), path(:,3), linspace(1, length(path(:,3)), 10000), 'nearest');
+wpx_inter = interp1(1:length(path(:,1)), path(:,1), linspace(1, length(path(:,1)),  length(px_inter)) );
+wpy_inter = interp1(1:length(path(:,2)), path(:,2), linspace(1, length(path(:,2)),  length(px_inter)) );
+wpz_inter = interp1(1:length(path(:,3)), path(:,3), linspace(1, length(path(:,3)),  length(px_inter)));
 
-wp_inter(:,1)=smooth(wpx_inter,150);
-wp_inter(:,2)=smooth(wpy_inter,150);
-wp_inter(:,3)=smooth(wpz_inter,150);
+wp_inter(:,1)=wpx_inter;
+wp_inter(:,2)=wpy_inter;
+wp_inter(:,3)=wpz_inter;
 
 
-nx_inter=smooth(nx_inter,100);
-ny_inter=smooth(ny_inter,100);
-nz_inter=smooth(nz_inter,100);
+wp_inter(:,1)=smooth(wp_inter(:,1),50);
+wp_inter(:,2)=smooth(wp_inter(:,2),50);
+wp_inter(:,3)=smooth(wp_inter(:,3),50);
+
+
+
+nx_inter=smooth(nx_inter,20);
+ny_inter=smooth(ny_inter,20);
+nz_inter=smooth(nz_inter,20);
+
+px_inter_s=smooth(px_inter_s,100);
+py_inter_s=smooth(py_inter_s,100);
+pz_inter_s=smooth(pz_inter_s,100);
+
 
 
 for i=2:length(px_inter)
     
-    vx_inter(i)=(px_inter(i)-px_inter(i-1));
-    vy_inter(i)=(py_inter(i)-py_inter(i-1));
-    vz_inter(i)=(pz_inter(i)-pz_inter(i-1));
-    if vx_inter(i)<0.01
-        vx_inter(i)=vx_inter(i-1);
-    end
-    if vy_inter(i)<0.01
-        vy_inter(i)=vy_inter(i-1);
-    end
-    if vz_inter(i)<0.01
-        vz_inter(i)=vz_inter(i-1);
-    end
-    
+    vx_inter(i)=(px_inter(i)-px_inter(i-1))*5;
+    vy_inter(i)=(py_inter(i)-py_inter(i-1))*5;
+    vz_inter(i)=(pz_inter(i)-pz_inter(i-1))*5;
+
     wp(i,1:3)=0;
 
 end
 
+%for i=1:5
+%vx_inter=smooth(vx_inter,100);
+%vy_inter=smooth(vy_inter,100);
+%vz_inter=smooth(vz_inter,100);
+%end
 
-vx_inter=smooth(vx_inter,100);
-vy_inter=smooth(vy_inter,100);
-vz_inter=smooth(vz_inter,100);
+
+%vx_inter=smooth(vx_inter,100);
+%vy_inter=smooth(vy_inter,100);
+%vz_inter=smooth(vz_inter,100);
+%vx_inter=smooth(vx_inter,100);
+%vy_inter=smooth(vy_inter,100);
+%vz_inter=smooth(vz_inter,100);
 
 
 plot ([1:length(wpx_inter)],wp_inter(:,1),'-','Color',[1 0 0],'LineWidth', 2.0)
@@ -501,11 +536,11 @@ plot ([1:length(wpz_inter)],wp_inter(:,3),'-','Color',[0 1 0],'LineWidth', 2.0)
 
 
 
-writematrix(px_inter', "px_inter.txt");
+writematrix(px_inter, "px_inter.txt");
 
-writematrix(py_inter', "py_inter.txt");
+writematrix(py_inter, "py_inter.txt");
 
-writematrix(pz_inter', "pz_inter.txt");
+writematrix(pz_inter, "pz_inter.txt");
 
 writematrix(nx_inter, "nx_inter.txt");
 
@@ -513,17 +548,18 @@ writematrix(ny_inter, "ny_inter.txt");
 
 writematrix(nz_inter, "nz_inter.txt");
 
-writematrix(vx_inter, "vx_inter.txt");
+writematrix(vx_inter', "vx_inter.txt");
 
-writematrix(vy_inter, "vy_inter.txt");
+writematrix(vy_inter', "vy_inter.txt");
 
-writematrix(vz_inter, "vz_inter.txt");
-
-
-%writematrix(wp, "wp.txt");
-%ritematrix(wp_inter, "wp_inter.txt");
+writematrix(vz_inter', "vz_inter.txt");
 
 
+writematrix(wp, "wp.txt");
+%writematrix(wp_inter, "wp_inter.txt");
 
+
+
+vel_abs=(vx_inter.^2+vy_inter.^2+vz_inter.^2).^0.5;
 
 plot ([1:length(wpx_inter)],wpx_inter,'-','Color',[0 1 0],'LineWidth', 2.0)

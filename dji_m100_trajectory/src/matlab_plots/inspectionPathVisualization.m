@@ -11,7 +11,9 @@ clear all; close all;
 run('inspectionScenario');
 set(0,'defaultfigurecolor',[1 1 1])
 handle = figure;
-plot3(inspectionPath(:,1),inspectionPath(:,2),inspectionPath(:,3),'b', 'LineWidth', 2.0,'LineSmoothing', 'on');
+plot3(inspectionPath(:,1),inspectionPath(:,2),inspectionPath(:,3),'b*', 'LineWidth', 2.0,'LineSmoothing', 'on');
+
+
 hold on;
 patch(meshX',meshY',meshZ','r','EdgeColor','k','FaceAlpha',0.7);
 xlabel('x[m]');
@@ -26,4 +28,5 @@ hold off;
 legend('Optimal Path','Inspected Wind Turbine Blades')
 title(['Global Planner Inspection Path ']);
 axis equal;
+
 

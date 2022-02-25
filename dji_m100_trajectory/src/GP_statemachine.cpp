@@ -138,27 +138,16 @@ void drone_v_cb(const std_msgs::Float64::ConstPtr& msg){
 
 
 
-void set_heading(float x, float y,float px,float py)
+void set_heading(float yaw)
 { 
-  float heading;
-  //float a1=x*px+y*py;
-  float a1=(px-x);
-  float  a2=pow((pow((px-x),2)+pow((py-y),2)),0.5);
-  if (px>x){
-  heading= -acos(a1/a2);	 
-  }
-  
-  else{
-   heading=acos(a1/a2);	
-  } 
-  //heading=180/M_PI;
-  
-  
-  float yaw = heading;
-  ROS_INFO("set heading %f ", yaw*(180/M_PI));
+ 
+
+  ROS_INFO("yaw value: %f", yaw);
   float pitch = 0;
   float roll = 0;
-
+  yaw=yaw+90;
+  yaw=yaw*(M_PI/180);
+  ROS_INFO("yaw value after: %f", yaw);
   float cy = cos(yaw * 0.5);
   float sy = sin(yaw * 0.5);
   float cr = cos(roll * 0.5);
@@ -175,6 +164,7 @@ void set_heading(float x, float y,float px,float py)
   waypoint_g.pose.orientation.x = qx;
   waypoint_g.pose.orientation.y = qy;
   waypoint_g.pose.orientation.z = qz;
+  local_pos_pub.publish(waypoint_g);
 }
 
 
@@ -186,17 +176,17 @@ void set_heading(float x, float y,float px,float py)
 
 
 
-void set_destination(float x, float y, float z, float psi)
+void set_destination(float x, float y, float z, float heading)
 {
 
 	ROS_INFO("Destination set to x: %f y: %f z: %f origin frame", x, y, z);
-
 	waypoint_g.pose.position.x = x;
 	waypoint_g.pose.position.y = y;
 	waypoint_g.pose.position.z = z;
 	//waypoint_g.pose.orientation.yaw = psi;
-    //set_heading(psi);
+    
 	local_pos_pub.publish(waypoint_g);
+	
 }
 
 
@@ -332,6 +322,8 @@ int init_publisher_subscriber(ros::NodeHandle controlnode)
 		controlnode.getParam("namespace", ros_namespace);
 		ROS_INFO("using namespace %s", ros_namespace.c_str());
 	}
+	
+	//local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>("/ref_trajectory/pose", 10);  
 	local_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/WP_GP").c_str(), 10);  
 	mesh_pos_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_to_view_traj").c_str(), 10);  
 	mesh_pos_pub_delayed = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_to_view_traj_delayed").c_str(), 10);  
@@ -375,17 +367,18 @@ int main(int argc, char** argv)
 	double v_x,v_y,v_z;
 	double normx,normy,normz;
     //std::vector<int> myVector = {1, 2, 3, 4, 5, 6};
-    std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/wp_inter.txt");
+	std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/gp_path_d5cm_interp.txt");
+    //std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/wp_inter.txt");
 	//std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
 
-    while (inputFile >> wp_x >> wp_y >> wp_z)
+    while (inputFile >> wp_x >> wp_y >> wp_z >> y1 >> y2 >> y3)
     {
     vecX.push_back(wp_x+68);
     vecY.push_back(wp_y-32);
     vecZ.push_back(wp_z-70);
-	//vec1.push_back(y1);
-    //vec2.push_back(y2);
-    //vec3.push_back(y3);
+	vec1.push_back(y1);
+    vec2.push_back(y2);
+    vec3.push_back(y3);
 	
     }
    
@@ -395,7 +388,7 @@ int main(int argc, char** argv)
 	nextWayPoint.x = vecX[i];
 	nextWayPoint.y =  vecY[i];
 	nextWayPoint.z = vecZ[i];
-	//nextWayPoint.psi = vec3[i]*180/M_PI;
+	nextWayPoint.psi = vec3[i]*180/M_PI;
 	waypointList.push_back(nextWayPoint);	
 	}
 
@@ -490,7 +483,7 @@ int main(int argc, char** argv)
 
 
 
-	ros::Rate rate(10);
+	ros::Rate rate(5);
     
 	ros::Time last_request = ros::Time::now();
 
@@ -524,7 +517,7 @@ int main(int argc, char** argv)
 				
                 
 			  	set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
-                
+                set_heading(waypointList[n].psi);
 				float u =(pointList[n].x-pointList[n-1].x)/0.1;
 				float v =(pointList[n].y-pointList[n-1].y)/0.1;
 				float w =(pointList[n].z-pointList[n-1].z)/0.1;
@@ -533,7 +526,7 @@ int main(int argc, char** argv)
 				set_point(pointList[n].x,pointList[n].y,pointList[n].z, pointList[n-1].x,pointList[n-1].y,pointList[n-1].z);
             
                 set_norm(normList[n].x,normList[n].y,normList[n].z);
-                set_vel(velList[n].x/0.2,velList[n].y/0.2,velList[n].z/0.2);
+                set_vel(velList[n].x,velList[n].y,velList[n].z);
 				point_vel_cb(u,v,w);
 
 				ROS_INFO("x %f", waypointList[n].x-68.0);
@@ -542,9 +535,9 @@ int main(int argc, char** argv)
 				ROS_INFO("py %f", pointList[n].y+32.0);
                 ROS_INFO("px -1 %f", pointList[n-1].x-68.0);
 				ROS_INFO("py -1 %f", pointList[n-1].y+32.0);
-				ROS_INFO("u %f", u);
-                ROS_INFO("v %f", v);
-				ROS_INFO("w %f", w);
+				ROS_INFO("u %f", velList[n].x);
+                ROS_INFO("v %f", velList[n].y);
+				ROS_INFO("w %f", velList[n].z);
 				ROS_INFO("n %d", n);
                 
 

@@ -93,16 +93,19 @@ int main()
 
 
 
-    IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y) + 0.00001;  // Constant added for numerical stability
+    IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y + a_z * a_z ) + 0.00001;  // Constant added for numerical stability
+
+    IntermediateState norm_a_2 = sqrt(a_x * a_x + a_y * a_y) + 0.00001;  // Constant added for numerical stability
     IntermediateState s_1, s_2 , s_3;                                 // relative distance to the inspection point?
                                                                  // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     //quaternion objective
    // s_1 = (1 / norm_a) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * a_x + 2 * (q_x * q_y + q_w * q_z) * a_y);
-    s_1 = (1 / norm_a) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
+    s_1 = (1 / norm_a_2) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     s_2 = norm_a;
-    s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
+   // s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
+    s_3 = n_x * a_x + n_y * a_y ;
     
    // s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
    // s_dot = (1 / norm_n) * (1.0);
