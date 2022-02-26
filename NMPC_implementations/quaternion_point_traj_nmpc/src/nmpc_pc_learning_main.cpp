@@ -284,6 +284,7 @@ int main(int argc, char** argv)
     ros::param::get("W_s1", nmpc_struct.W(w_idx++));
     ros::param::get("W_s2", nmpc_struct.W(w_idx++));
     ros::param::get("W_s3", nmpc_struct.W(w_idx++));
+    ros::param::get("W_s4", nmpc_struct.W(w_idx++));
     ros::param::get("W_p_rate", nmpc_struct.W(w_idx++));
     ros::param::get("W_q_rate", nmpc_struct.W(w_idx++));
     ros::param::get("W_r_rate", nmpc_struct.W(w_idx++));
@@ -389,7 +390,8 @@ int main(int argc, char** argv)
                               ref_norm[1],
                               ref_norm[2]
                               };
-
+            //float norm_a;
+            //norm_a= sqrt(ref_norm[0]*ref_norm[0]+ref_norm[1]+ref_norm[1]);
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]
             ref_trajectory = {ref_point[0],
                               ref_point[1],
@@ -402,8 +404,9 @@ int main(int argc, char** argv)
                               ref_att_quat.getZ(),
                               ref_att_quat.getW(),
                               1.0,
-                              9.0,
-                              -13.5
+                              10.0,
+                              -1.0,
+                              0.0
                               };
 
             std::cout << "current_states = ";

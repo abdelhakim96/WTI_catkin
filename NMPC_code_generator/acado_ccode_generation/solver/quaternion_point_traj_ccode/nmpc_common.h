@@ -73,7 +73,7 @@ extern "C"
 /** Number of differential derivative variables. */
 #define NMPC_NXD 0
 /** Number of references/measurements per node on the first N nodes. */
-#define NMPC_NY 17
+#define NMPC_NY 18
 /** Number of references/measurements on the last (N + 1)st node. */
 #define NMPC_NYN 10
 /** Total number of QP optimization variables. */
@@ -119,11 +119,11 @@ real_t u[ 120 ];
  */
 real_t od[ 279 ];
 
-/** Column vector of size: 510
+/** Column vector of size: 540
  * 
- *  Matrix containing 30 reference/measurement vectors of size 17 for first 30 nodes.
+ *  Matrix containing 30 reference/measurement vectors of size 18 for first 30 nodes.
  */
-real_t y[ 510 ];
+real_t y[ 540 ];
 
 /** Column vector of size: 10
  * 
@@ -131,8 +131,8 @@ real_t y[ 510 ];
  */
 real_t yN[ 10 ];
 
-/** Matrix of size: 17 x 17 (row major format) */
-real_t W[ 289 ];
+/** Matrix of size: 18 x 18 (row major format) */
+real_t W[ 324 ];
 
 /** Matrix of size: 10 x 10 (row major format) */
 real_t WN[ 100 ];
@@ -168,8 +168,8 @@ real_t state[ 349 ];
 /** Column vector of size: 480 */
 real_t d[ 480 ];
 
-/** Column vector of size: 510 */
-real_t Dy[ 510 ];
+/** Column vector of size: 540 */
+real_t Dy[ 540 ];
 
 /** Column vector of size: 10 */
 real_t DyN[ 10 ];
@@ -180,26 +180,26 @@ real_t evGx[ 7680 ];
 /** Matrix of size: 480 x 4 (row major format) */
 real_t evGu[ 1920 ];
 
-/** Column vector of size: 84 */
-real_t objAuxVar[ 84 ];
+/** Column vector of size: 122 */
+real_t objAuxVar[ 122 ];
 
 /** Row vector of size: 29 */
 real_t objValueIn[ 29 ];
 
-/** Row vector of size: 357 */
-real_t objValueOut[ 357 ];
+/** Row vector of size: 378 */
+real_t objValueOut[ 378 ];
 
 /** Matrix of size: 480 x 16 (row major format) */
 real_t Q1[ 7680 ];
 
-/** Matrix of size: 480 x 17 (row major format) */
-real_t Q2[ 8160 ];
+/** Matrix of size: 480 x 18 (row major format) */
+real_t Q2[ 8640 ];
 
 /** Matrix of size: 120 x 4 (row major format) */
 real_t R1[ 480 ];
 
-/** Matrix of size: 120 x 17 (row major format) */
-real_t R2[ 2040 ];
+/** Matrix of size: 120 x 18 (row major format) */
+real_t R2[ 2160 ];
 
 /** Matrix of size: 16 x 16 (row major format) */
 real_t QN1[ 256 ];

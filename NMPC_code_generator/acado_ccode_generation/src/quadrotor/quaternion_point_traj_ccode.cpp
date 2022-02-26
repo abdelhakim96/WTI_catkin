@@ -94,25 +94,46 @@ int main()
 
 
     IntermediateState norm_a = sqrt(a_x * a_x + a_y * a_y + a_z * a_z ) + 0.00001;  // Constant added for numerical stability
+    IntermediateState A = (a_z * n_y) * (a_z * n_y) + (a_z * n_x) * (a_z * n_x) + (a_x * n_y - a_z * n_x) * (a_x * n_y - a_z * n_x) ;
 
+
+    IntermediateState A1= a_x - a_x * n_x * n_x - a_y *  n_y * n_x  ;
+    IntermediateState A2= a_y - a_x * n_x * n_y - a_y *  n_y * n_y;
+    IntermediateState A3= a_z;
+
+
+
+    IntermediateState B = n_x * a_x + n_y * a_y ;
     IntermediateState norm_a_2 = sqrt(a_x * a_x + a_y * a_y) + 0.00001;  // Constant added for numerical stability
-    IntermediateState s_1, s_2 , s_3;                                 // relative distance to the inspection point?
+    IntermediateState s_1, s_2 , s_3 , s_4;                                 // relative distance to the inspection point?
                                                                  // s_dot assumes px, py, pz velocities are negligible
     //s_dot = (1 / norm_n) * (-sin(psi) * r_rate * n1 + cos(psi) * (0 - u) + cos(psi) * r_rate * n2 + sin(psi) * (0 - v));
 
     //quaternion objective
    // s_1 = (1 / norm_a) * ((1 - 2 * q_y * q_y - 2 * q_z * q_z) * a_x + 2 * (q_x * q_y + q_w * q_z) * a_y);
+   
+   
+
+
+
     s_1 = (1 / norm_a_2) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
+    //s_1 =  ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     s_2 = norm_a;
-   // s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
-    s_3 = n_x * a_x + n_y * a_y ;
+    //s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
+    s_3 = (n_x * a_x + n_y * a_y)/(norm_a);
+    //s_4= asin(sqrt(A)/norm_a);
+    //s_4 = B/norm_a;
+    s_4 = sqrt(A1 * A1 + A2 * A2 + A3 * A3);
+    
+    
+    //n_x * a_y - a_y * n_x ;   //cross product
     
    // s = (1 / norm_n) * ((1 - 2 * q_z * q_z) * n1 + (2 * q_w * q_z) * n2);
    // s_dot = (1 / norm_n) * (1.0);
 
     // Reference functions and weighting matrices:
     Function h, hN;
-    h << x << y << z << u << v << w << q_x << q_y << q_z << q_w << s_1 << s_2 << s_3 << p_rate << q_rate << r_rate << Fz;
+    h << x << y << z << u << v << w << q_x << q_y << q_z << q_w << s_1 << s_2 << s_3 << s_4 << p_rate << q_rate << r_rate << Fz;
     hN << x << y << z << u << v << w << q_x << q_y << q_z << q_w;
 
     BMatrix W = eye<bool>(h.getDim());
