@@ -15,11 +15,39 @@ mx = dlmread('MeshX.txt');
 my = dlmread('MeshY.txt');
 mz = dlmread('MeshZ.txt');
 path=dlmread('path.txt');
+%wp=dlmread('wp_inter.txt');
+
+
+pointx = dlmread('d10cm_interp_x.txt');
+pointy = dlmread('d10cm_interp_y.txt');
+pointz = dlmread('d10cm_interp_z.txt');
+
+
+
+path_h=path;
 mxx=mx;
+
+path(46,3)=path(46,3)-10;
+path(47,3)=path(47,3)-10;
+path(48,3)=path(48,3)-10;
+path(48,2)=path(48,2)-2;
+
+
+%path(:,1)=pointx(1:23.2:end,:);
+%path(:,2)=pointy(1:23.2:end,:);
+%path(:,3)=pointz(1:23.2:end,:);
+
 for i=1:length(path)/2
    path(i+1,:)=[]; 
 end
 path(:,4:6)=[];
+
+
+for i=1:162
+    
+end
+
+
 path_i=path;
 px=(mx(:,1)+mx(:,2)+mx(:,3))/3;
 py=(my(:,1)+my(:,2)+my(:,3))/3;
@@ -57,28 +85,117 @@ nz_160=n(:,3);
 d=1000;
 nn=[];
 aa=1;
-for i=1:length(path)
-for j=1:length(path)
+cc=0;
+
+d=10000;
+
+%for i=1:162
+%    for j=1:length(path)
+     %   d1= ((path(j,1)-px(i))^2+(path(j,2)-py(i))^2+(path(j,3)-pz(i))^2)^0.5;
+     %   s=nx(i)*(path(j,1)-px(i)) + ny(i) * (path(j,2)-py(i));
+        
+     %   if (d1-0)^2<(d-0)^2 && s>4
+     %      d=d1;
+     %       n=j;
+            
+     %   end
+        
+   % if i>1 && ismember(nn(i),nn(1:i-1)) && j==length(path)
+     %   if i>1
+            
+     %   for kk=1:i-1
+     %   if n==nn(kk)    
+     %   dp_1= ((path(n,1)-px(i))^2+(path(n,2)-py(i))^2+(path(n,3)-pz(i))^2)^0.5;
+     %   dp_2= ((path(n,1)-px(kk))^2+(path(n,2)-py(kk))^2+(path(n,3)-pz(kk))^2)^0.5;
+        
+     %   if (dp_1>dp_2)
+            
+            
+        
+        
+      %  end
+      %  end
+        
+        
+      %  end
+        
+        
+    %end      
+%nn(i)=n;
+%dd(i)=d; 
+
+
+%aa=n;
+%dd(i)=d;
+%x1(i)=px(n);
+%y1(i)=py(n);
+%z1(i)=pz(n);
+%nx_o(i)=nx(n);
+%ny_o(i)=ny(n);
+%nz_o(i)=nz(n);
+%mx_o(i,:)=mx(n,:);
+%my_o(i,:)=my(n,:);
+%mz_o(i,:)=mz(n,:);
+
+
+
+%d=100000;
+%n=0;
+%cc=cc+1;
+%end
+
+
+%for i=1:length(nn)
+  %  if i>1 && ismember(nn(i),nn(1:i-1))
+        
+ %   end    
+    
+%end
+
+
+
+d2=10000;
+for i=1:162
+for  j=1:(162) % points on path
     
     d1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
+    %d1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2)^0.5;
     d2= ((px(j)-px(aa))^2+(py(j)-py(aa))^2+(pz(j)-pz(aa))^2)^0.5;
-    %d1= (Path(2*i-1,2)-y(j))^2;
-    %d1=(path_new(i,2)-py(j))^2;
+ %   d1= (Path(2*i-1,2)-y(j))^2;
+ %   d1=(path_new(i,2)-py(j))^2;
     
-    if (d1-0)^2<(d-0)^2 
+    
+   s=nx(j)*(path(i,1)-px(j)) + ny(j) * (path(i,2)-py(j));
+   if (d1-0)^2<(d-0)^2 
         d=d1;
         n=j;
-        
-    end
+            
+   end
     
+   % if i>1 && j==length(px)
+   % for kk=1:i-1
+   %      if n==nn(kk)
+   %          for aa=1:length(px)
+   %               if aa~= 0
+   %              dp1= ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
+   %              d2
+   %               end
+   %          end
+             
+   %                      dp_1= ((path(n,1)-px(i))^2+(path(n,2)-py(i))^2+(path(n,3)-pz(i))^2)^0.5;
+
+            
+             
+   %      end
+         
+   %  end
+   % end     
     
-   %if ismember(j, nn)==0
-   %    n=aa+1; 
-   %end
+   
+    
+
 
 end 
-
-    
 
 
 
@@ -95,9 +212,84 @@ mx_o(i,:)=mx(n,:);
 my_o(i,:)=my(n,:);
 mz_o(i,:)=mz(n,:);
 
+
+%px(n,:) = [];    
+%py(n,:) = [];    
+%pz(n,:) = [];    
+
+
 d=100000;
 n=0;
+cc=cc+1;
+
 end
+
+
+
+D1=10000;
+D2=10000;
+for i=1:161
+if nn(i)==nn(i+1)    
+   for  j=1:162 % points on path
+    
+        
+    d_s1 = ((path(i,1)-px(j))^2+(path(i,2)-py(j))^2+(path(i,3)-pz(j))^2)^0.5;
+    d_s2=  ((path(i+1,1)-px(j))^2+(path(i+1,2)-py(j))^2+(path(i+1,3)-pz(j))^2)^0.5;
+    
+    
+     if (d_s1-0)^2<(D1-0)^2 &&j~=nn(i) %&& ismember(j,nn)==0
+       D1=d_s1; 
+        num1=j;
+     end
+     
+     if (d_s2-0)^2<(D2-0)^2 &&j~=nn(i) %&& ismember(j,nn)==0
+       D2=d_s2; 
+        num2=j;
+     end
+     
+
+     
+   end
+   
+   
+     if ismember(num1,nn)==0 && ismember(num2,nn)==1
+         nn(i)=num1;
+     else
+         if  ismember(num1,nn)==1 && ismember(num2,nn)==0
+            nn(i+1)=num2;
+        
+        else
+         
+         if  ismember(num1,nn)==0 && ismember(num2,nn)==0
+            nn(i+1)=num2;
+         end
+         end
+     end
+         
+
+     
+end
+D1=100000;
+D2=100000;
+end
+
+
+
+
+
+for i=1:162
+x1(i)=px(nn(i));
+y1(i)=py(nn(i));
+z1(i)=pz(nn(i));
+nx_o(i)=nx(nn(i));
+ny_o(i)=ny(nn(i));
+nz_o(i)=nz(nn(i));
+mx_o(i,:)=mx(nn(i),:);
+my_o(i,:)=my(nn(i),:);
+mz_o(i,:)=mz(nn(i),:);
+end
+
+
 
 
 
@@ -242,7 +434,7 @@ writematrix(mz_o', "mesh_z.txt");
 %run('inspectionScenario');
 set(0,'defaultfigurecolor',[1 1 1])
 handle = figure;
-plot3(path(:,1),path(:,2),path(:,3),'b', 'LineWidth', 2.0,'LineSmoothing', 'on');
+plot3(path_i(:,1),path_i(:,2),path_i(:,3),'*');
 hold on
 quiver3(px_160',py_160',pz_160',nx_o',ny_o',nz_o','g')
 %quiver3(px',py',pz',nx',ny',nz','g')

@@ -14,9 +14,14 @@ nx_160 = dlmread('nx_160.txt');
 ny_160 = dlmread('ny_160.txt');
 nz_160 = dlmread('nz_160.txt');
 
-px_160 = dlmread('d10cm_interp_x.txt');
-py_160 = dlmread('d10cm_interp_y.txt');
-pz_160 = dlmread('d10cm_interp_z.txt');
+px_160 = dlmread('cheat_d1cm_interp_x.txt');
+py_160 = dlmread('cheat_d1cm_interp_y.txt');
+pz_160 = dlmread('cheat_d1cm_interp_z.txt');
+
+
+pointx_160 = dlmread('px_160.txt');
+pointy_160 = dlmread('py_160.txt');
+pointz_160 = dlmread('pz_160.txt');
 
 
 path=dlmread('path_half.txt');
@@ -451,7 +456,7 @@ xlabel('time [s]')
 ylabel('z [m]')
 
 
-
+close all
 %px_inter = interp1(1:length(px_160), px_160, linspace(1, length(px_160), 10000), 'cubic');
 %py_inter = interp1(1:length(py_160), py_160, linspace(1, length(py_160), 10000), 'cubic');
 %pz_inter = interp1(1:length(pz_160), pz_160, linspace(1, length(pz_160), 10000), 'cubic');
@@ -486,15 +491,40 @@ wp_inter(:,2)=wpy_inter;
 wp_inter(:,3)=wpz_inter;
 
 
-wp_inter(:,1)=smooth(wp_inter(:,1),50);
-wp_inter(:,2)=smooth(wp_inter(:,2),50);
-wp_inter(:,3)=smooth(wp_inter(:,3),50);
+wp_inter(:,1)=smooth(wp_inter(:,1),100);
+wp_inter(:,2)=smooth(wp_inter(:,2),100);
+wp_inter(:,3)=smooth(wp_inter(:,3),100);
 
 
 
-nx_inter=smooth(nx_inter,20);
-ny_inter=smooth(ny_inter,20);
-nz_inter=smooth(nz_inter,20);
+nx_inter=smooth(nx_inter,100);
+ny_inter=smooth(ny_inter,100);
+nz_inter=smooth(nz_inter,100);
+
+
+
+for i=1:length(nx_inter)
+    mag(i)=(nx_inter(i)^2+ny_inter(i)^2)^0.5;
+end
+
+
+for i=1:length(nx_inter)
+   nx_inter(i)=nx_inter(i)/mag(i);
+   ny_inter(i)=ny_inter(i)/mag(i);
+end
+
+%nx_inter=nx_inter./mag;
+%ny_inter=ny_inter./mag;
+
+for i=1:length(nx_inter)
+    mag(i)=(nx_inter(i)^2+ny_inter(i)^2)^0.5;
+end
+
+
+%nx_inter=smooth(nx_inter,40);
+%ny_inter=smooth(ny_inter,40);
+%nz_inter=smooth(nz_inter,40);
+
 
 px_inter_s=smooth(px_inter_s,100);
 py_inter_s=smooth(py_inter_s,100);
@@ -504,9 +534,9 @@ pz_inter_s=smooth(pz_inter_s,100);
 
 for i=2:length(px_inter)
     
-    vx_inter(i)=(px_inter(i)-px_inter(i-1))*5;
-    vy_inter(i)=(py_inter(i)-py_inter(i-1))*5;
-    vz_inter(i)=(pz_inter(i)-pz_inter(i-1))*5;
+    vx_inter(i)=(px_inter(i)-px_inter(i-1))*90;
+    vy_inter(i)=(py_inter(i)-py_inter(i-1))*90;
+    vz_inter(i)=(pz_inter(i)-pz_inter(i-1))*90;
 
     wp(i,1:3)=0;
 
@@ -536,6 +566,87 @@ plot ([1:length(wpz_inter)],wp_inter(:,3),'-','Color',[0 1 0],'LineWidth', 2.0)
 
 
 
+
+
+
+%% Remove outliers
+
+a=100;
+
+vx_old=vx_inter;
+vy_old=vy_inter;
+for i=a+1:length(vy_inter)-a+1
+   
+    if abs(vy_inter(i))>0.2
+        if abs(vy_inter(i)-vy_inter(i-a))>0.2 && abs(vy_inter(i)-vy_inter(i+a))>0.2
+         vy_inter(i)=0;
+        end 
+    end
+    
+    
+end
+
+
+for i=a+1:length(vx_inter)-a+1
+   
+    if abs(vx_inter(i))>0.2
+        if abs(vx_inter(i)-vx_inter(i-a))>0.2 && abs(vx_inter(i)-vx_inter(i+a))>0.2
+         vx_inter(i)=0;
+        end 
+    end
+    
+    
+end
+
+
+
+%% Smoothing
+px_inter=smooth(px_inter,50);
+py_inter=smooth(py_inter,50);
+pz_inter=smooth(pz_inter,50);
+
+
+
+
+%% yaw angle
+for i=1:length(nx_inter)
+   if (0.5 <= nx_inter(i))   &&  (nx_inter(i) <=1)
+       yaw_a(i)=180;
+       
+   end
+   
+   if (-0.5 >= nx_inter(i))   &&  (nx_inter(i) >=-1)
+       yaw_a(i)=0;
+       
+   end
+   
+    if (0.5 <= ny_inter(i))   &&  (ny_inter(i) <=1)
+       yaw_a(i)=-90;
+       
+    end
+    
+    if (-0.5 >= ny_inter(i))   &&  (ny_inter(i) >=-1)
+       yaw_a(i)=90;
+       
+    end
+    
+end
+
+
+theta_d=atan(ny_inter(:)./nx_inter(:));
+theta_d=theta_d*180/pi;
+
+
+wp_nmpc(:,1)=px_inter+nx_inter*10;
+wp_nmpc(:,2)=py_inter+ny_inter*10;
+wp_nmpc(:,3)=pz_inter;
+%wp_nmpc(:,4)=theta_d;
+wp_nmpc(:,4)=yaw_a;
+
+wp_inter(:,4)=yaw_a;
+
+
+
 writematrix(px_inter, "px_inter.txt");
 
 writematrix(py_inter, "py_inter.txt");
@@ -556,10 +667,60 @@ writematrix(vz_inter', "vz_inter.txt");
 
 
 writematrix(wp, "wp.txt");
-%writematrix(wp_inter, "wp_inter.txt");
+%writematrix(wp_nmpc, "wp_inter.txt");
 
 
 
 vel_abs=(vx_inter.^2+vy_inter.^2+vz_inter.^2).^0.5;
 
 plot ([1:length(wpx_inter)],wpx_inter,'-','Color',[0 1 0],'LineWidth', 2.0)
+
+
+close all
+
+figure
+b=1;
+a=162;
+
+plot3(pointx_160(b:a) ,pointy_160(b:a) ,pointz_160(b:a) )
+hold on
+patch(mx',my',mz','r','EdgeColor','k','FaceAlpha',0.7);
+figure 
+plot ([1:length(wpz_inter)],py_inter,'-','Color',[0 1 0],'LineWidth', 2.0)
+hold on
+plot ([1:length(vy_inter)],py_inter,'-','Color',[0 0 1],'LineWidth', 2.0)
+close all
+
+plot ([1:length(vy_old)],vy_old)
+hold on
+plot ([1:length(vy_inter)],vy_inter)
+close all
+plot ([1:length(vx_old)],vx_old)
+hold on
+plot ([1:length(vx_inter)],vx_inter)
+
+
+plot3(px_inter ,py_inter ,pz_inter )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

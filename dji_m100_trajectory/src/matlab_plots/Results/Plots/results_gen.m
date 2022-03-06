@@ -38,6 +38,8 @@ color_Ct= [ 0 0 0];
 M = dlmread('plotting_data/Results_inter_1/test1.txt');  %Simulation data (trajectory, NMPC costs, drone states, etc.
 M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_new/VTMPC_results.txt');
 M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_2/VTMPC.txt');
+M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_C_o_VTMPC/test1.txt');
+
 %M = dlmread('plotting_data/Results_vel_1/test1.txt'); 
 P = dlmread('plotting_data/Results_inter_1/PAMPC.txt'); 
 
@@ -340,9 +342,9 @@ end
 figure('name','Position','units', 'normalized', 'outerposition', [0 0.266 0.559 0.734])
 plot(t(1:skip*10:end),s_d(1:skip*10:end),'LineWidth', 2.5,'color',color_VTNMPC);
 hold on
-plot(t(1:skip*10:end),d_pa(1:skip*10:end),'LineWidth', 2.5,'color',color_PAMPC);
-hold on
-plot(t(1:skip*10:end),d(1:skip*10:end),'LineWidth', 2.5,'color',color_GP);
+%plot(t(1:skip*10:end),d_pa(1:skip*10:end),'LineWidth', 2.5,'color',color_PAMPC);
+%hold on
+%plot(t(1:skip*10:end),d(1:skip*10:end),'LineWidth', 2.5,'color',color_GP);
 
 yline(7.5,'--','LineWidth', 3.0,'Color',[0 0 0.1]);
 hold on
@@ -353,7 +355,7 @@ hold on
 %yline(8.5,'--','LineWidth', 3.0,'Color',[0 0 0.1]);
 ylabel('distance [m]','FontSize',23);
 xlabel('t [s]','FontSize',23);
-xlim([t_start max(t)]);
+xlim([t_start max(t)-50]);
 ax_han = gca;
 set(ax_han,'FontSize',25)
 %ylim([7.2 10.3]);

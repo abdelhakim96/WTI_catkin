@@ -44,6 +44,9 @@ ros::Publisher mesh_pos_pub_delayed;
 ros::Publisher norm_pub;
 ros::Publisher pointvelocity_pub;
 ros::Publisher velocity_ref_pub;
+ros::Publisher dist_pub;
+ros::Publisher vel_abs_pub;
+ros::Publisher yaw_ang_pub;
 
 ros::Subscriber currentPos;
 ros::Subscriber state_sub;
@@ -68,7 +71,9 @@ geometry_msgs::PoseStamped point_g_del;
 geometry_msgs::PoseStamped norm_g;
 geometry_msgs::PoseStamped vel;
 geometry_msgs::TwistStamped move;
-
+std_msgs::Float64 dist_t;
+std_msgs::Float64 vel_abs1_v;
+std_msgs::Float64 yaw_ang;
 
 
 
@@ -145,8 +150,11 @@ void set_heading(float yaw)
   ROS_INFO("yaw value: %f", yaw);
   float pitch = 0;
   float roll = 0;
-  yaw=yaw+90;
-  yaw=yaw*(M_PI/180);
+  //yaw=yaw+90;
+  //yaw=yaw*(M_PI/180);
+
+  yaw_ang.data=yaw;
+
   ROS_INFO("yaw value after: %f", yaw);
   float cy = cos(yaw * 0.5);
   float sy = sin(yaw * 0.5);
@@ -165,6 +173,7 @@ void set_heading(float yaw)
   waypoint_g.pose.orientation.y = qy;
   waypoint_g.pose.orientation.z = qz;
   local_pos_pub.publish(waypoint_g);
+  
 }
 
 
@@ -330,7 +339,9 @@ int init_publisher_subscriber(ros::NodeHandle controlnode)
 	norm_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/norm_traj").c_str(), 10); 
 	pointvelocity_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_vel").c_str(), 10); 
 	velocity_ref_pub = controlnode.advertise<geometry_msgs::PoseStamped>((ros_namespace + "/point_vel_ref").c_str(), 10); 
-	
+	dist_pub = controlnode.advertise<std_msgs::Float64>((ros_namespace + "/distance").c_str(), 10); 
+	vel_abs_pub = controlnode.advertise<std_msgs::Float64>((ros_namespace + "/vel_abs").c_str(), 10); 
+	yaw_ang_pub = controlnode.advertise<std_msgs::Float64>((ros_namespace + "/yaw_i").c_str(), 10); 
 	
 
 	currentPos = controlnode.subscribe<geometry_msgs::PoseStamped>((ros_namespace + "/mavros/mocap/pose").c_str(), 10, pose_cb); 
@@ -367,18 +378,18 @@ int main(int argc, char** argv)
 	double v_x,v_y,v_z;
 	double normx,normy,normz;
     //std::vector<int> myVector = {1, 2, 3, 4, 5, 6};
-	std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/gp_path_d5cm_interp.txt");
+	std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/wp_inter.txt");
     //std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/wp_inter.txt");
 	//std::ifstream inputFile("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/GP_output/interpolatedwps.txt");
 
-    while (inputFile >> wp_x >> wp_y >> wp_z >> y1 >> y2 >> y3)
+    while (inputFile >> wp_x >> wp_y >> wp_z >> y1)
     {
     vecX.push_back(wp_x+68);
     vecY.push_back(wp_y-32);
     vecZ.push_back(wp_z-70);
 	vec1.push_back(y1);
-    vec2.push_back(y2);
-    vec3.push_back(y3);
+   // vec2.push_back(y2);
+   // vec3.push_back(y3);
 	
     }
    
@@ -388,7 +399,7 @@ int main(int argc, char** argv)
 	nextWayPoint.x = vecX[i];
 	nextWayPoint.y =  vecY[i];
 	nextWayPoint.z = vecZ[i];
-	nextWayPoint.psi = vec3[i]*180/M_PI;
+	nextWayPoint.psi = vec1[i];
 	waypointList.push_back(nextWayPoint);	
 	}
 
@@ -407,7 +418,7 @@ int main(int argc, char** argv)
 	std::ifstream inputFilevz("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/vz_inter.txt");
 
 
-
+//cheat_d5cm_interp_x.txt
     while (inputFilex >> p_x )
     {
 	vx.push_back((p_x)+68);
@@ -483,7 +494,7 @@ int main(int argc, char** argv)
 
 
 
-	ros::Rate rate(5);
+	ros::Rate rate(8);
     
 	ros::Time last_request = ros::Time::now();
 
@@ -501,33 +512,212 @@ int main(int argc, char** argv)
 	set_norm(1.0,0.0,0.0);
 	//int v_d=1;
 	int c;
+	int cc=0;
+	int ct=0;
 	c=1;
-	int n;
+	int n =1;
+	float v_turn=0.5;
+	float v_turnx=0.0;
+	float v_turny=0.0;
+	float thetaa=0.0;
+	float axx=0.0;
+	float ayy=0.0;
+	float azz=0.0;
+	float nnx=1.0;
+	float nny=1.0;
+	float ncx=1.0;
+	float ncy=1.0;
+	float vturn=0.5;
+	float vel_turnx=0.5;
+	float vel_turny=0.5;
+	float maxv=0.0;
+	float dist=0.0;
+    float adn=1.0;
+	float jump=0;
+	float vel_absx1;
+    float vel_absx2;
+	float vel_absx3;
+	float vel_absy1;
+	float vel_absy2;
+	float vel_absy3;
+	float vel_abs1;
+	float vel_abs2;
+	float vel_abs3;
+
+
 	while(ros::ok())
 	{   
 	    ros::spinOnce();
 		rate.sleep();
 
-			
-			n=counter+1;
 
-			
+    
+		axx=current_pose_g.pose.position.x - pointList[n].x;
+        ayy=current_pose_g.pose.position.y - pointList[n].y;
+	    azz=current_pose_g.pose.position.z - pointList[n].z;
+        ncx=normList[n].x;
+		ncy=normList[n].y;
+        vel_absx1=abs(pointList[n+1].x-pointList[n].x);
+		vel_absy1=abs(pointList[n+1].y-pointList[n].y);
+		vel_abs1=vel_absx1+vel_absy1;
+
+
+	    vel_absx2=abs(pointList[n+5].x-pointList[n+4].x);
+		vel_absy2=abs(pointList[n+5].y-pointList[n+4].y);
+		vel_abs2=vel_absx2+vel_absx2;
+  
+
+
+
+
+        		
+	    vel_absx3=abs(pointList[n+50].x-pointList[n+49].x);
+		vel_absy3=abs(pointList[n+50].y-pointList[n+49].y);
+		vel_abs3=vel_absx3+vel_absx3;
+
+
+	    adn=(axx * ncx + ayy * ncy)/(sqrt(axx * axx + ayy*ayy));
+        
+
+		//	if ((abs(normList[n+1].x-normList[n].x)>0.000001) || (counter < 10) || (abs(pointList[n+1].x-pointList[n].x)>0.045) || (abs(pointList[n+1].y-pointList[n].y)>0.045) ||  (abs(normList[n+1].x-normList[n-30].x)>0.000001)  ||    normList[n+1].z>0.0 )
+
+	if ((abs(normList[n+1].x-normList[n].x)>0.000001) || ((vel_abs2-vel_abs1)>0.001)  ||  jump==1 || (abs(velList[n].y)+abs(velList[n].x)>0.75) ||  (abs(normList[n+1].z-normList[n].z)>0.001) || (abs(velList[n].y)+abs(velList[n].x)+abs(velList[n].z)>1.70) || (abs(velList[n].z)>1.500))
+{
+	 jump=1;
+       if  ((vel_abs3-vel_abs1)<0.01 && (vel_abs2-vel_abs1)<0.01  && (vel_abs3-vel_abs2)<0.01   )
+	   {
+           jump=0;
+	   }           
+         cc=cc+1;
+        
+
+     if (normList[n+1].z>0.5)
+      {
+
+        counter=counter+5;
+		 n=counter+1;
+         cc=0;
+	  }
+
+else{
+
+
+
+        counter=counter+2;
+		 n=counter+1;
+         cc=0;
+
+}
+
+
+}
+else 
+
+
+{
+ if  (n>100)	
+ { if ((abs(normList[n].x-normList[n-20].x))>0.0001   ||   (abs(normList[n].z-normList[n-20].z)>0.0001	)	)
+			//
+			{
+			counter=counter+3;
+		    n=counter+1;
+			cc=0;
+			}
+     else
+{
+counter=counter+10;
+		    n=counter+1;
+			cc=0;
+}           
+
+}
+
+
+else{
+counter=counter+3;
+		    n=counter+1;
+			cc=0;
+
+
+}
+
+
+}
+
+
+
+
+ // ct=n;
 			if (counter < waypointList.size()-10)
 			{   
 				
                 
 			  	set_destination(waypointList[n].x,waypointList[n].y,waypointList[n].z, waypointList[n].psi);
-                set_heading(waypointList[n].psi);
+                //set_heading(waypointList[n].psi);
 				float u =(pointList[n].x-pointList[n-1].x)/0.1;
 				float v =(pointList[n].y-pointList[n-1].y)/0.1;
 				float w =(pointList[n].z-pointList[n-1].z)/0.1;
 				
            
 				set_point(pointList[n].x,pointList[n].y,pointList[n].z, pointList[n-1].x,pointList[n-1].y,pointList[n-1].z);
-            
+                
+
+                 
                 set_norm(normList[n].x,normList[n].y,normList[n].z);
-                set_vel(velList[n].x,velList[n].y,velList[n].z);
+
+
+
+
+
+				if (abs(normList[n+1].x-normList[n].x)>0.000001) //&& kk=0
+				{ 
+				    
+
+                     set_norm(normList[n].x,normList[n].y,normList[n].z);
+
+                  //  kk=1;
+
+				    vel_turnx= 0.6*normList[ct+300].x;
+					vel_turny= 0.6*normList[ct+300].y;
+                   
+                    maxv=-vel_turnx*normList[ct].y+ vel_turny*normList[ct].x;
+				   	 
+
+
+
+                 
+				  nnx=normList[ct].x;
+				  nny=normList[ct].y;
+				  thetaa	= acos((axx * nnx + ayy * nny)/(sqrt(axx * axx + ayy*ayy)));
+                  thetaa =(thetaa*maxv)/abs(maxv);
+                  v_turnx = vel_turnx * cos(thetaa) - vel_turny * sin(thetaa);
+				  v_turny = vel_turnx * sin(thetaa) + vel_turny * cos(thetaa);
+
+                set_vel(v_turnx,v_turny,velList[n].z*0.1);
+				}
+                else{
+                  ct=n;
+			    set_vel(velList[n].x,velList[n].y,velList[n].z);
+                  
+				}
+
+                
 				point_vel_cb(u,v,w);
+                dist = sqrt(axx *axx + ayy * ayy + azz * azz);
+				dist_t.data=dist;
+                dist_pub.publish(dist_t);
+
+
+				yaw_ang.data=waypointList[n].psi*(M_PI/180);
+                yaw_ang_pub.publish(yaw_ang);
+
+
+
+
+
+				vel_abs1=abs(velList[n].y)+abs(velList[n].x)+abs(velList[n].z);
+				vel_abs1_v.data=vel_abs1;
+                vel_abs_pub.publish(vel_abs1_v);
 
 				ROS_INFO("x %f", waypointList[n].x-68.0);
 				ROS_INFO("y %f", waypointList[n].y+32.0);
@@ -535,18 +725,20 @@ int main(int argc, char** argv)
 				ROS_INFO("py %f", pointList[n].y+32.0);
                 ROS_INFO("px -1 %f", pointList[n-1].x-68.0);
 				ROS_INFO("py -1 %f", pointList[n-1].y+32.0);
-				ROS_INFO("u %f", velList[n].x);
-                ROS_INFO("v %f", velList[n].y);
-				ROS_INFO("w %f", velList[n].z);
-				ROS_INFO("n %d", n);
-                
+ 
 
-				counter++;
-	
-			 
+				ROS_INFO("counter %d", n);
+				ROS_INFO(" ct %d", ct);
+                ROS_INFO(" v_turnx %f",  v_turnx);
+                ROS_INFO(" v_turny %f",  v_turny);
+                ROS_INFO(" nx %f",  normList[n].x);
+                ROS_INFO(" ny %f",  normList[n].y);
+				ROS_INFO(" theta %f",  thetaa*(180/3.142));
+				ROS_INFO(" dist %f",  dist);
+	            ROS_INFO("Z  %f", waypointList[n].z);
+			    ROS_INFO("pz  %f", pointList[n].z);
 			}
 
-			
 			//else{
                  //set_destination(waypointList[waypointList.size()-10].x,waypointList[waypointList.size()-10].y,waypointList[waypointList.size()-10].z, waypointList[waypointList.size()-10].psi);
 			//}
