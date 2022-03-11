@@ -407,12 +407,15 @@ int main(int argc, char** argv)
    
     std::vector<double> meshX1, meshX2,meshX3, meshY1, meshY2,meshY3,meshZ1, meshZ2,meshZ3,vx,vy,vz,vnx, vny,vnz, vel_x,vel_y, vel_z;
     
-    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/px_inter.txt");  //meshfile
-    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/py_inter.txt");  //meshfile
-	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/pz_inter.txt");
-	std::ifstream inputFilenx("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/nx_inter.txt");
-	std::ifstream inputFileny("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/ny_inter.txt");
-	std::ifstream inputFilenz("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/nz_inter.txt");
+    std::ifstream inputFilex("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_x.txt");  //meshfile
+    std::ifstream inputFiley("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_y.txt");  //meshfile
+	std::ifstream inputFilez("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_z.txt");
+	//std::ifstream inputFilenx("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_x.txt");
+	//std::ifstream inputFileny("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_y.txt");
+	//std::ifstream inputFilenz("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_z.txt");
+    std::ifstream inputFilenx("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/nx_inter.txt");
+	std::ifstream inputFileny("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/ny_inter.txt");
+	std::ifstream inputFilenz("/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/nz_inter.txt");
     std::ifstream inputFilevx("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/vx_inter.txt");
 	std::ifstream inputFilevy("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/vy_inter.txt");
 	std::ifstream inputFilevz("/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/vz_inter.txt");
@@ -648,7 +651,7 @@ counter=counter+3;
 
 
  // ct=n;
-			if (counter < waypointList.size()-10)
+			if (counter < waypointList.size()-1)
 			{   
 				
                 

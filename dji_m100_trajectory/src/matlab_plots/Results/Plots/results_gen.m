@@ -35,15 +35,12 @@ color_Cr= [ 0 0 1];
 color_Ct= [ 0 0 0];
 %% Read text files
 
-M = dlmread('plotting_data/Results_inter_1/test1.txt');  %Simulation data (trajectory, NMPC costs, drone states, etc.
-M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_new/VTMPC_results.txt');
-M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTMPC_2/VTMPC.txt');
-M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_C_o_VTMPC/test1.txt');
+
+M = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_VTNMPC_semi/test1.txt');
 
 %M = dlmread('plotting_data/Results_vel_1/test1.txt'); 
-P = dlmread('plotting_data/Results_inter_1/PAMPC.txt'); 
 
-P=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_PAMPC_new/PAMPC_data.txt');mx = dlmread('plotting_data/MeshX.txt');          %Triangular model stl file
+P=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/dji_m100_trajectory/src/matlab_plots/Results/Results_NMPC_semi_better/test1.txt');mx = dlmread('plotting_data/MeshX.txt');          %Triangular model stl file
 my = dlmread('plotting_data/MeshY.txt');
 mz = dlmread('plotting_data/MeshZ.txt');
 
@@ -135,7 +132,7 @@ yaw=yaw*pi/180;
 %% Calculate the functions used in the Cost C_h, C_d, C_r
 for i=1:length(a)
 s_h(i,1)=(cos(yaw(i))*a(i,1)+sin(yaw(i))*a(i,2))/norm(a(i,1:2));    % heading function calculation s_h
-s_d(i,1)=(a(i,1)^2+a(i,2)^2)^0.5;                                   % distance function calculation s_d
+s_d(i,1)=(a(i,1)^2+a(i,2)^2+a(i,3)^2)^0.5;                                   % distance function calculation s_d
 s_d_wp(i,1)=norm(a_ref(i,1:2));                                     % distance function for wp trajectory s_d_wp
 s_r(i,1)=a(i,1)*n(i,1)+a(i,2)*n(i,2);                               % region of inerest function
 s_p(i,1)=a(i,1)*n(i,2)-a(i,2)*n(i,1);                               % perpendicularity measure

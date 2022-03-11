@@ -10,18 +10,18 @@ my = dlmread('MeshY.txt');
 mz = dlmread('MeshZ.txt');
 
 
-nx_160 = dlmread('nx_160.txt');
-ny_160 = dlmread('ny_160.txt');
-nz_160 = dlmread('nz_160.txt');
+nx_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_x.txt');
+ny_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_y.txt');
+nz_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/normals/mp_d1cm_interp_n_z.txt');
 
-px_160 = dlmread('cheat_d1cm_interp_x.txt');
-py_160 = dlmread('cheat_d1cm_interp_y.txt');
-pz_160 = dlmread('cheat_d1cm_interp_z.txt');
+px_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_x.txt');
+py_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_y.txt');
+pz_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_z.txt');
 
 
-pointx_160 = dlmread('px_160.txt');
-pointy_160 = dlmread('py_160.txt');
-pointz_160 = dlmread('pz_160.txt');
+pointx_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_x.txt');
+pointy_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_y.txt');
+pointz_160 = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/Point_to_View_Trajectory/mp_d1cm_interp_z.txt');
 
 
 path=dlmread('path_half.txt');
@@ -497,9 +497,9 @@ wp_inter(:,3)=smooth(wp_inter(:,3),100);
 
 
 
-nx_inter=smooth(nx_inter,100);
-ny_inter=smooth(ny_inter,100);
-nz_inter=smooth(nz_inter,100);
+nx_inter=smooth(nx_inter,500);
+ny_inter=smooth(ny_inter,500);
+nz_inter=smooth(nz_inter,500);
 
 
 
@@ -531,12 +531,28 @@ py_inter_s=smooth(py_inter_s,100);
 pz_inter_s=smooth(pz_inter_s,100);
 
 
+theta_d=atan(ny_inter(:)./nx_inter(:));
+theta_d=theta_d*180/pi;
+
+
+wp_nmpc(:,1)=px_inter+nx_inter*10;
+wp_nmpc(:,2)=py_inter+ny_inter*10;
+wp_nmpc(:,3)=pz_inter;
+%wp_nmpc(:,4)=theta_d;
+
+
+
+
+
 
 for i=2:length(px_inter)
     
-    vx_inter(i)=(px_inter(i)-px_inter(i-1))*90;
-    vy_inter(i)=(py_inter(i)-py_inter(i-1))*90;
-    vz_inter(i)=(pz_inter(i)-pz_inter(i-1))*90;
+   % vx_inter(i)=(wp_nmpc(i,1)-wp_nmpc(i-1,1))*80;
+   % vy_inter(i)=(wp_nmpc(i,2)-wp_nmpc(i-1,2))*80;
+   % vz_inter(i)=(wp_nmpc(i,3)-wp_nmpc(i-1,3))*80;
+   vx_inter(i)=(px_inter(i)-px_inter(i-1))*80;
+   vy_inter(i)=(py_inter(i)-py_inter(i-1))*80;
+   vz_inter(i)=(pz_inter(i)-pz_inter(i-1))*80;
 
     wp(i,1:3)=0;
 
@@ -571,7 +587,7 @@ plot ([1:length(wpz_inter)],wp_inter(:,3),'-','Color',[0 1 0],'LineWidth', 2.0)
 
 %% Remove outliers
 
-a=100;
+a=300;
 
 vx_old=vx_inter;
 vy_old=vy_inter;
@@ -632,18 +648,7 @@ for i=1:length(nx_inter)
     
 end
 
-
-theta_d=atan(ny_inter(:)./nx_inter(:));
-theta_d=theta_d*180/pi;
-
-
-wp_nmpc(:,1)=px_inter+nx_inter*10;
-wp_nmpc(:,2)=py_inter+ny_inter*10;
-wp_nmpc(:,3)=pz_inter;
-%wp_nmpc(:,4)=theta_d;
 wp_nmpc(:,4)=yaw_a;
-
-wp_inter(:,4)=yaw_a;
 
 
 

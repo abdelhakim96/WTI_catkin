@@ -118,9 +118,10 @@ int main()
 
     s_1 = (1 / norm_a_2) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     //s_1 =  ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
-    s_2 = norm_a;
+    //s_2 = norm_a;
+    s_2= norm_a_2;
     //s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
-    s_3 = (n_x * a_x + n_y * a_y)/norm_a;
+    s_3 = (n_x * a_x + n_y * a_y);
     //s_4= asin(sqrt(A)/norm_a);
     //s_4 = B/norm_a;
     s_4 = sqrt(A1 * A1 + A2 * A2 + A3 * A3);
@@ -151,6 +152,10 @@ int main()
     ocp.minimizeLSQ(W, h);
     ocp.minimizeLSQEndTerm(WN, hN);
 
+   /// ocp.subjectTo(-100 * M_PI / 180 <= p_rate <= 100 * M_PI / 180);
+    //ocp.subjectTo(-100 * M_PI / 180 <= q_rate <= 100 * M_PI / 180);
+    //ocp.subjectTo(-100 * M_PI / 180 <= r_rate <= 100 * M_PI / 180);
+    //ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
     ocp.subjectTo(-100 * M_PI / 180 <= p_rate <= 100 * M_PI / 180);
     ocp.subjectTo(-100 * M_PI / 180 <= q_rate <= 100 * M_PI / 180);
     ocp.subjectTo(-100 * M_PI / 180 <= r_rate <= 100 * M_PI / 180);
