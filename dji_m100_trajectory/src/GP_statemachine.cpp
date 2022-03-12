@@ -680,8 +680,8 @@ counter=counter+3;
 
                   //  kk=1;
 
-				    vel_turnx= 0.6*normList[ct+300].x;
-					vel_turny= 0.6*normList[ct+300].y;
+				    vel_turnx= 0.7*normList[ct+800].x;
+					vel_turny= 0.7*normList[ct+800].y;
                    
                     maxv=-vel_turnx*normList[ct].y+ vel_turny*normList[ct].x;
 				   	 
