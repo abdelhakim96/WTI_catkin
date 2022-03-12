@@ -672,7 +672,7 @@ writematrix(vz_inter', "vz_inter.txt");
 
 
 writematrix(wp, "wp.txt");
-%writematrix(wp_nmpc, "wp_inter.txt");
+writematrix(wp_nmpc, "wp_inter.txt");
 
 
 
