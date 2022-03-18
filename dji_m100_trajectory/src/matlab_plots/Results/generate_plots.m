@@ -497,9 +497,9 @@ wp_inter(:,3)=smooth(wp_inter(:,3),100);
 
 
 
-nx_inter=smooth(nx_inter,500);
-ny_inter=smooth(ny_inter,500);
-nz_inter=smooth(nz_inter,500);
+nx_inter=smooth(nx_inter,300);
+ny_inter=smooth(ny_inter,300);
+nz_inter=smooth(nz_inter,300);
 
 
 
@@ -535,8 +535,8 @@ theta_d=atan(ny_inter(:)./nx_inter(:));
 theta_d=theta_d*180/pi;
 
 
-wp_nmpc(:,1)=px_inter+nx_inter*10;
-wp_nmpc(:,2)=py_inter+ny_inter*10;
+wp_nmpc(:,1)=px_inter+nx_inter*7;
+wp_nmpc(:,2)=py_inter+ny_inter*7;
 wp_nmpc(:,3)=pz_inter;
 %wp_nmpc(:,4)=theta_d;
 
@@ -637,7 +637,7 @@ for i=1:length(nx_inter)
    end
    
     if (0.5 <= ny_inter(i))   &&  (ny_inter(i) <=1)
-       yaw_a(i)=-90;
+       yaw_a(i)=270;
        
     end
     

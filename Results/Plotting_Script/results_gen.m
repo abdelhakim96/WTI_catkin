@@ -41,12 +41,15 @@ W_r=60;
 %color_NMPC = [0.85 0.3250 0.0980];
 %color_point_traj = [0.4980 0.3250 0.85];
 color_point_traj = [0 0 0];
-color_VTNMPC = [0 0 1];
+color_VTNMPC = [0.1 0.2 0.9];
+
+%color_NMPC = [0.9100 0.4100 0.1700];
+color_NMPC =[0.2 0.7 0.2];
+color_VTNMPC_nw = [0.9100 0.4100 0.1700];
+
 color_PAMPC = [0 0 1];
-color_NMPC = [1 0 0];
-
-
-
+%color_NMPC_nw = [0.2 0.7 0.2];
+color_NMPC_nw= [0.1 0.1 0.1];
 
 color_turbine = [0.85 0.3250 0.0980];
 color_covered_turbine = [ 1 0 0];
@@ -57,17 +60,17 @@ color_Ct= [ 0 0 0];
 %% Read text files
 
 
-M_VT_nowind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/sin_comb3_4ms_0.5_10hz.txt');    %VTMPC data
+M_VT_nowind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/no_wind.txt');    %VTMPC data
 
-M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/sin_comb3_4ms_0.5_10hz.txt');
+M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/wind.txt');
 %M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/GT_traj.txt');
 
 
-M_NMPC_nowind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/NMPC/sin_comb3_4ms_0.5_10hz.txt');
-M_NMPC_wind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/NMPC/sin_comb3_4ms_0.5_10hz.txt');
+M_NMPC_nowind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/NMPC/no_wind.txt');
+M_NMPC_wind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/NMPC/wind.txt');
 
-M_PAMPC_nowind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/sin_comb3_4ms_0.5_10hz.txt');
-M_PAMPC_wind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/sin_comb3_4ms_0.5_10hz.txt');
+M_PAMPC_nowind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/wind.txt');
+M_PAMPC_wind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/wind.txt');
 
 
 
@@ -241,19 +244,35 @@ hold(axes1,'on');
 %set(gcf,'color','w');
 %grid minor
 %xlim([0 510])
-plot3(px,py,pz,'LineWidth', 3,'color',color_point_traj);
+%plot3(px,py,pz,'LineWidth', 3,'color',color_point_traj);
+%hold on
+
+plot3(M_VT_nowind(1:end-5800,5),M_VT_nowind(1:end-5800,6),M_VT_nowind(1:end-5800,7),'--', 'LineWidth', 3,'color',color_VTNMPC);
 hold on
 
-plot3(M_VT_wind(:,5),M_VT_wind(:,6),M_VT_wind(:,7),'k', 'LineWidth', 2.5,'color',color_VTNMPC);
+
+
+plot3(M_VT_wind(1:end-15800,5),M_VT_wind(1:end-15800,6),M_VT_wind(1:end-15800,7),'k', 'LineWidth', 3,'color',color_VTNMPC_nw);
 hold on
 
-%plot3(M_PAMPC_wind(:,5),M_PAMPC_wind(:,6),M_PAMPC_nowind(:,7),'k', 'LineWidth', 2.5,'color',color_PAMPC);
+%plot3(M_VT_wind_now(100:end-2000,5),M_VT_wind_now(100:end-2000,6),M_VT_wind_now(100:end-2000,7),'--','k', 'LineWidth', 3,'color',color_VTNMPC);
 
 hold on
-plot3(M_NMPC_wind(2600:end,5),M_NMPC_wind(2600:end,6),M_NMPC_wind(2600:end,7),'k', 'LineWidth', 2.5,'color',color_NMPC);
+
+plot3(M_NMPC_nowind(100:end-2000,5),M_NMPC_nowind(100:end-2000,6),M_NMPC_nowind(100:end-2000,7),'--', 'LineWidth', 3,'color',color_NMPC_nw);
+
+
+
 
 hold on
-patch(mx',my',mz','k','EdgeColor','w','FaceAlpha',0.2);
+
+plot3(M_NMPC_wind(100:end-2000,5),M_NMPC_wind(100:end-2000,6),M_NMPC_wind(100:end-2000,7),'k', 'LineWidth', 3,'color',color_NMPC);
+
+
+
+
+hold on
+patch(mx',my',mz','w','EdgeColor','k','FaceAlpha',1);
 
 xlabel('{\it x}-axis (m)');
 ylabel(['{\it y}-axis';'         (m)']);
@@ -267,7 +286,9 @@ zlabel('{\it z}-axis (m)');
 
 ax_han = gca;
 set(ax_han,'FontSize',40)
-leg_han = legend('point trajectory ','VT-NMPC','NMPC');
+%leg_han = legend('point trajectory ','VT-NMPC no wind','VT-NMPC wind','NMPC no wind','NMPC wind');
+leg_han = legend('VT-NMPC (no wind)','VT-NMPC (wind)','NMPC (no wind)','NMPC (wind)');
+
 %leg_han = legend('point trajectory ','VT-NMPC','PAMPC','NMPC');
 set(leg_han,'FontSize',35,'Location','northeast','Orientation','horizontal');
 view(axes1,[-30.0836105158727 31.8655476563905]);
@@ -523,15 +544,45 @@ writematrix(x_wp, "x_wp.txt");
 %% Distance
 d_VT_w=((M_VT_wind(:,5)-M_VT_wind(:,8)).^2+(M_VT_wind(:,6)-M_VT_wind(:,9)).^2+(M_VT_wind(:,7)-M_VT_wind(:,10)).^2).^0.5;
 
+
+
+d_VT_now=((M_VT_nowind(:,5)-M_VT_nowind(:,8)).^2+(M_VT_nowind(:,6)-M_VT_nowind(:,9)).^2+(M_VT_nowind(:,7)-M_VT_nowind(:,10)).^2).^0.5;
+
+
+
+
 d_NMPC_w=((M_NMPC_wind(:,5)-M_NMPC_wind(:,8)).^2+(M_NMPC_wind(:,6)-M_NMPC_wind(:,9)).^2+(M_NMPC_wind(:,7)-M_NMPC_wind(:,10)).^2).^0.5;
+
+
+
+d_NMPC_now=((M_NMPC_nowind(:,5)-M_NMPC_nowind(:,8)).^2+(M_NMPC_nowind(:,6)-M_NMPC_nowind(:,9)).^2+(M_NMPC_nowind(:,7)-M_NMPC_nowind(:,10)).^2).^0.5;
+
+
+
 figure
-plot ([1:length(d_VT_w)-2250]/50,d_VT_w(2250:end-1),'LineWidth', 2,'color',color_VTNMPC)
+
+
+plot ([1:length(d_VT_now)-2250]/50,d_VT_now(2250:end-1),'--','LineWidth', 3,'color',color_VTNMPC)
 hold on
-plot ([1:length(d_NMPC_w)-2700]/50,d_NMPC_w(2700:end-1),'LineWidth', 2,'color',color_NMPC)
+
+plot ([1:length(d_VT_w)-2250]/50,d_VT_w(2250:end-1),'LineWidth', 3,'color',color_VTNMPC_nw)
+
+hold on
+
+
+plot ([1:length(d_NMPC_now)-100]/50,d_NMPC_now(100:end-1),'--','LineWidth', 3,'color',color_NMPC_nw)
+
+hold on
+plot ([1:length(d_NMPC_w)-100]/50,d_NMPC_w(100:end-1),'LineWidth', 3,'color',color_NMPC)
+
+
+
+
+
 xlim([0 30000/50])
 %legend ('VTNMPC' ,'NMPC')
 
-leg_han = legend('VTNMPC' ,'NMPC');
+leg_han = legend('VTNMPC (no wind)' , 'VTNMPC (wind)','NMPC (no wind)','NMPC ( wind)');
 set(leg_han,'FontSize',30,'Location','northeast','Orientation','horizontal');
 xlabel('time [s]');
 ylabel('distance [m]');
@@ -539,3 +590,7 @@ ax_han = gca;
 set(ax_han,'FontSize',30)
 
 grid on
+
+%% Plot incidence angle 
+
+s_i=(M_VT_wind(:,19)-M_VT_wind(:,17)

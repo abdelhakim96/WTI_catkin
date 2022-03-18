@@ -42,9 +42,9 @@ int H=120;
 float w=3;
 float t=2;
 float l=2;
-float b_w=3;
+float b_w=2.7;
 float b_l=40;
-float b_t=b_w/2;
+float b_t=b_w/3;
 float t_c=120*(2.0/3);
 float dh=0;
 //float T[4][4];
@@ -346,7 +346,7 @@ x[cc+1][2]=t_c-b_w;
 //int theta=M_PI/5;
 //int beta=M_PI/2 - theta;
 
-int m_s=2;
+float m_s=1;
 
 
 
@@ -478,7 +478,7 @@ myfile <<x[cc+2*k+2][0]-m_s*cos(M_PI/5);
 myfile << " ";
 myfile <<x[cc+2*k+2][1]+b_t;
 myfile << " ";
-myfile <<x[cc+2*k+2][2]-b_w+m_s*sin(M_PI/5);
+myfile <<x[cc+2*k+2][2]-b_w*0.8+m_s*sin(M_PI/5);
 myfile << "\n";
 myfile << "vertex ";
 myfile << " ";
@@ -794,7 +794,7 @@ myfile <<x[cc+2*k+2][0]+m_s*cos(M_PI/5);
 myfile << " ";
 myfile <<x[cc+2*k+2][1]+b_t;
 myfile << " ";
-myfile <<x[cc+2*k+2][2]-b_w+m_s*sin(M_PI/5);
+myfile <<x[cc+2*k+2][2]-b_w*0.8+m_s*sin(M_PI/5);
 myfile << "\n";
 myfile << "endloop\n";
 myfile << "endfacet\n";
