@@ -217,7 +217,7 @@ int main(int argc, char** argv)
 
     ref_position_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/position", 1, ref_position_cb);
     ref_velocity_sub = nh.subscribe<geometry_msgs::Vector3>("ref_trajectory/velocity", 1, ref_velocity_cb);
-    ref_yaw_sub = nh.subscribe<std_msgs::Float64>("/yaw_i", 1, ref_yaw_cb);
+    ref_yaw_sub = nh.subscribe<std_msgs::Float64>("/ref_trajectory/yaw", 1, ref_yaw_cb);
     ref_point_sub = nh.subscribe<geometry_msgs::PoseStamped>("point_to_view", 1, ref_point_cb);
     ref_norm_sub = nh.subscribe<geometry_msgs::PoseStamped>("/surface_normal", 1, ref_norm_cb);
     //    pos_sub = private_nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 1, pos_cb);
@@ -380,7 +380,7 @@ int main(int argc, char** argv)
                               current_vel_rate.at(2),
                               ref_point[0],
                               ref_point[1],
-                              ref_point[2]
+                              ref_position[2]
                               };
 
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]

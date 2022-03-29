@@ -75,7 +75,7 @@ extern "C"
 /** Number of references/measurements per node on the first N nodes. */
 #define NMPC_NY 16
 /** Number of references/measurements on the last (N + 1)st node. */
-#define NMPC_NYN 10
+#define NMPC_NYN 12
 /** Total number of QP optimization variables. */
 #define NMPC_QP_NV 133
 /** Number of integration steps per shooting interval. */
@@ -125,17 +125,17 @@ real_t od[ 186 ];
  */
 real_t y[ 480 ];
 
-/** Column vector of size: 10
+/** Column vector of size: 12
  * 
  *  Reference/measurement vector for the 31. node.
  */
-real_t yN[ 10 ];
+real_t yN[ 12 ];
 
 /** Matrix of size: 16 x 16 (row major format) */
 real_t W[ 256 ];
 
-/** Matrix of size: 10 x 10 (row major format) */
-real_t WN[ 100 ];
+/** Matrix of size: 12 x 12 (row major format) */
+real_t WN[ 144 ];
 
 /** Column vector of size: 13
  * 
@@ -171,8 +171,8 @@ real_t d[ 390 ];
 /** Column vector of size: 480 */
 real_t Dy[ 480 ];
 
-/** Column vector of size: 10 */
-real_t DyN[ 10 ];
+/** Column vector of size: 12 */
+real_t DyN[ 12 ];
 
 /** Matrix of size: 390 x 13 (row major format) */
 real_t evGx[ 5070 ];
@@ -204,8 +204,8 @@ real_t R2[ 1920 ];
 /** Matrix of size: 13 x 13 (row major format) */
 real_t QN1[ 169 ];
 
-/** Matrix of size: 13 x 10 (row major format) */
-real_t QN2[ 130 ];
+/** Matrix of size: 13 x 12 (row major format) */
+real_t QN2[ 156 ];
 
 /** Column vector of size: 13 */
 real_t Dx0[ 13 ];

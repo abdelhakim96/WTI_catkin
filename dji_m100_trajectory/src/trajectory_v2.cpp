@@ -1449,8 +1449,12 @@ void publish_inspection_point()
     }
     else
     {
-        ref_point.pose.position.x = -10.0;
-        ref_point.pose.position.y = 1.1;
+        //ref_point.pose.position.x = -10.0;
+        //ref_point.pose.position.y = 1.1;
+        ref_point.pose.position.x = px;
+        ref_point.pose.position.y = py;
+
+
         ref_point.pose.position.z = z;
         ref_normal.pose.position.x = 1.0;
         ref_normal.pose.position.y = 0.0;

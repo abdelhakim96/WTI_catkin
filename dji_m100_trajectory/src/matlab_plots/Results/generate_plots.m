@@ -632,7 +632,7 @@ for i=1:length(nx_inter)
    end
    
    if (-0.5 >= nx_inter(i))   &&  (nx_inter(i) >=-1)
-       yaw_a(i)=0;
+       yaw_a(i)=360;
        
    end
    
@@ -642,12 +642,15 @@ for i=1:length(nx_inter)
     end
     
     if (-0.5 >= ny_inter(i))   &&  (ny_inter(i) >=-1)
-       yaw_a(i)=90;
+       yaw_a(i)=90+360;
        
     end
     
+    if i>=36624
+        yaw_a(i)= 360+180;
+    end
 end
-
+yaw_a=smooth(yaw_a,300);
 wp_nmpc(:,4)=yaw_a;
 
 

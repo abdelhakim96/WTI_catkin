@@ -44,7 +44,7 @@ float t=2;
 float l=2;
 float b_w=2.7;
 float b_l=40;
-float b_t=b_w/3;
+float b_t=b_w/4;
 float t_c=120*(2.0/3);
 float dh=0;
 //float T[4][4];
@@ -346,7 +346,7 @@ x[cc+1][2]=t_c-b_w;
 //int theta=M_PI/5;
 //int beta=M_PI/2 - theta;
 
-float m_s=1;
+float m_s=1.5;
 
 
 

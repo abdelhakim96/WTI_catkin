@@ -205,7 +205,7 @@ class CoverageDisplay3D(Display3D):
                                 2] ** 2)))
                         angle = np.rad2deg(angle)
                         distance_to_center = self.dist(center)
-                        if abs(angle) < 75 and distance_to_center <= self.max_dist_to_viewed_vertice_meter:
+                        if abs(angle) < 80 and distance_to_center <= self.max_dist_to_viewed_vertice_meter:
                             center = o.center[index]
                             u, v = self.camera.transform_cam_to_image(center)
                             points_in = self.point_in_frame(u, v)[0]

@@ -82,7 +82,7 @@ int main()
     // Reference functions and weighting matrices:
     Function h, hN;
     h << p_x << p_y << p_z << q_x << q_y << q_z << q_w <<  v_x << v_y << v_z << intSx/(intSz + epsilon) << intSy/(intSz + epsilon)  << w_x << w_y << w_z << T;
-    hN << p_x << p_y << p_z << q_x << q_y << q_z << q_w << v_x << v_y << v_z;
+    hN << p_x << p_y << p_z << q_x << q_y << q_z << q_w << v_x << v_y << v_z << intSx/(intSz + epsilon) << intSy/(intSz + epsilon);
 
     BMatrix W = eye<bool>(h.getDim());
     BMatrix WN = eye<bool>(hN.getDim());

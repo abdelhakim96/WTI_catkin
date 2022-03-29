@@ -18,11 +18,12 @@
     <param name="W_u" type="double" value="50.0" /> <!-- Weight for x-velocity. -->
     <param name="W_v" type="double" value="50.0" /> <!-- Weight for y-velocity. -->
     <param name="W_w" type="double" value="10.0" /> <!-- Weight for z-velocity. -->
-    <param name="W_s1" type="double" value="0.1" /> <!-- Weight for ref_point. -->
+    <param name="W_s1" type="double" value="0.3" /> <!-- Weight for ref_point. -->
     <param name="W_s2" type="double" value="0.0" /> <!-- Weight for ref_point. -->
-    <param name="W_p_rate" type="double" value="40" /> <!-- Weight for roll rate. -->
-    <param name="W_q_rate" type="double" value="40" /> <!-- Weight for pitch rate. -->
-    <param name="W_r_rate" type="double" value="3" /> <!-- Weight for yaw rate. -->
+    <param name="W_p_rate" type="double" value="50" /> <!-- Weight for roll rate. -->
+    <param name="W_q_rate" type="double" value="50" /> <!-- Weight for pitch rate. -->
+    <param name="W_r_rate" type="double" value="4" /> <!-- Weight for yaw rate. -->
     <param name="W_Fz" type="double" value="0.015" /> <!-- Weight for throttle. -->
 </launch>
+
 

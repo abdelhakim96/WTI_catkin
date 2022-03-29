@@ -1,4 +1,4 @@
-
+clear all
 
 
 red_vt = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Trajectory_generation_coverage/python_scripts-master/data/in/vtmpc_redundancy.txt');    %VTMPC data

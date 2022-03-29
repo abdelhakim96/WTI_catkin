@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
 
     view = CoverageDisplay3D(1280, 720, camera_info)
-    wt = Wireframe.from_stl_path('data/in/turbine_v6.stl')
+    wt = Wireframe.from_stl_path('data/in/turbine_v14.stl')
     r = Rotation.from_euler("XYZ", [0, 0, 90], degrees=True).as_matrix()
 
     r = TRotation().set_matrix(r, "XYZ")
