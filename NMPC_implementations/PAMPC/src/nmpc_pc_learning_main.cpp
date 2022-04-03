@@ -380,7 +380,7 @@ int main(int argc, char** argv)
                               current_vel_rate.at(2),
                               ref_point[0],
                               ref_point[1],
-                              ref_position[2]
+                              current_pos_att.at(2)
                               };
 
             // Setting up references [x,y,z,u,v,w,q_x,q_y_q_z,q_w,s,s_dot]
