@@ -119,7 +119,7 @@ int main()
     s_1 = (1 / norm_a_2) * ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     //s_1 =  ((1 - 2 * q_z * q_z) * a_x + 2 * (q_w * q_z) * a_y);
     //s_2 = norm_a;
-    s_2= norm_a_2;
+    s_2= norm_a;
     //s_3 = n_x * a_x + n_y * a_y + n_z * a_z ;
     s_3 = (n_x * a_x + n_y * a_y);
     //s_4= asin(sqrt(A)/norm_a);
@@ -156,22 +156,22 @@ int main()
     //ocp.subjectTo(-100 * M_PI / 180 <= q_rate <= 100 * M_PI / 180);
     //ocp.subjectTo(-100 * M_PI / 180 <= r_rate <= 100 * M_PI / 180);
     //ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
-    ocp.subjectTo(-100 * M_PI / 180 <= p_rate <= 100 * M_PI / 180);
-    ocp.subjectTo(-100 * M_PI / 180 <= q_rate <= 100 * M_PI / 180);
-    ocp.subjectTo(-100 * M_PI / 180 <= r_rate <= 100 * M_PI / 180);
-    ocp.subjectTo(0.3 * m * g <= Fz <= 2 * m * g);
+    ocp.subjectTo(-3<= p_rate <= 3);
+    ocp.subjectTo(-3 <= q_rate <= 3);
+    ocp.subjectTo(-3 <= r_rate <= 3);
+    ocp.subjectTo(0.3 * m * g <= Fz <= 3 * m * g);
 
     // Export the code:
     OCPexport mpc(ocp);
 
     mpc.set(HESSIAN_APPROXIMATION, GAUSS_NEWTON);
     mpc.set(DISCRETIZATION_TYPE, MULTIPLE_SHOOTING);
-    mpc.set(INTEGRATOR_TYPE, INT_RK4);
-    mpc.set(NUM_INTEGRATOR_STEPS, 2 * N);
+    mpc.set(INTEGRATOR_TYPE, INT_IRK_GL4);
+    mpc.set(NUM_INTEGRATOR_STEPS,  N);
 
     mpc.set(SPARSE_QP_SOLUTION, CONDENSING);
     mpc.set(QP_SOLVER, QP_QPOASES);
-    mpc.set(MAX_NUM_QP_ITERATIONS, 1000);
+    //mpc.set(MAX_NUM_QP_ITERATIONS, 1000);
 
     // 	mpc.set( SPARSE_QP_SOLUTION, SPARSE_SOLVER );
     // 	mpc.set( QP_SOLVER, QP_QPDUNES );

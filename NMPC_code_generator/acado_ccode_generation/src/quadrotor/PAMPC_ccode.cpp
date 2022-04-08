@@ -51,7 +51,7 @@ int main()
     const double g = 9.81;  // m/s^2
     const double d = 10.0;   //m
 
-    const double epsilon = 0.1551; 
+    const double epsilon = 0.1; 
     // Model equations:
     DifferentialEquation f;
 
@@ -91,7 +91,7 @@ int main()
     // Optimal Control Problem
     //
     double N = 30;
-    double Ts = 0.1;
+    double Ts = 0.01;   // Ts=0.01 
     OCP ocp(0.0, N * Ts, N);
 
     ocp.subjectTo(f);
@@ -99,24 +99,24 @@ int main()
     ocp.minimizeLSQ(W, h);
     ocp.minimizeLSQEndTerm(WN, hN);
 
-    ocp.subjectTo(-3.0 <= w_x <= 3.0);
-    ocp.subjectTo(-3.0  <= w_y <= 3.0);
-    ocp.subjectTo(-3.0  <= w_z <= 3.0);
-    ocp.subjectTo(0.3 * m * g <= T <= 3 * m * g);
+    ocp.subjectTo(-100 * M_PI / 180  <= w_x <= 100 * M_PI / 180);
+    ocp.subjectTo(-100 * M_PI / 180  <= w_y <= 100 * M_PI / 180);
+    ocp.subjectTo(-100 * M_PI / 180  <= w_z <= 100 * M_PI / 180);
+    ocp.subjectTo(0.3 * m * g <= T <= 2 * m * g);
 
     // Export the code:
     OCPexport mpc(ocp);
 
     mpc.set(HESSIAN_APPROXIMATION, GAUSS_NEWTON);
     mpc.set(DISCRETIZATION_TYPE, MULTIPLE_SHOOTING);
-    mpc.set(INTEGRATOR_TYPE, INT_IRK_GL4);
-    mpc.set(NUM_INTEGRATOR_STEPS, N);
+    mpc.set(INTEGRATOR_TYPE, INT_RK4);
+    mpc.set(NUM_INTEGRATOR_STEPS, 2 * N);
 
-    //mpc.set(SPARSE_QP_SOLUTION, FULL_CONDENSING_N2);
+    mpc.set(SPARSE_QP_SOLUTION, CONDENSING);
     mpc.set(QP_SOLVER, QP_QPOASES);
-    //mpc.set(MAX_NUM_QP_ITERATIONS, 1000);
+    mpc.set(MAX_NUM_QP_ITERATIONS, 1000);
 
-    mpc.set( SPARSE_QP_SOLUTION, CONDENSING );
+    // 	mpc.set( SPARSE_QP_SOLUTION, SPARSE_SOLVER );
     // 	mpc.set( QP_SOLVER, QP_QPDUNES );
 
     mpc.set(HOTSTART_QP, YES);

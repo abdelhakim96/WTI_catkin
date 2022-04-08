@@ -81,7 +81,7 @@ extern "C"
 /** Number of integration steps per shooting interval. */
 #define NMPC_RK_NIS 1
 /** Number of Runge-Kutta stages per integration step. */
-#define NMPC_RK_NSTAGES 4
+#define NMPC_RK_NSTAGES 2
 /** Providing interface for arrival cost. */
 #define NMPC_USE_ARRIVAL_COST 0
 /** Indicator for usage of non-hard-coded linear terms in the objective. */
@@ -154,13 +154,39 @@ real_t x0[ 16 ];
  */
 typedef struct NMPCworkspace_
 {
+real_t rk_dim32_swap;
+
+/** Column vector of size: 32 */
+real_t rk_dim32_bPerm[ 32 ];
+
 real_t rk_ttt;
 
-/** Row vector of size: 349 */
-real_t rk_xxx[ 349 ];
+/** Row vector of size: 29 */
+real_t rk_xxx[ 29 ];
 
-/** Matrix of size: 4 x 336 (row major format) */
-real_t rk_kkk[ 1344 ];
+/** Matrix of size: 16 x 2 (row major format) */
+real_t rk_kkk[ 32 ];
+
+/** Matrix of size: 32 x 32 (row major format) */
+real_t rk_A[ 1024 ];
+
+/** Column vector of size: 32 */
+real_t rk_b[ 32 ];
+
+/** Row vector of size: 32 */
+int rk_dim32_perm[ 32 ];
+
+/** Column vector of size: 16 */
+real_t rk_rhsTemp[ 16 ];
+
+/** Matrix of size: 2 x 320 (row major format) */
+real_t rk_diffsTemp2[ 640 ];
+
+/** Matrix of size: 16 x 2 (row major format) */
+real_t rk_diffK[ 32 ];
+
+/** Matrix of size: 16 x 20 (row major format) */
+real_t rk_diffsNew2[ 320 ];
 
 /** Row vector of size: 349 */
 real_t state[ 349 ];
@@ -180,8 +206,8 @@ real_t evGx[ 7680 ];
 /** Matrix of size: 480 x 4 (row major format) */
 real_t evGu[ 1920 ];
 
-/** Column vector of size: 111 */
-real_t objAuxVar[ 111 ];
+/** Column vector of size: 116 */
+real_t objAuxVar[ 116 ];
 
 /** Row vector of size: 29 */
 real_t objValueIn[ 29 ];
@@ -259,7 +285,7 @@ real_t y[ 136 ];
 
 /** Performs the integration and sensitivity propagation for one shooting interval.
  *
- *  \param rk_eta Working array to pass the input values and return the results.
+ *  \param rk_eta Working array of size 29 to pass the input values and return the results.
  *  \param resetIntegrator The internal memory of the integrator can be reset.
  *
  *  \return Status code of the integrator.
@@ -271,7 +297,14 @@ int nmpc_integrate( real_t* const rk_eta, int resetIntegrator );
  *  \param in Input to the exported function.
  *  \param out Output of the exported function.
  */
-void nmpc_rhs_forw(const real_t* in, real_t* out);
+void nmpc_rhs(const real_t* in, real_t* out);
+
+/** Export of an ACADO symbolic function.
+ *
+ *  \param in Input to the exported function.
+ *  \param out Output of the exported function.
+ */
+void nmpc_diffs(const real_t* in, real_t* out);
 
 /** Preparation step of the RTI scheme.
  *

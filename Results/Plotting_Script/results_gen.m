@@ -275,7 +275,7 @@ plot3(M_NMPC_wind(1000:end-12700,5),M_NMPC_wind(1000:end-12700,6),M_NMPC_wind(10
 
 hold on
 
-plot3(M_PAMPC_wind(1:end-100,5),M_PAMPC_wind(1:end-100,6),M_PAMPC_wind(1:end-100,7),'k', 'LineWidth', 4,'color',color_PAMPC);
+plot3(M_PAMPC_wind(700:end-3300,5),M_PAMPC_wind(700:end-3300,6),M_PAMPC_wind(700:end-3300,7),'k', 'LineWidth', 4,'color',color_PAMPC);
 
 
 %pbaspect([1 1 1.2])
@@ -553,8 +553,9 @@ writematrix(x_wp, "x_wp.txt");
 
 
 %% Distance
-d_VT_w=((M_VT_wind(:,5)-M_VT_wind(:,8)).^2+(M_VT_wind(:,6)-M_VT_wind(:,9)).^2+(M_VT_wind(:,7)-M_VT_wind(:,10)).^2).^0.5;
+%d_VT_w=((M_VT_wind(:,5)-M_VT_wind(:,8)).^2+(M_VT_wind(:,6)-M_VT_wind(:,9)).^2+(M_VT_wind(:,7)-M_VT_wind(:,10)).^2).^0.5;
 
+d_VT_w=((M_VT_wind(:,5)-M_VT_wind(:,8)).^2+(M_VT_wind(:,6)-M_VT_wind(:,9)).^2).^0.5;
 
 
 d_VT_now=((M_VT_nowind(:,5)-M_VT_nowind(:,8)).^2+(M_VT_nowind(:,6)-M_VT_nowind(:,9)).^2+(M_VT_nowind(:,7)-M_VT_nowind(:,10)).^2).^0.5;
@@ -562,14 +563,16 @@ d_VT_now=((M_VT_nowind(:,5)-M_VT_nowind(:,8)).^2+(M_VT_nowind(:,6)-M_VT_nowind(:
 
 
 
-d_NMPC_w=((M_NMPC_wind(:,5)-M_NMPC_wind(:,8)).^2+(M_NMPC_wind(:,6)-M_NMPC_wind(:,9)).^2+(M_NMPC_wind(:,7)-M_NMPC_wind(:,10)).^2).^0.5;
+%d_NMPC_w=((M_NMPC_wind(:,5)-M_NMPC_wind(:,8)).^2+(M_NMPC_wind(:,6)-M_NMPC_wind(:,9)).^2+(M_NMPC_wind(:,7)-M_NMPC_wind(:,10)).^2).^0.5;
+d_NMPC_w=((M_NMPC_wind(:,5)-M_NMPC_wind(:,8)).^2+(M_NMPC_wind(:,6)-M_NMPC_wind(:,9)).^2).^0.5;
 
 
 
 d_NMPC_now=((M_NMPC_nowind(:,5)-M_NMPC_nowind(:,8)).^2+(M_NMPC_nowind(:,6)-M_NMPC_nowind(:,9)).^2+(M_NMPC_nowind(:,7)-M_NMPC_nowind(:,10)).^2).^0.5;
 
 
-d_PAMPC_w=((M_PAMPC_wind(:,5)-M_PAMPC_wind(:,8)).^2+(M_PAMPC_wind(:,6)-M_PAMPC_wind(:,9)).^2+(M_PAMPC_wind(:,7)-M_PAMPC_wind(:,10)).^2).^0.5;
+%d_PAMPC_w=((M_PAMPC_wind(:,5)-M_PAMPC_wind(:,8)).^2+(M_PAMPC_wind(:,6)-M_PAMPC_wind(:,9)).^2+(M_PAMPC_wind(:,7)-M_PAMPC_wind(:,10)).^2).^0.5;
+d_PAMPC_w=((M_PAMPC_wind(:,5)-M_PAMPC_wind(:,8)).^2+(M_PAMPC_wind(:,6)-M_PAMPC_wind(:,9)).^2).^0.5;
 
 figure
 
@@ -589,7 +592,7 @@ plot ([1:length(d_NMPC_w)-1000]/50,d_NMPC_w(1000:end-1),'LineWidth', 3,'color',c
 
 hold on
 
-plot ([1:length(d_PAMPC_w)-1000]/50,d_PAMPC_w(1000:end-1),'LineWidth', 3,'color',color_PAMPC)
+plot ([1:length(d_PAMPC_w)-700]/50,d_PAMPC_w(700:end-1),'LineWidth', 3,'color',color_PAMPC)
 
 
 
@@ -604,6 +607,7 @@ leg_han = legend('VT-NMPC' , 'NMPC','PAMPC');
 set(leg_han,'FontSize',30,'Location','northeast','Orientation','horizontal');
 xlabel('Time [s]');
 ylabel('Distance from blade [m]');
+ylim([4.5 9])
 ax_han = gca;
 set(ax_han,'FontSize',30)
 grid on
@@ -676,7 +680,7 @@ plot ([1: length(s_i_nmpc)-1000]/50,s_i_nmpc(1000:end-1),'LineWidth', 3,'Color',
 
 hold on
 
-plot ([1: length(s_i_pampc)-1000]/50,s_i_pampc(1000:end-1),'LineWidth', 3,'Color',color_PAMPC)
+plot ([1: length(s_i_pampc)-700]/50,s_i_pampc(700:end-1),'LineWidth', 3,'Color',color_PAMPC)
 
 
 
@@ -756,7 +760,19 @@ for i =1:1:length (M_NMPC_nowind)
 end
 
 
-
+for i =1:1:length (M_PAMPC_wind)
+ ax=M_PAMPC_wind(i,8) -M_PAMPC_wind(i,5) ;
+ ay=  M_PAMPC_wind(i,9) -M_PAMPC_wind(i,6) ;
+ az= M_PAMPC_wind(i,10) -M_PAMPC_wind(i,7) ;
+ nx= M_PAMPC_wind(i,11);
+ ny= M_PAMPC_wind(i,12);
+ 
+ A1=ax-ax*nx*nx-ay*ny*nx;
+  
+ A2=ay-ax*nx*ny-ay*ny*ny;
+ A3= az*az;
+ o_pampc_w(i)=(A1^2+A2^2+A3^2)^0.5;
+end
 
 
 
@@ -777,13 +793,14 @@ hold on
 plot ([1: length(o_nmpc_w)-1000]/50,(1-o_nmpc_w(1000:end-1)/7),'LineWidth', 3,'Color',color_NMPC)
 %plot ([1: length(o_nmpc_w)-900]/50,(o_nmpc_w(900:end-1)),'LineWidth', 3,'Color',color_NMPC)
 
-
+hold on
+plot ([1: length(o_pampc_w)-700]/50,(1-o_pampc_w(700:end-1)/7),'LineWidth', 3,'Color',color_PAMPC)
 
 leg_han = legend('VT-NMPC (no wind)','VT-NMPC (wind)','NMPC (no wind)','NMPC (wind)');
-leg_han = legend('VT-NMPC','NMPC ');
+leg_han = legend('VT-NMPC','NMPC ','PAMPC');
 
 set(leg_han,'FontSize',30,'Location','northeast','Orientation','horizontal');
-
+ylim([0.4 1])
 ax_han = gca;
 
 xlabel('Time [s]');
@@ -811,7 +828,7 @@ s1=sum(s_i_nmpc(1000:end-13000))/length(s_i_nmpc(1000:end-13000));
 s1=sum(d_VT_w(1000:end-50))/length(d_VT_w(1000:end-50));
 
 s1=sum(d_NMPC_now(50:end-16000))/length(d_NMPC_now(50:end-16000));
-s1=sum(d_NMPC_w(1000:end-13000))/length(d_NMPC_w(1000:end-13000));
+s1=sum(d_PAMPC_w(700:end-3300))/length(d_NMPC_w(1000:end-13000));
 %s_i_nmpc
 
 
