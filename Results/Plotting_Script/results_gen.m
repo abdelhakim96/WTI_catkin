@@ -65,7 +65,7 @@ color_Ct= [ 0 0 0];
 
 M_VT_nowind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/no_wind.txt');    %VTMPC data
 
-M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/wind.txt');
+M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/test1.txt');
 %M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/GT_traj.txt');
 
 
@@ -257,7 +257,7 @@ hold(axes1,'on');
 
 
 
-plot3(M_VT_wind(1000:end-100,5),M_VT_wind(1000:end-100,6),M_VT_wind(1000:end-100,7),'k', 'LineWidth', 4,'color',color_VTNMPC_nw);
+plot3(M_VT_wind(3000:end-3800,5),M_VT_wind(3000:end-3800,6),M_VT_wind(3000:end-3800,7),'k', 'LineWidth', 4,'color',color_VTNMPC_nw);
 hold on
 
 %plot3(M_VT_wind_now(100:end-2000,5),M_VT_wind_now(100:end-2000,6),M_VT_wind_now(100:end-2000,7),'--','k', 'LineWidth', 3,'color',color_VTNMPC);
@@ -825,3 +825,62 @@ s1=sum(d_NMPC_w(1000:end-13000))/length(d_NMPC_w(1000:end-13000));
 
 %hold on
 %patch(mx',my',mz','w','EdgeColor','k','FaceAlpha',1);
+
+%% Plot the costs
+
+for i =1:1:length (M_VT_wind)
+ ax=M_VT_wind(i,8) -M_VT_wind(i,5) ;
+ ay=  M_VT_wind(i,9) -M_VT_wind(i,6) ;
+ az= M_VT_wind(i,10) -M_VT_wind(i,7) ;
+ nx= M_VT_wind(i,11);
+ ny= M_VT_wind(i,12);
+ 
+
+ s_ri(i)=ax*nx+ay*ny;
+end
+
+
+
+W_h=120;
+W_d=70;
+W_ri=30;
+W_o=70;
+
+
+
+C_h=(s_i_vt-1).^2*W_h;
+C_d=(d_VT_w-7).^2*W_d;
+C_ri=(s_ri+7).^2*W_ri;
+C_o=(o_vt_w).^2*W_o;
+
+
+C_w1=((M_VT_wind(:,28)).^2).^0.5*(pi/180);
+C_w2=((M_VT_wind(:,29)).^2).^0.5*(pi/180);
+C_w3=((M_VT_wind(:,30)).^2).^0.5*(pi/180);
+
+close all
+figure
+% plot
+plot ([3000:length(C_h)-3800], C_h(3000:length(C_h)-3800),'LineWidth', 3,'Color','k')
+
+hold on
+
+plot ([3000:length(C_d)-3800], C_d(3000:length(C_d)-3800),'LineWidth', 3,'Color','r')
+hold on
+
+plot ([3000:length(C_ri)-3800], C_ri(3000:length(C_ri)-3800),'LineWidth', 3,'Color','b')
+
+hold on
+plot ([3000:length(C_o)-3800], C_o(3000:length(C_o)-3800),'LineWidth', 3,'Color','g')
+
+legend ('C_h', 'C_d','C_ri', 'C_o')
+figure 
+plot ([3000:length(C_w1)-3800], C_w1(3000:length(C_w1)-3800),'LineWidth', 3,'Color','k')
+hold on
+plot ([3000:length(C_w2)-3800], C_w2(3000:length(C_w2)-3800),'LineWidth', 3,'Color','m')
+hold on
+%plot ([3000:length(C_w3)-3800], C_w3(3000:length(C_w3)-3800),'LineWidth', 3,'Color','c')
+
+legend ('roll','pitch')
+
+

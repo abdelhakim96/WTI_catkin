@@ -20,10 +20,10 @@
     <param name="W_q_w" type="double" value="0.0" /> <!-- Weight for w-quaternion. -->
     <param name="W_s1" type="double" value="120.0" /> <!-- Weight for direction objective -->
     <param name="W_s2" type="double" value="70.0" /> <!-- Weight for trajectory following -->
-    <param name="W_s3" type="double" value="30.0" /> <!-- Weight for soft constraint -->
-    <param name="W_s4" type="double" value="70.0" /> <!-- Weight for soft constraint -->
-    <param name="W_p_rate" type="double" value="10.0" /> <!-- Weight for roll rate. -->
-    <param name="W_q_rate" type="double" value="10.0" /> <!-- Weight for pitch rate. -->
+    <param name="W_s3" type="double" value="70.0" /> <!-- Weight for soft constraint -->
+    <param name="W_s4" type="double" value="0.0" /> <!-- Weight for soft constraint -->
+    <param name="W_p_rate" type="double" value="30.0" /> <!-- Weight for roll rate. -->
+    <param name="W_q_rate" type="double" value="30.0" /> <!-- Weight for pitch rate. -->
     <param name="W_r_rate" type="double" value="1.7" /> <!-- Weight for yaw rate. -->
     <param name="W_Fz" type="double" value="0.025" /> <!-- Weight for throttle. -->
 </launch>

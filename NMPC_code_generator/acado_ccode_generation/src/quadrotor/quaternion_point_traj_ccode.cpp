@@ -143,8 +143,8 @@ int main()
     //
     // Optimal Control Problem
     //
-    double N = 20;
-    double Ts = 0.001;
+    double N = 30;
+    double Ts = 0.01;
     OCP ocp(0.0, N * Ts, N);
 
     ocp.subjectTo(f);
