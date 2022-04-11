@@ -124,8 +124,8 @@ int main()
     s_3 = (n_x * a_x + n_y * a_y);
     //s_4= asin(sqrt(A)/norm_a);
     //s_4 = B/norm_a;
-    s_4 = sqrt(A1 * A1 + A2 * A2 + A3 * A3);
-    
+    //s_4 = sqrt(A1 * A1 + A2 * A2 + A3 * A3);
+    s_4 = sqrt(A1 * A1 + A2 * A2);
     
     //n_x * a_y - a_y * n_x ;   //cross product
     

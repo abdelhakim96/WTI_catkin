@@ -858,7 +858,7 @@ C_w1=((M_VT_wind(:,28)).^2).^0.5*(pi/180);
 C_w2=((M_VT_wind(:,29)).^2).^0.5*(pi/180);
 C_w3=((M_VT_wind(:,30)).^2).^0.5*(pi/180);
 
-close all
+%close all
 figure
 % plot
 plot ([3000:length(C_h)-3800], C_h(3000:length(C_h)-3800),'LineWidth', 3,'Color','k')
