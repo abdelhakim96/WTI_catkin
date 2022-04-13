@@ -65,8 +65,8 @@ color_Ct= [ 0 0 0];
 
 M_VT_nowind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/no_wind.txt');    %VTMPC data
 
-M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/test1.txt');
-%M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/GT_traj.txt');
+%M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/test1.txt');
+M_VT_wind = dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/VTNMPC/wind.txt');
 
 
 M_NMPC_nowind=dlmread('/home/hakim/catkin_ws/src/WTI_catkin/Results/Data/NMPC/no_wind.txt');
@@ -257,7 +257,7 @@ hold(axes1,'on');
 
 
 
-plot3(M_VT_wind(3000:end-3800,5),M_VT_wind(3000:end-3800,6),M_VT_wind(3000:end-3800,7),'k', 'LineWidth', 4,'color',color_VTNMPC_nw);
+plot3(M_VT_wind(800:end-300,5),M_VT_wind(800:end-300,6),M_VT_wind(800:end-300,7),'k', 'LineWidth', 4,'color',color_VTNMPC_nw);
 hold on
 
 %plot3(M_VT_wind_now(100:end-2000,5),M_VT_wind_now(100:end-2000,6),M_VT_wind_now(100:end-2000,7),'--','k', 'LineWidth', 3,'color',color_VTNMPC);
@@ -271,11 +271,11 @@ hold on
 
 %hold on
 
-plot3(M_NMPC_wind(1000:end-12700,5),M_NMPC_wind(1000:end-12700,6),M_NMPC_wind(1000:end-12700,7),'k', 'LineWidth', 4,'color',color_NMPC);
+plot3(M_NMPC_wind(200:end-3400,5),M_NMPC_wind(200:end-3400,6),M_NMPC_wind(200:end-3400,7),'k', 'LineWidth', 4,'color',color_NMPC);
 
 hold on
 
-plot3(M_PAMPC_wind(1:end-100,5),M_PAMPC_wind(1:end-100,6),M_PAMPC_wind(1:end-100,7),'k', 'LineWidth', 4,'color',color_PAMPC);
+plot3(M_PAMPC_wind(100:end-100,5),M_PAMPC_wind(100:end-100,6),M_PAMPC_wind(100:end-100,7),'k', 'LineWidth', 4,'color',color_PAMPC);
 
 
 %pbaspect([1 1 1.2])
@@ -577,7 +577,7 @@ figure
 %plot ([1:length(d_VT_now)-173]/50,d_VT_now(173:end-1),'--','LineWidth', 3,'color',color_VTNMPC)
 hold on
 
-plot ([1:length(d_VT_w)-1000]/50,d_VT_w(1000:end-1),'LineWidth', 3,'color',color_VTNMPC_nw)
+plot ([1:length(d_VT_w)-800]/50,d_VT_w(800:end-1),'LineWidth', 3,'color',color_VTNMPC_nw)
 
 hold on
 
@@ -585,7 +585,7 @@ hold on
 %plot ([1:length(d_NMPC_now)-50]/50,d_NMPC_now(50:end-1),'--','LineWidth', 3,'color',color_NMPC_nw)
 
 hold on
-plot ([1:length(d_NMPC_w)-1000]/50,d_NMPC_w(1000:end-1),'LineWidth', 3,'color',color_NMPC)
+plot ([1:length(d_NMPC_w)-200]/50,d_NMPC_w(200:end-1),'LineWidth', 3,'color',color_NMPC)
 
 hold on
 
@@ -663,7 +663,7 @@ figure
 
 %plot ([1: length(s_i_vt_nw)-173]/50,s_i_vt_nw(173:end-1),'--','LineWidth', 3,'Color',color_VTNMPC)
 %hold on 
-plot ([1: length(s_i_vt)-1000]/50,s_i_vt(1000:end-1),'LineWidth', 3, 'Color',color_VTNMPC_nw)
+plot ([1: length(s_i_vt)-800]/50,s_i_vt(800:end-1),'LineWidth', 3, 'Color',color_VTNMPC_nw)
 
 %hold on
 %plot ([1: length(s_i_nmpc_nw)-50]/50,s_i_nmpc_nw(50:end-1), '--','LineWidth', 3,'Color',color_NMPC_nw)
@@ -672,7 +672,7 @@ plot ([1: length(s_i_vt)-1000]/50,s_i_vt(1000:end-1),'LineWidth', 3, 'Color',col
 
 
 hold on
-plot ([1: length(s_i_nmpc)-1000]/50,s_i_nmpc(1000:end-1),'LineWidth', 3,'Color',color_NMPC)
+plot ([1: length(s_i_nmpc)-200]/50,s_i_nmpc(200:end-1),'LineWidth', 3,'Color',color_NMPC)
 
 hold on
 
@@ -765,7 +765,7 @@ figure
 %plot ([1: length(o_vt_nw)-1200]/50,o_vt_nw(1200:end-1),'--' ,'LineWidth', 3,'Color',color_VTNMPC)
 
 hold on
-plot ([1: length( o_vt_w)-1000]/50, (1-o_vt_w(1000:end-1)/7),'LineWidth', 3,'Color',color_VTNMPC_nw)
+plot ([1: length( o_vt_w)-800]/50, (1-o_vt_w(800:end-1)/7),'LineWidth', 3,'Color',color_VTNMPC_nw)
 %plot ([1: length( o_vt_w)-850]/50, (o_vt_w(850:end-1)),'LineWidth', 3,'Color',color_VTNMPC_nw)
 
 hold on
@@ -774,13 +774,13 @@ hold on
 %plot ([1: length(o_nmpc_nw)-1200]/50,o_nmpc_nw(1200:end-1),'--','LineWidth', 3,'Color',color_NMPC_nw)
 
 hold on 
-plot ([1: length(o_nmpc_w)-1000]/50,(1-o_nmpc_w(1000:end-1)/7),'LineWidth', 3,'Color',color_NMPC)
+plot ([1: length(o_nmpc_w)-200]/50,(1-o_nmpc_w(200:end-1)/7),'LineWidth', 3,'Color',color_NMPC)
 %plot ([1: length(o_nmpc_w)-900]/50,(o_nmpc_w(900:end-1)),'LineWidth', 3,'Color',color_NMPC)
 
 
 
 leg_han = legend('VT-NMPC (no wind)','VT-NMPC (wind)','NMPC (no wind)','NMPC (wind)');
-leg_han = legend('VT-NMPC','NMPC ');
+leg_han = legend('VT-NMPC','NMPC ','PAMPC');
 
 set(leg_han,'FontSize',30,'Location','northeast','Orientation','horizontal');
 
@@ -826,6 +826,9 @@ s1=sum(d_NMPC_w(1000:end-13000))/length(d_NMPC_w(1000:end-13000));
 %hold on
 %patch(mx',my',mz','w','EdgeColor','k','FaceAlpha',1);
 
+
+
+%{
 %% Plot the costs
 
 for i =1:1:length (M_VT_wind)
@@ -883,4 +886,4 @@ hold on
 
 legend ('roll','pitch')
 
-
+}%
