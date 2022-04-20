@@ -1482,12 +1482,12 @@ void publish_inspection_point()
 
                    //test 
 
-                    ref_point.pose.position.x=px_test.data;
-                    ref_point.pose.position.y=py_test.data;
-                    ref_point.pose.position.z=z;
-                    ref_normal.pose.position.x = nx_test.data;
-                    ref_normal.pose.position.y = ny_test.data;
-                    ref_normal.pose.position.z = 0;
+                    //ref_point.pose.position.x=px_test.data;
+                    //ref_point.pose.position.y=py_test.data;
+                    //ref_point.pose.position.z=z;
+                    //ref_normal.pose.position.x = nx_test.data;
+                    //ref_normal.pose.position.y = ny_test.data;
+                    //ref_normal.pose.position.z = 0;
 
                     //ref_point.pose.position.x = px;
                     //ref_point.pose.position.y = py;
